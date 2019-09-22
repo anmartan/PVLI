@@ -30,7 +30,7 @@ Utilizar pócimas y otros consumibles: el héroe podrá utilizar las ayudas que 
 Antihéroe:
 Dominar a  un enemigo: pulsando la tecla de espacio y haciendo “clic” sobre el enemigo que desee dominar. De esta manera, el antihéroe podrá controlar el movimiento y ataque de ese enemigo. Solo se podrá activar una vez en cada mazmorra, y durará hasta que dicho enemigo muera.
 
-##Dinámicas
+## Dinámicas
 
 Las dinámicas del juego cambian en ambas fases:
 
