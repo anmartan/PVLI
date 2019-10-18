@@ -24,13 +24,9 @@
                 frameRate: 10,
                 repeat: -1,
             });
-        let hero = new player(this,50,50,2,"caballero_idle0");
-        this.add.existing(hero);
-        this.hero = hero; //por qué?
-
-        //traer un delfin
-
-        console.log(this.hero);
+        this.hero = new player(this,50,50,2,"caballero_idle0");
+        console.log(" ... ");
+        this.hero.body.setCollideWorldBounds(true);
         this.hero.play("idle");
         this.hero.setScale(1.5,1.5); //no se si hace falta pero yo lo veo mejor creo
    },

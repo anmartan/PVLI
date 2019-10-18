@@ -1,27 +1,31 @@
 export class livingEntity extends Phaser.GameObjects.Sprite
 {
+    
     constructor(scene,x,y,_speed,sprite)
     {
-        super(scene,x,y, sprite)
+        super(scene, x, y, sprite)
         this.speed = _speed;
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+        
     }
-    move(dir)
+    moveLeft()
     {
-        //dir = 0 -> derecha :: dir = 1 -> arriba :: dir = 2 -> izquierda :: dir ==  abajo 
-        switch (dir) 
-        {   case 0:
-                this.x+= this.speed;
-                break;
-            case 1:
-                this.y-=this.speed;
-                break;
-            case 2: 
-                this.x-=this.speed;
-                break;
-            case 3:
-                this.y+=this.speed;
-        }
+        this.x-=this.speed;
     }
+    moveRight()
+    {
+        this.x+= this.speed;
+    }
+    moveDown()
+    {
+        this.y+=this.speed;        
+    }
+    moveUp()
+    {
+        this.y-=this.speed;
+    }
+
     attack(dir){};
 }
 
@@ -40,22 +44,22 @@ export class player extends livingEntity
         {
             if(this.key_D.isDown)
             {
-                this.move(0);
+                this.moveRight();
                 this.setFlipX(false);
      
              }
              if(this.key_A.isDown)
              {
-                this.move(2);
+                this.moveLeft();
                 this.setFlipX(true);
             }
             if(this.key_W.isDown)
             {
-                this.move(1);
+                this.moveUp();
             }
             if (this.key_S.isDown)
             {
-                this.move(3);
+                this.moveDown();
             }
         }
 } 
