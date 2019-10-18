@@ -11,7 +11,8 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: false
+            gravity: false,
+            debug: true
         }
     },
     scene: [scene1]
