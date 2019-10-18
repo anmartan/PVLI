@@ -1,5 +1,6 @@
 
 const scene = {
+    import * from "./player.js";
 
     preload: function()
    {
