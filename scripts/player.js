@@ -7,7 +7,6 @@ export class livingEntity extends Phaser.GameObjects.Sprite
         this.speed = _speed;
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        
     }
     moveLeft()
     {
@@ -30,6 +29,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite
 }
 
 
+
 export class player extends livingEntity
 {
     constructor(scene, x, y, speed,sprite)
@@ -41,26 +41,24 @@ export class player extends livingEntity
         this.key_W = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     }
     handleLogic()
+    {
+        if(this.key_D.isDown)
         {
-            if(this.key_D.isDown)
-            {
-                this.moveRight();
-                this.setFlipX(false);
-     
-             }
-             if(this.key_A.isDown)
-             {
-                this.moveLeft();
-                this.setFlipX(true);
-            }
-            if(this.key_W.isDown)
-            {
-                this.moveUp();
-            }
-            if (this.key_S.isDown)
-            {
-                this.moveDown();
-            }
+            this.moveRight();
+            this.setFlipX(false);
         }
+        if(this.key_A.isDown)
+        {
+            this.moveLeft();
+            this.setFlipX(true);
+        }
+        if(this.key_W.isDown)
+        {
+            this.moveUp();
+        }
+        if (this.key_S.isDown)
+        {
+            this.moveDown();
+        }
+    }
 } 
- 

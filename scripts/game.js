@@ -1,9 +1,11 @@
 import scene1 from './scene1.js'
+import scene2 from './scene2.js'
 
 var config = {
+    pixelArt: true,
     type: Phaser.AUTO,
-    width: 960,
-    height: 640,
+    width: 176,//960,
+    height: 176,
     scale: {   //Esto sirve para centrar el canvas
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_HORIZONTALY
@@ -15,7 +17,7 @@ var config = {
             debug: true
         }
     },
-    scene: [scene1]
+    scene: [scene1, scene2]
 
 }
 
