@@ -18,13 +18,13 @@ const  scene =
         //this.rooms[0].make7x7();
         //this.rooms[0].make9x9();
 
-        let text = this.add.text(25, 100, 'Small');
+        let text = this.add.text(25, 10, 'Small');
         text.setFont('Arial Black');
         text.setFontSize(12);
-        let text1 = this.add.text(70, 100, 'Medium');
+        let text1 = this.add.text(70, 10, 'Medium');
         text1.setFont('Arial Black');
         text1.setFontSize(12);
-        let text2 = this.add.text(125, 100, 'Large');
+        let text2 = this.add.text(125, 10, 'Large');
         text2.setFont('Arial Black');
         text2.setFontSize(12);
 
@@ -32,9 +32,9 @@ const  scene =
         text.setInteractive();
         text1.setInteractive();
         text2.setInteractive();
-        text.on("pointerdown",()=>this.rooms[0].make5x5());
-        text1.on("pointerdown",()=>this.rooms[0].make7x7());
-        text2.on("pointerdown",()=>this.rooms[0].make9x9());
+        text.on("pointerdown",()=>this.rooms[0].resize(5));
+        text1.on("pointerdown",()=>this.rooms[0].resize(7));
+        text2.on("pointerdown",()=>this.rooms[0].resize(9));
     },
     update : function(delta)
     {
