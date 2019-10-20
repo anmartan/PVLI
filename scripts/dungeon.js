@@ -64,46 +64,12 @@ export class room
             x = 10-offset;
             this.removeTile(x,y);  
         }
+        if(offset == 1) //para que limpie el loop mediano y el grande en el caso de llamar al pequeño
+        {
+            offset--;
+            this.removeLoops(offset);
+        } 
     }               
-    removeRounds7()
-    {
-        let x = 0, y=0;
-        for(y = 0; y<11; y++)
-        {
-            x = 0;
-            this.removeTile(x,y);
-            x = 10;
-            this.removeTile(x,y);            
-        }
-        y = 0;
-        for(x = 0; x<11;x++)
-        {
-            y = 0;
-            this.removeTile(x,y);            
-            y=10;
-            this.removeTile(x,y);            
-        }
-    }
-    removeRounds5()
-    {
-        this.removeRounds7();
-        let x = 1, y=1;
-        for(y = 1; y<10; y++)
-        {
-            x = 1;
-            this.removeTile(x,y);
-            x = 9;
-            this.removeTile(x,y);            
-        }
-        y = 1;
-        for(x = 1; x<10; x++)
-        {
-            y = 1;
-            this.removeTile(x,y);            
-            y = 9;
-            this.removeTile(x,y);            
-        }
-    }
     removeTile(x,y)
     {
         this.Walls.removeTileAt(x,y);
