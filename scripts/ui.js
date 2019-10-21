@@ -1,8 +1,9 @@
 export class button extends Phaser.GameObjects.Text{
-    constructor(scene,x,y,text,style,size)
+    constructor(scene,x,y,text,style,size, pos)
     {
         super(scene,x,y,text,style)
-        this.size =size;
+        this.roomSize = size;
+        this.buttonPos = pos;
         scene.add.existing(this);
     }
     size()

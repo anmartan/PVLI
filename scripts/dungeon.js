@@ -7,23 +7,20 @@ export  class dungeon
 }
 export class room 
 {
-    constructor(width, height, traps, enemies)
+    constructor(size, traps, enemies,scene)
     {
-        this.widht = width;
-        this.height = height;
+        this.size=size;
         this.traps = traps;
         this.enemies = enemies;
+        this.scene = scene;
     }
     show(scene)
     {
-        let tileMap = scene.add.tilemap("tiles");
-        this.DungeonTiles = tileMap.addTilesetImage("DungeonTiles");
-        this.Background = tileMap.createDynamicLayer("Background", [this.DungeonTiles],0,0);
-        this.Ground = tileMap.createDynamicLayer("Ground", [this.DungeonTiles],0,0);
-        this.Walls = tileMap.createDynamicLayer("Walls", [this.DungeonTiles],0,0);
+
     }
     resize(size)
     {
+        this.size = size;
         let leftOffset,rightOffset,offset;
         leftOffset=(10-(size+1))/2;
         rightOffset=10-leftOffset;
@@ -31,15 +28,15 @@ export class room
         this.putCorners(leftOffset,rightOffset);
         for(let i=offset;i<size+offset;i++)
         {
-            this.Walls.putTileAt(2, i,   leftOffset);
-            this.Walls.putTileAt(7,   leftOffset, i);
+            this.scene.Walls.putTileAt(2, i,   leftOffset);
+            this.scene.Walls.putTileAt(7,   leftOffset, i);
             for(let j =offset; j<size+offset;j++)
             {
-                this.Walls.removeTileAt(i, j);
-                this.Ground.putTileAt(8, i, j);
+                this.scene.Walls.removeTileAt(i, j);
+                this.scene.Ground.putTileAt(8, i, j);
             }
-            this.Walls.putTileAt(14, i, rightOffset);
-            this.Walls.putTileAt(9,   rightOffset, i);
+            this.scene.Walls.putTileAt(14, i, rightOffset);
+            this.scene.Walls.putTileAt(9,   rightOffset, i);
         }
         this.removeLoops(leftOffset-1);
         this.putEntrance(leftOffset,rightOffset);
@@ -72,23 +69,23 @@ export class room
     }               
     removeTile(x,y)
     {
-        this.Walls.removeTileAt(x,y);
-        this.Ground.removeTileAt(x,y);
-        this.Background.putTileAt(6,x,y);
+        this.scene.Walls.removeTileAt(x,y);
+        this.scene.Ground.removeTileAt(x,y);
+        this.scene.Background.putTileAt(6,x,y);
     }
     putCorners(x,y)
     {
-        this.Walls.putTileAt(1,x,x);
-        this.Walls.putTileAt(3,y,x);
-        this.Walls.putTileAt(15,y,y);
-        this.Walls.putTileAt(13,x,y);
+        this.scene.Walls.putTileAt(1,x,x);
+        this.scene.Walls.putTileAt(3,y,x);
+        this.scene.Walls.putTileAt(15,y,y);
+        this.scene.Walls.putTileAt(13,x,y);
     }
     putEntrance(x,y)
     {
-        this.Walls.removeTileAt( x, 5 );
-        this.Walls.removeTileAt( y, 5);
-        this.Ground.putTileAt(8,x,5);
-        this.Ground.putTileAt(8,y,5);
+        this.scene.Walls.removeTileAt( x, 5 );
+        this.scene.Walls.removeTileAt( y, 5);
+        this.scene.Ground.putTileAt(8,x,5);
+        this.scene.Ground.putTileAt(8,y,5);
     }
 }
 export class trap extends Phaser.GameObjects.Sprite
