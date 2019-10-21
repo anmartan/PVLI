@@ -14,10 +14,6 @@ export class room
         this.enemies = enemies;
         this.scene = scene;
     }
-    show(scene)
-    {
-
-    }
     resize(size)
     {
         this.size = size;
