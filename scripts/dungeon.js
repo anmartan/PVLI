@@ -7,7 +7,7 @@ export  class dungeon
 }
 export class room 
 {
-    constructor(size, traps, enemies,scene)
+    constructor(size, traps, enemies, scene)
     {
         this.size=size;
         this.traps = traps;

@@ -17,8 +17,10 @@ var config = {
             debug: true
         }
     },
-    scene: [scene1, scene2]
+    scene: [scene2, scene1]
 
 }
 
 var game = new Phaser.Game(config);
+game.dungeon;
+game.tiles;

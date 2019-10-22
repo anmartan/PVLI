@@ -2,6 +2,7 @@ import {dungeon, room, trap} from './dungeon.js';
 import {indexButton, sizeButton} from './ui.js';
 const  scene =
 {
+    key: "scene2",
     preload: function()
     {
         
@@ -61,11 +62,16 @@ const  scene =
            indexButton.over("#ff00ff","#ff0000");
            indexButton.out("#ff00ff","#ffffff");
         })
-
+        this.key_D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     },
     update : function(delta)
     {
-
+    if(this.key_D.isDown)
+    {
+        this.game.scene.start("scene1");
+        this.game.scene.stop("scene2");
+        this.game.dungeon = new dungeon(this.rooms);
+    }
     },
     checkColors: function(children)
     {
