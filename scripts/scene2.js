@@ -44,12 +44,12 @@ const  scene =
         this.sizeButtons.addMultiple([this.buttonSmall,this.buttonMedium,this.buttonLarge]);
         this.indexButtons = this.add.group();
         this.indexButtons.addMultiple([this.button1,this.button2,this.button3]);
-        let children = this.sizeButtons.getChildren()
-        let childrenBot = this.indexButtons.getChildren()
+        let sizeButtonChildren = this.sizeButtons.getChildren()
+        let indexButtonChildren = this.indexButtons.getChildren()
 
         this.sizeButtons.children.iterate(sizeButton =>
         {
-            sizeButton.click(children, "#ff00ff", "#ffffff" );
+            sizeButton.click(sizeButtonChildren, "#ff00ff", "#ffffff" );
             sizeButton.over("#ff00ff","#ff0000");
             sizeButton.out("#ff00ff","#ffffff");
             console.log(sizeButton);
@@ -57,7 +57,7 @@ const  scene =
 
         this.indexButtons.children.iterate(indexButton =>
         {
-           indexButton.click(children,childrenBot, "#ff00ff", "#ffffff" );
+           indexButton.click(sizeButtonChildren,indexButtonChildren, "#ff00ff", "#ffffff" );
            indexButton.over("#ff00ff","#ff0000");
            indexButton.out("#ff00ff","#ffffff");
         })
