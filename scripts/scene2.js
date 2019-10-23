@@ -1,5 +1,7 @@
 import {dungeon, room, trap} from './dungeon.js';
 import {indexButton, sizeButton} from './ui.js';
+import {tilemap} from './tilemap.js';
+
 const  scene =
 {
     key: "scene2",
@@ -16,23 +18,13 @@ const  scene =
     },
     create : function()
     {
-        let tileMap = this.add.tilemap("tiles");
-        let side = 16;
-        let scale = 0.5;
-        let pos = ((11*side)-((side*scale)*11))/2;
-        this.DungeonTiles = tileMap.addTilesetImage("DungeonTiles");
-        this.Background = tileMap.createDynamicLayer("Background", [this.DungeonTiles],0,0);
-        this.Ground = tileMap.createDynamicLayer("Ground", [this.DungeonTiles],pos,pos);
-        this.Walls = tileMap.createDynamicLayer("Walls", [this.DungeonTiles],pos,pos);
-        this.Ground.scale=scale;
-        this.Walls.scale=scale;
-        
-
+        this.tileMap = new tilemap(this, "tiles",16, 0.5, "DungeonTiles");
+    
         //estos botones representan el tamaño de la habitación actual (this.rooms[this.actual].size)
 
-        this.buttonSmall = new sizeButton(this,10, 10, 'Small',{fontFamily:"arial", fontSize:"15px", color:"#ff00ff"}, 5,0); //el primer valor de derecha a izquierda
-        this.buttonMedium = new sizeButton(this,60, 10, 'Medium',{fontFamily:"arial", fontSize:"15px"}, 7,1);// es el índice, el segundo el tamaño de la habitación
-        this.buttonLarge = new sizeButton(this,125, 10, 'Large',{fontFamily:"arial", fontSize:"15px"}, 9,2);
+        this.buttonSmall = new sizeButton(this,  10,  10, 'Small',{fontFamily:"arial", fontSize:"15px", color:"#ff00ff"}, 5,0); //el primer valor de derecha a izquierda
+        this.buttonMedium = new sizeButton(this, 60,  10, 'Medium',{fontFamily:"arial", fontSize:"15px"}, 7,1);// es el índice, el segundo el tamaño de la habitación
+        this.buttonLarge = new sizeButton(this,  125, 10, 'Large',{fontFamily:"arial", fontSize:"15px"}, 9,2);
 
         //estos botones representan el índice de la habitación actual (this.actual)
 
@@ -53,7 +45,6 @@ const  scene =
             sizeButton.click(sizeButtonChildren, "#ff00ff", "#ffffff" );
             sizeButton.over("#ff00ff","#ff0000");
             sizeButton.out("#ff00ff","#ffffff");
-            console.log(sizeButton);
         })
 
         this.indexButtons.children.iterate(indexButton =>

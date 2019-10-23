@@ -1,5 +1,6 @@
+import {player} from "./player.js";
+import {tilemap} from './tilemap.js';
 
-    import {livingEntity, player} from "./player.js";
     const scene = {
         key: "scene1",
         preload: function()
@@ -16,46 +17,39 @@
         },
         create: function()
         {
-        //Cargar dungeon y tile map
-        this.dungeon = this.game.dungeon;
-        let tileMap = this.add.tilemap("tiles");
-        let side = 16;
-        let scale = 1;
-        let pos = ((11*side)-((side*scale)*11))/2;
-        this.DungeonTiles = tileMap.addTilesetImage("DungeonTiles");
-        this.Background = tileMap.createDynamicLayer("Background", [this.DungeonTiles],0,0);
-        this.Ground = tileMap.createDynamicLayer("Ground", [this.DungeonTiles],pos,pos);
-        this.Walls = tileMap.createDynamicLayer("Walls", [this.DungeonTiles],pos,pos);
-        this.Ground.scale=scale;
-        this.Walls.scale=scale;
-        for(let i= 0; i<3;i++)
-        {
-            this.dungeon.rooms[i].scene = this;
-        }
+        //Cargar tile map
+        this.tileMap = new tilemap(this, "tiles",16, 1, "DungeonTiles");
+        this.actual=0;
+
         //--------------------------------------------------------//
-            this.physics.world.setBounds(0,0,176,176)
-            this.anims.create({
-                key: 'idle',
-                frames:
-                [
-                    {key: "caballero_idle0"},
-                    {key: "caballero_idle1"},
-                    {key: "caballero_idle2"},
-                    {key: "caballero_idle3"},
-                ],
-                frameRate: 10,
-                repeat: -1,
-            });
-        this.hero = new player(this,50,50,2,"caballero_idle0");
-        console.log(" ... ");
+
+        this.anims.create({
+            key: 'idle',
+            frames:
+            [
+                {key: "caballero_idle0"},
+                {key: "caballero_idle1"},
+                {key: "caballero_idle2"},
+                {key: "caballero_idle3"},
+            ],
+            frameRate: 10,
+            repeat: -1,
+        });
+        this.hero = new player(this,100,100,30,"caballero_idle0");
+        this.hero.body.setSize(16,16,16,16);
         this.hero.body.setCollideWorldBounds(true);
         this.hero.play("idle");
-        this.hero.setScale(1.5,1.5); //no se si hace falta pero yo lo veo mejor creo
-        this.dungeon.rooms[0].resize(7);
+        this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
+        this.physics.add.collider(this.hero, this.tileMap.Walls);
+        this.key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
+        this.key.on("down", () => {this.actual++;this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual%3].size)});
+
    },
     update: function(delta)
    {
+
         this.hero.handleLogic();
+
    }
    
 };
