@@ -1,5 +1,5 @@
 import {dungeon, room, trap} from './dungeon.js';
-import {indexButton, sizeButton} from './ui.js';
+import {indexButton, sizeButton, button} from './ui.js';
 import {tilemap} from './tilemap.js';
 
 const  scene =
@@ -19,20 +19,23 @@ const  scene =
     create : function()
     {
         this.tileMap = new tilemap(this, "tiles",16, 0.5, "DungeonTiles");
-    
-        //estos botones representan el tamaño de la habitación actual (this.rooms[this.actual].size)
 
-        this.buttonSmall = new sizeButton(this,  10,  10, 'Small',{fontFamily:"arial", fontSize:"15px", color:"#ff00ff"}, 5,0); //el primer valor de derecha a izquierda
-        this.buttonMedium = new sizeButton(this, 60,  10, 'Medium',{fontFamily:"arial", fontSize:"15px"}, 7,1);// es el índice, el segundo el tamaño de la habitación
-        this.buttonLarge = new sizeButton(this,  125, 10, 'Large',{fontFamily:"arial", fontSize:"15px"}, 9,2);
-
-        //estos botones representan el índice de la habitación actual (this.actual)
-
-        this.button1 = new indexButton(this,55, 150, '1',{fontFamily:"arial", fontSize:"15px", color:"#ff00ff"}, -1,0); //estos botones no necesitan guardar el tamaño
-        this.button2 = new indexButton(this,85, 150, '2',{fontFamily:"arial", fontSize:"15px"}, -1,1); //y como no sé hacer constructoras distintas por ahora guardan -1
-        this.button3 = new indexButton(this,110, 150, '3',{fontFamily:"arial", fontSize:"15px"}, -1,2);
-
-
+        let config =
+        {
+            scene : this,
+            clickedColor : "#FF00FF",
+            cursorOverColor : "#00FF00",
+            basicColor : "#FFFFFF",
+            style : {fontFamily:"arial", fontSize:"15px"},
+        }
+        
+        this.buttonSmall  = new sizeButton (config,  10,  10,   'Small',  5);
+        this.buttonMedium = new sizeButton (config,  60,  10,   'Medium', 7);
+        this.buttonLarge  = new sizeButton (config,  125, 10,   'Large',  9);
+        this.button1      = new indexButton(config,  55,  140,  '1',      0); 
+        this.button2      = new indexButton(config,  85,  140,  '2',      1); 
+        this.button3      = new indexButton(config,  110, 140,  '3',      2);
+        
         this.sizeButtons = this.add.group();
         this.sizeButtons.addMultiple([this.buttonSmall,this.buttonMedium,this.buttonLarge]);
         this.indexButtons = this.add.group();
@@ -40,31 +43,19 @@ const  scene =
         let sizeButtonChildren = this.sizeButtons.getChildren()
         let indexButtonChildren = this.indexButtons.getChildren()
 
-        this.sizeButtons.children.iterate(sizeButton =>
-        {
-            sizeButton.click(sizeButtonChildren, "#ff00ff", "#ffffff" );
-            sizeButton.over("#ff00ff","#ff0000");
-            sizeButton.out("#ff00ff","#ffffff");
-        })
+        this.sizeButtons.children.iterate(sizeButton   =>   {sizeButton.click(sizeButtonChildren)})
 
-        this.indexButtons.children.iterate(indexButton =>
+        this.indexButtons.children.iterate(indexButton =>   {indexButton.click(indexButtonChildren,sizeButtonChildren)})
+        
+        let continuar = new button(config,110,160,"Continuar");
+        continuar.on("pointerdown", () =>
         {
-           indexButton.click(sizeButtonChildren,indexButtonChildren, "#ff00ff", "#ffffff" );
-           indexButton.over("#ff00ff","#ff0000");
-           indexButton.out("#ff00ff","#ffffff");
+            this.game.scene.start("scene1");
+            this.game.scene.stop("scene2");
+            this.game.dungeon = new dungeon(this.rooms);
         })
-        this.key_D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     },
     update : function(delta)
-    {
-    if(this.key_D.isDown)
-    {
-        this.game.scene.start("scene1");
-        this.game.scene.stop("scene2");
-        this.game.dungeon = new dungeon(this.rooms);
-    }
-    },
-    checkColors: function(children)
     {
 
     }

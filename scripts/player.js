@@ -1,7 +1,7 @@
 export class livingEntity extends Phaser.GameObjects.Sprite
 {
     
-    constructor(scene,x,y,_speed,sprite)
+    constructor(scene,x,y,sprite,_speed)
     {
         super(scene, x, y, sprite)
         this.speed = _speed;
@@ -42,7 +42,7 @@ export class player extends livingEntity
 {
     constructor(scene, x, y, speed,sprite)
     {
-        super(scene,x,y, speed,sprite)
+        super(scene,x,y, sprite,speed)
         this.key_D = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.key_A = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.key_S = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -70,5 +70,16 @@ export class player extends livingEntity
         }
         if (this.key_A.isUp&&this.key_D.isUp){this.body.setVelocity(0,this.body.velocity.y)}
         if (this.key_W.isUp&&this.key_S.isUp){this.body.setVelocity(this.body.velocity.x,0)}
+    }
+}
+export class enemy extends livingEntity
+{
+    constructor(scene, x, y, speed,sprite)
+    {
+        super(scene,x,y, sprite,speed)
+    }
+    move()
+    {
+        this.moveRight();
     }
 } 
