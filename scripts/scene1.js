@@ -64,6 +64,7 @@ import {tilemap} from './tilemap.js';
         this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
         this.physics.add.collider(this.hero, this.tileMap.Walls);
         this.physics.add.collider(this.zombie, this.tileMap.Walls);
+        this.physics.add.collider(this.hero, this.zombie);
         this.key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
         this.key.on("down", () => {this.actual++;this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual%3].size);console.log(this.hero.y)});
         
