@@ -86,32 +86,49 @@ export class player extends livingEntity
 
         if(this.key_DOWN.isDown)
         {
+            this.weapon.setVisible(true);
             offsety=22;
             offsetx=0;
             this.weapon.body.setSize(16,32);    
             this.weapon.setAngle(180); 
         }
+        
         if(this.key_UP.isDown)
         {
+            this.weapon.setVisible(true);
             offsety=-10;
             offsetx=0;
             this.weapon.body.setSize(16,32);    
             this.weapon.setAngle(0); 
-
+            
         }
         if(this.key_RIGHT.isDown)
         {
+            this.weapon.setVisible(true);
             this.weapon.body.setSize(32,16);    
             if(offsetx<0)offsetx*=-1;
             this.weapon.setAngle(90); 
         }
         if(this.key_LEFT.isDown)
         {
+            this.weapon.setVisible(true);
+            this.weapon.body.setEnable(true);
+
             this.weapon.body.setSize(32,16);    
             if(offsetx>0)offsetx*=-1;
             this.weapon.setAngle(270); 
         }
+        
+        if(this.key_DOWN.isUp && this.key_LEFT.isUp && this.key_RIGHT.isUp && this.key_UP.isUp)
+        {
+            this.weapon.setVisible(false);
+            offsetx=0;
+            //this.weapon.body.setEnable(false);
+            this.weapon.body.setSize(1,1);    
+            this.weapon.x=0;
+            this.weapon.y=0;
 
+        }
 
 
 
