@@ -11,7 +11,7 @@ const  scene =
         this.load.image("DungeonTiles","../assets/ground/DungeonStarter.png");
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
         
-        this.rooms = [ new room(5,0,0,this),new room(5,0,0,this), new room(5,0,0,this) ];
+        this.rooms = [ new room(5,0,0,this),new room(7,0,0,this), new room(9,0,0,this) ];
         this.dungeon = new dungeon(this.rooms);
         this.actual = 0;
         
@@ -29,10 +29,10 @@ const  scene =
             style : {fontFamily:"arial", fontSize:"15px"},
         }
         
-        this.buttonSmall  = new sizeButton (config,  10,  10,   'Small',  5);
+        this.buttonSmall  = new sizeButton (config,  10,  10,   'Small',  5).setFill(config.clickedColor);
         this.buttonMedium = new sizeButton (config,  60,  10,   'Medium', 7);
         this.buttonLarge  = new sizeButton (config,  125, 10,   'Large',  9);
-        this.button1      = new indexButton(config,  55,  140,  '1',      0); 
+        this.button1      = new indexButton(config,  55,  140,  '1',      0).setFill(config.clickedColor); 
         this.button2      = new indexButton(config,  85,  140,  '2',      1); 
         this.button3      = new indexButton(config,  110, 140,  '3',      2);
         

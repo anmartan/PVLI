@@ -13,7 +13,7 @@ export class tilemap
         this.Walls.scale=scale;
         this.Walls.setCollisionByProperty({collides: "true"});
     }
-
+    
     changeRoom(size)
     {
         let leftOffset,rightOffset,offset;
