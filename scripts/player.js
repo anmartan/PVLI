@@ -178,12 +178,12 @@ export class enemy extends livingEntity
     constructor(scene, x, y, speed,sprite,anim)
     {
         super(scene,x,y, sprite,speed);
-        this.zone = scene.add.zone(x,y,16*2,16*2);
+        this.zone = scene.add.zone(x,y,16*3,16*3);
         scene.physics.add.existing(this.zone);
         this.zone.body.debugBodyColor = "0xFFFF00"
         console.log(this.zone);
         this.sprite.play(anim);
-        this.dir = {x:0,y:0};
+        this.findDir();
     }
     move()
     {
@@ -193,37 +193,44 @@ export class enemy extends livingEntity
     {
         this.zone.destroy();
         this.player = player;
-        this.getDir();
+        this.findDir();
     }
-    getDir()
+    findDir()
     {
-        try
+        if(this.player !== undefined)
         {
-            if(this.player !== undefined)
-            {
-                let dir = { x:this.player.x-this.sprite.x, y:this.player.y-this.sprite.y };
-                let mod = Math.sqrt(Math.pow(dir.x,2)+Math.pow(dir.y,2))
-                this.dir =  {x:dir.x/mod, y:dir.y/mod};
-                console.log(this.dir.x + " " + this.dir.y);
-            }
-            else 
-            {
-                /*let x = Math.floor(Math.random() * (1 - 1 + 1)) + 1;
-                let y = Math.floor(Math.random() * (1 - 1 + 1)) + 1;
-                this.dir = {x:this.sprite.x-x, y:this.sprite.y-y};*/
-                console.log("noplayer");
-            }
-            this.move();
-            this.scene.time.delayedCall(1000,this.getDir,[],this)
+            let dir = { x:this.player.x-this.sprite.x, y:this.player.y-this.sprite.y };
+            let mod = Math.sqrt(Math.pow(dir.x,2)+Math.pow(dir.y,2))
+            this.dir =  {x:dir.x/mod, y:dir.y/mod};
+            console.log(this.dir.x + " " + this.dir.y);
         }
-        catch
+        else 
         {
-            console.log("I was dead, I think");
+            let r = Math.random() > 0;
+            let sign;
+            if(r)
+                sign=1;
+            else 
+                sign = -1;
+            
+            let x = Math.random()*sign;
+            let y = Math.random()*sign;
+            this.dir = {x:x, y:y};
+            console.log(this.dir);
+            this.zone.x = this.sprite.x;
+            this.zone.y = this.sprite.y;
+        }
+        if(this.sprite.body!==undefined)
+        {
+            this.move();
+            this.scene.time.delayedCall(1000,this.findDir,[],this)
         }
 
     }
     kill()
     {
+        if(this.zone!==undefined)this.zone.destroy();
+        this.sprite.body.destroy();
         this.destroy();
     }
 

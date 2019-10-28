@@ -64,9 +64,6 @@ import {tilemap} from './tilemap.js';
         this.hero.body.setCollideWorldBounds(true);
         this.zombie.body.setCollideWorldBounds(true);
 
-        //this.zombie.spotPlayer(this.hero.sprite);
-        this.zombie.player = this.hero;
-
         this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
 
         this.physics.add.collider(this.hero, this.tileMap.Walls);
