@@ -57,14 +57,15 @@ import {tilemap} from './tilemap.js';
         let entranceRec = this.add.rectangle(16*2+8, 16*5+8, 16, 16, "0x00ff00",0.25);
 
         this.hero = new player (this, (16*3)-7, (16*5)+2,25,"caballero_idle0",playerIdle, {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
-        this.zombie = new enemy(this, 110,80,2, "zombie_idle0",zombieIdle);
+        this.zombie = new enemy(this, 110,80,10, "zombie_idle0",zombieIdle);
 
         this.hero.body.setSize(16,16);
         this.hero.body.offset.y=12;
         this.hero.body.setCollideWorldBounds(true);
         this.zombie.body.setCollideWorldBounds(true);
 
-        this.zombie.move();
+        //this.zombie.spotPlayer(this.hero.sprite);
+        this.zombie.player = this.hero;
 
         this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
 
@@ -84,12 +85,13 @@ import {tilemap} from './tilemap.js';
             exitRec.x = (16*12) - ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8;
             exitRec.body.x = (16*11) - ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16;
         });
+        this.physics.add.overlap(this.hero.weapon, this.zombie, ()=> this.zombie.kill())
+        console.log(this.physics.add.overlap(this.hero, this.zombie.zone, () => this.zombie.spotPlayer(this.hero.sprite),null,this))
    },
     update: function(delta)
    {
 
         this.hero.handleLogic();
-
    }
    
 };
