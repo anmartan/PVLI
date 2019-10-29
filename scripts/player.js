@@ -5,6 +5,7 @@ export class livingEntity extends Phaser.GameObjects.Container
     {
         super(scene, 0, 0)
         this.speed = speed;
+        this.dir = {x:0,y:0}                        //Movement direction (0,0) initial value
         let sprite = scene.add.sprite(x,y,spriteID);
         this.add(sprite);
         scene.add.existing(sprite);
@@ -12,23 +13,9 @@ export class livingEntity extends Phaser.GameObjects.Container
         this.body = sprite.body;
         this.sprite = sprite;
     }
-    moveLeft()
+    move()
     {
-        this.body.setVelocity(-this.speed,this.body.velocity.y)
-    }
-    moveRight()
-    {
-        this.body.setVelocity(this.speed,this.body.velocity.y)
-
-    }
-    moveDown()
-    {
-        this.body.setVelocity(this.body.velocity.x,this.speed)
-
-    }
-    moveUp()
-    {
-        this.body.setVelocity(this.body.velocity.x,-this.speed)
+        this.body.setVelocity(this.dir.x*this.speed,this.dir.y*this.speed)
     }
     attack(dir){};
 }
@@ -40,6 +27,7 @@ export class player extends livingEntity
     constructor(scene, x, y, speed,sprite, anim, sword)
     {
         super(scene,x,y, sprite,speed)
+        // Lectura de input y ejecución de la animación ----> TODO: Clase teclado o input que se encargue de hacer esto más bonito
         this.key_D = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.key_A = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.key_S = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -50,6 +38,7 @@ export class player extends livingEntity
         this.key_LEFT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         this.sprite.play(anim);
 
+        // Crea la espada ----> TODO: Sistema de inventario
         let weapon = scene.add.sprite(x,y,sword.name);
         this.add(weapon);
         this.weapon = weapon;
@@ -59,8 +48,9 @@ export class player extends livingEntity
         this.weapon.setVisible(false);
         this.weapon.body.setEnable(true);
         this.weapon.body.setSize(1,1);
-        
-        this.weapon.offsetX=0;
+
+        // Recolocan la espada donde debe estar dependiendo de la dirección ataque
+        this.weapon.offsetX=0; 
         this.weapon.offsetY=0;
 
 
@@ -68,28 +58,42 @@ export class player extends livingEntity
     }
     handleLogic()
     {
+        //Teclas de movimiento, cambiar la dirección y moverse en esa direción
         if(this.key_D.isDown)
         {
-            this.moveRight();
+            this.dir = {x:1,  y:this.dir.y}
             this.sprite.setFlipX(false);
+            this.move();
         }
         if(this.key_A.isDown)
         {
-            this.moveLeft();
+            this.dir = {x:-1, y:this.dir.y}            
             this.sprite.setFlipX(true);
+            this.move();
         }
         if(this.key_W.isDown)
         {
-            this.moveUp();
+            this.dir = {x:this.dir.x, y:-1}
+            this.move();
         }
         if(this.key_S.isDown)
         {
-            this.moveDown();
+            this.dir = {x:this.dir.x, y:1}
+            this.move();
         }
-        if (this.key_A.isUp && this.key_D.isUp){this.body.setVelocity(0,this.body.velocity.y)}
-        if (this.key_W.isUp && this.key_S.isUp){this.body.setVelocity(this.body.velocity.x,0)}
+        if (this.key_A.isUp && this.key_D.isUp)    //Resetear a 0 la x si ninguna de las horizontales se presiona
+        {
+            this.dir = {x:0,y:this.body.velocity.y}
+            this.move();
+        }
+        if (this.key_W.isUp && this.key_S.isUp)   //Resetear a 0 la y si ninguna de las verticales se presiona
+        {
+            this.dir ={x:this.body.velocity.x,y:0}
+            this.move();
+        }
 
 
+        //Teclas de attaque, atacar en la dirección
         if(this.key_DOWN.isDown)
         {
             this.attack("down")
@@ -110,13 +114,14 @@ export class player extends livingEntity
 
         this.weapon.x = this.sprite.x + 2  + this.weapon.offsetX;
         this.weapon.y = this.sprite.y + 5  + this.weapon.offsetY;
-        
     }
-    canAttack()
+
+    canAttack() //Este método se llama desde attack con un delay. Es para tener un cooldown en el ataque
     {
-        this.attacking = false;
+        this.attacking = false;  
     }
-    haveAttacked()
+
+    haveAttacked() //Durante el tiempo de recarga del ataque, mientras el jugador no puede atacar y ya a atacado se esconde la espada y se reduce su collision box.
     {
         this.weapon.offsetX=0;        
         this.weapon.offsetY=5;  
@@ -129,14 +134,11 @@ export class player extends livingEntity
         if(!this.attacking)
         {
             this.attacking = true;
-            let x,y; //16,16
-
             switch (dir) {
                 case "up":
                     this.weapon.offsetX=-2;
                     this.weapon.offsetY=-12;
                     this.weapon.body.setSize(14,32);
-                    this.weapon.setAngle(0); 
                     this.weapon.setAngle(0); 
                     break;
                 case "down":
@@ -147,25 +149,23 @@ export class player extends livingEntity
                     break;
                 case "right":
                     this.weapon.offsetX=12;
-                    this.weapon.offsetY=0;
+                    this.weapon.offsetY=2;
                     this.weapon.body.setSize(32,14);
                     this.weapon.setAngle(90); 
                     this.weapon.setFlipX(false);
                     break;
                 case "left":
-                    this.weapon.offsetX=-12;
-                    this.weapon.offsetY=0;
+                    this.weapon.offsetX=-14;
+                    this.weapon.offsetY=2;
                     this.weapon.body.setSize(32,14);
                     this.weapon.setAngle(-90); 
                     this.weapon.setFlipX(true);
-
                     break;
             
                 default:
                     break;
             }
             this.weapon.setVisible(true);
-
             this.scene.time.delayedCall(1000,this.haveAttacked,[],this)
             this.scene.time.delayedCall(1000,this.canAttack,[],this)
         }
@@ -181,13 +181,8 @@ export class enemy extends livingEntity
         this.zone = scene.add.zone(x,y,16*3,16*3);
         scene.physics.add.existing(this.zone);
         this.zone.body.debugBodyColor = "0xFFFF00"
-        console.log(this.zone);
         this.sprite.play(anim);
-        this.findDir();
-    }
-    move()
-    {
-        this.sprite.body.setVelocity(this.dir.x*this.speed, this.dir.y*this.speed);
+        this.findDir();                     //Encuentra una dirección aleatoria mientras no haya referencia a player
     }
     spotPlayer(player)
     {
@@ -202,7 +197,6 @@ export class enemy extends livingEntity
             let dir = { x:this.player.x-this.sprite.x, y:this.player.y-this.sprite.y };
             let mod = Math.sqrt(Math.pow(dir.x,2)+Math.pow(dir.y,2))
             this.dir =  {x:dir.x/mod, y:dir.y/mod};
-            console.log(this.dir.x + " " + this.dir.y);
         }
         else 
         {
@@ -216,7 +210,6 @@ export class enemy extends livingEntity
             let x = Math.random()*sign;
             let y = Math.random()*sign;
             this.dir = {x:x, y:y};
-            console.log(this.dir);
             this.zone.x = this.sprite.x;
             this.zone.y = this.sprite.y;
         }
