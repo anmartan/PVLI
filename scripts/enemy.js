@@ -26,13 +26,12 @@ export class enemy extends livingEntity
         }
         else 
         {
-            let r = Math.random() > 0;
+            let r = (Math.random() > 0.5);
             let sign;
             if(r)
-                sign=1;
+                sign = 1;
             else 
                 sign = -1;
-            
             let x = Math.random()*sign;
             let y = Math.random()*sign;
             this.dir = {x:x, y:y};
@@ -61,7 +60,7 @@ export class zombie extends enemy
     constructor (scene, x, y)
     {
         let anim = "idleZ";
-        let speed = 1;
+        let speed = 10;
         let sprite = "zombie_idle0";
         super(scene, x, y, speed,sprite,anim);
    }
@@ -114,7 +113,7 @@ export class enemyInfo
                     let z;
                     z = new zombie(scene, enemy.pos.x, enemy.pos.y);
                     scene.physics.add.overlap(weapon, z, ()=> z.kill());
-                    scene.physics.add.overlap(hero, z.zone, ()=> z.spotPlayer(hero),null,scene);
+                    scene.physics.add.overlap(hero, z.zone, ()=> z.spotPlayer(hero.sprite),null,scene);
                     scene.physics.add.collider(z, walls);
                     scene.physics.add.collider(z, hero);
                     z.body.setCollideWorldBounds(true);

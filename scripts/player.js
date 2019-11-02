@@ -83,12 +83,12 @@ export class player extends livingEntity
         }
         if (this.key_A.isUp && this.key_D.isUp)    //Resetear a 0 la x si ninguna de las horizontales se presiona
         {
-            this.dir = {x:0,y:this.body.velocity.y}
+            this.dir = {x:0,y:this.dir.y}
             this.move();
         }
         if (this.key_W.isUp && this.key_S.isUp)   //Resetear a 0 la y si ninguna de las verticales se presiona
         {
-            this.dir ={x:this.body.velocity.x,y:0}
+            this.dir ={x:this.dir.x,y:0}
             this.move();
         }
 

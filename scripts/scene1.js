@@ -64,7 +64,7 @@ import {tilemap} from './tilemap.js';
         exitRec.body.debugBodyColor="0x00ff00";
         
 
-        this.hero = new player (this, (16*3)-7, (16*5)+2,5,"caballero_idle0",playerIdle, {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
+        this.hero = new player (this, (16*3)-7, (16*5)+2, 30,"caballero_idle0",playerIdle, {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
         this.hero.body.setSize(12,12);
         this.hero.body.offset.y=14;
         this.hero.body.setCollideWorldBounds(true);
