@@ -72,3 +72,40 @@ export class sizeButton extends button
     });
     }
 }
+
+export class enemyButton extends Phaser.GameObjects.Sprite
+{
+    constructor(scene, x, y, sprite, enemyType)
+    {
+        super(scene, x,y,sprite);
+        this.enemyType = enemyType;
+        this.setInteractive();
+    }
+    setType(enemyType)
+    {
+        this.enemyType = enemyType;
+    }
+    setPos(enemyPos)
+    {
+        this.enemyPos = enemyPos
+    }
+    click()
+    {
+        this.on("pointerdown", (pointer) =>
+        {
+            //if(pointer.x)
+            let x = Math.floor(pointer.x/8);
+            let y = Math.floor(pointer.y/8);
+            let enemy = 
+            {
+                type : this.enemyType,
+                pos  : 
+                {
+                    x: x,
+                    y: y
+                }
+            }
+        }
+        )
+    }
+}

@@ -55,6 +55,8 @@ const  scene =
             this.game.scene.stop("scene2");
             this.game.dungeon = new dungeon(this.rooms);
         })
+
+
         let zombie0 = 
         {
             type: "zombie",
@@ -64,7 +66,12 @@ const  scene =
                 y: 80,
             }
         };
+        
+        
         this.rooms[0].enemies.addEnemy(zombie0);
+        
+        
+    
     },
     update : function(delta)
     {
