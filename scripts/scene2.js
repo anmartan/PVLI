@@ -1,5 +1,5 @@
 import {dungeon, room, trap} from './dungeon.js';
-import {indexButton, sizeButton, button} from './ui.js';
+import {indexButton, sizeButton, button, editorMenu} from './ui.js';
 import {tilemap} from './tilemap.js';
 import {enemyInfo} from './enemy.js';
 
@@ -10,6 +10,11 @@ const  scene =
     {
         
         this.load.image("DungeonTiles","../assets/ground/DungeonStarter.png");
+        this.load.image("default","../assets/debug/default.png");
+        this.load.image("white","../assets/debug/white.png");
+        this.load.image("yellow","../assets/debug/yellow.png");
+        this.load.image("pink","../assets/debug/pink.png");
+        this.load.image("pink2","../assets/debug/pink2.png");
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
         
         this.rooms = [ new room(5,0,new enemyInfo(),this),new room(7,0,new enemyInfo(),this), new room(9,0,new enemyInfo(),this) ];
@@ -19,7 +24,7 @@ const  scene =
     },
     create : function()
     {
-        this.tileMap = new tilemap(this, "tiles",16, 0.5, "DungeonTiles");
+        this.tileMap = new tilemap(this, "tiles",16, 0.5, "DungeonTiles",16*2,0);
 
         let config =
         {
@@ -29,6 +34,8 @@ const  scene =
             basicColor : "#FFFFFF",
             style : {fontFamily:"arial", fontSize:"15px"},
         }
+
+        this.editorMenu = new editorMenu(this,16*2,0);
         
         this.buttonSmall  = new sizeButton (config,  10,  10,   'Small',  5).setFill(config.clickedColor); //empezamos en una habitación pequeña
         this.buttonMedium = new sizeButton (config,  60,  10,   'Medium', 7);
@@ -48,27 +55,19 @@ const  scene =
 
         this.indexButtons.children.iterate(indexButton =>   {indexButton.click(indexButtonChildren,sizeButtonChildren)})
         
+        
         let continuar = new button(config,110,160,"Continuar");
         continuar.on("pointerdown", () =>
         {
             this.game.scene.start("scene1");
             this.game.scene.stop("scene2");
             this.game.dungeon = new dungeon(this.rooms);
+            console.log(this.game.dungeon);
+            this.editorMenu.save(this.game.dungeon);
         })
 
 
-        let zombie0 = 
-        {
-            type: "zombie",
-            pos : 
-            {
-                x: 110,
-                y: 80,
-            }
-        };
         
-        
-        this.rooms[0].enemies.addEnemy(zombie0);
         
         
     

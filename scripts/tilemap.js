@@ -1,14 +1,14 @@
 export class tilemap
 {
-    constructor(scene,json,side,scale, tileImages)
+    constructor(scene, json, side, scale, tileImages, hoffset=0, voffset=0)
     {
         this.scene = scene;
         this.tileMap = this.scene.add.tilemap(json);
         let pos = ((11*side)-((side*scale)*11))/2;
         let DungeonTiles = this.tileMap.addTilesetImage(tileImages);
         this.Background = this.tileMap.createDynamicLayer("Background", DungeonTiles,0,0);
-        this.Ground = this.tileMap.createDynamicLayer("Ground", DungeonTiles,pos,pos);
-        this.Walls = this.tileMap.createDynamicLayer("Walls", DungeonTiles,pos,pos);
+        this.Ground = this.tileMap.createDynamicLayer("Ground", DungeonTiles,pos+hoffset,pos+voffset);
+        this.Walls = this.tileMap.createDynamicLayer("Walls", DungeonTiles,pos+hoffset,pos+voffset);
         this.Ground.scale=scale;
         this.Walls.scale=scale;
         this.Walls.setCollisionByProperty({collides: "true"});

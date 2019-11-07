@@ -73,39 +73,275 @@ export class sizeButton extends button
     }
 }
 
-export class enemyButton extends Phaser.GameObjects.Sprite
+
+
+
+export class editorMenu  //Manager que se encarga de decidir qué botones se muestran y qué botones no
 {
-    constructor(scene, x, y, sprite, enemyType)
+    constructor(scene, Hoffset, Voffset)
+    {
+        this.actualState = "Size";
+        this.grid = new dungeonGrid(scene, Hoffset, Voffset);
+
+        this.states = new Array(3);
+        this.states[0]= new StateButton(this,"Size",scene,10,60,"yellow", this.grid);
+        this.states[1]= new StateButton(this,"Monsters",scene,10,76,"pink", this.grid);
+        this.states[2]= new StateButton(this,"Traps",scene,10,92,"white", this.grid);
+
+        this.states[1].add(new enemyButton(scene,26,76,"pink2", this.grid,"zombie"));
+        this.states[1].add(new enemyButton(scene,26,84,"pink2", this.grid));
+        this.states[1].add(new enemyButton(scene,26,92,"pink2", this.grid));
+        this.roomNumber = 0;
+    }
+    changeState(st)
+    {
+        this.actualState = st.ID;
+        console.clear();
+        console.log("state changed to "+ st.ID)
+        this.states.forEach( state => {
+            if(state.ID !== this.actualState)
+            {
+                state.hide();
+            }
+            else
+            {
+                state.show();
+            }
+        });
+
+    }
+    save(dungeon)
+    {
+        console.log("guardando..")
+        this.grid.saveEnemies(dungeon);
+    }
+}
+
+class StateButton extends Phaser.GameObjects.Sprite //Botones de cada estado (Botón de edición de dimensión de la habitación, botón de monstruos y botón de trampas)
+{
+    constructor(EditorMenu, ID, scene, x,y,sprite, grid)
+    {
+        super(scene,x,y,sprite);
+        this.setInteractive();
+        this.ID = ID;                           //Identificador para saber qué estado soy (Size, Traps, Enemies)
+        this.editorMenu = EditorMenu;           //Referencia al manager para poder comunicarnos con él 
+        this.StateOptions = new Array(3);       //Un array con las opciones para la edición (Tipos de trampas, enemigos, tamaño de mazmorra..)
+
+        
+        this.click();
+        scene.add.existing(this);
+    }
+    show(){ console.log("show " + this.ID + " options"); this.StateOptions.forEach(option => {
+        option.setVisible(true);
+    });};
+    hide(){ console.log("hide " + this.ID + " options"); this.StateOptions.forEach(option => {
+        option.setVisible(false);
+        option.hideGrid();
+    });};
+    click(){ this.on("pointerdown", ()=>
+    {
+        console.log("Clicked " + this.ID);
+        this.editorMenu.changeState(this);
+    });
+    }
+    add(button)
+    {
+        this.StateOptions.push(button);
+        console.log(button + " has been added");
+    }
+}
+
+export class enemyButton extends Phaser.GameObjects.Sprite //Botón de tipo de enemigo
+{
+    constructor(scene, x, y, sprite, grid, enemyType)
     {
         super(scene, x,y,sprite);
-        this.enemyType = enemyType;
         this.setInteractive();
-    }
-    setType(enemyType)
-    {
+        this.grid = grid;
         this.enemyType = enemyType;
-    }
-    setPos(enemyPos)
-    {
-        this.enemyPos = enemyPos
+        this.click();
+        scene.add.existing(this);
+        this.setVisible(false);
     }
     click()
     {
-        this.on("pointerdown", (pointer) =>
+        this.on("pointerdown",() => 
         {
-            //if(pointer.x)
-            let x = Math.floor(pointer.x/8);
-            let y = Math.floor(pointer.y/8);
-            let enemy = 
+            console.log("show")
+            this.grid.hide();
+            this.grid.show(this.scene.rooms[this.scene.actual].size);
+            this.grid.setCurrentType("enemy", this.enemyType);
+        });
+    }
+    hideGrid(){this.grid.hide();}
+}
+
+class dungeonGrid
+{
+    constructor( scene, Hoffset, Voffset)
+    {
+        this.cells = new Array(9);                  // cells es un array de 9 elementos
+        for (let i = 0; i < this.cells.length; i++) 
+        {
+            this.cells[i] = new Array(9);           // Por cada elemento en cells creamos otro array de 9
+        }                                           // this.cells = array de 9x9
+        this.Hoffset = Hoffset;
+        this.Voffset = Voffset;
+        this.scene = scene;
+
+        let offset = this.getOffsetBySize(this.scene.rooms[this.scene.actual].size)
+        for(let i  = 0; i<9;i++)
+        {
+            for(let j =0 ; j<9; j++)
             {
-                type : this.enemyType,
-                pos  : 
+                this.cells[i][j] =new cell(this.scene, offset+ this.Hoffset + i*8, offset + this.Voffset + j*8, "default",this);  //ese 8*7 ahí hard coded es una mierda, lo sé
+            }
+        }
+
+        this.currentType = "enemy";
+        this.currentSubtype = "zombie";
+
+        this.Hoffset = Hoffset;
+        this.Voffset = Voffset;
+        this.hide();
+
+    }
+    setPosition()
+    {
+        let offset = this.getOffsetBySize(this.scene.rooms[this.scene.actual].size)
+        for(let i  = 0; i<9;i++)
+        {
+            for(let j =0 ; j<9; j++)
+            {
+                this.cells[i][j].x = offset+ this.Hoffset + i*8;
+                this.cells[i][j].y = offset+ this.Voffset + j*8;
+            }
+        }
+    }
+    getOffsetBySize(size)
+    {
+        console.log(size);
+        if(size===5)
+        {
+            return 8*9;
+        }
+        else if(size==7)
+        {
+            return 8*8;
+        }
+        else if(size==9)
+        {
+            return 8*7;
+        }
+    }
+    show(length)
+    {
+        this.setPosition();
+        for(let i = 0; i<length; i++)
+        {
+            for(let j = 0; j<length;j++)
+            {
+                this.cells[i][j].setVisible(true);
+            }
+        }
+    }
+    hide()
+    {
+        for(let i = 0; i<9; i++)
+        {
+            for(let j = 0; j<9;j++)
+            {
+                this.cells[i][j].setVisible(false);
+            }
+        }
+    }
+
+    setCurrentType(type, subtype)
+    {
+        this.currentType = type;
+        this.currentSubtype = subtype;
+    }
+    setCell(x,y)
+    {
+        this.cells[x][y].setType(this.currentType);
+        this.cells[x][y].setSubtype(this.currentSubtype);
+    }
+    getPos(x,y)
+    {
+        let pos = {x : (x - 8*7 + this.Hoffset)/8-8, y : (y - 8*7 + this.Voffset)/8};
+        return pos;
+    }
+    cellClicked(cell)
+    {
+        let pos = this.getPos(cell.x, cell.y);
+        console.log(pos.x + " " + pos.y);
+        this.setCell(pos.x,pos.y);
+    }
+
+    saveEnemies(dungeon)
+    {
+        for(let i  = 0 ; i< 9 ;i++)
+        {
+            for(let j = 0; j<9;j++)
+            {
+                let cell = this.cells[i][j];
+                if(cell.type==="enemy")
                 {
-                    x: x,
-                    y: y
+                switch (cell.subtype)
+                {
+                    case "zombie":
+                        let z;
+                        let pos = this.getPos(cell.x,cell.y)
+                        z =
+                        {
+                            type: "zombie",
+                            pos: {
+                                x : pos.x,
+                                y : pos.y
+                            }
+                        }
+                        console.log(dungeon);
+                        dungeon.rooms[0].enemies.addEnemy(z);
+                        break;
+                    default:
+                        console.log("No se puede crear un enemigo de tipo "+ cell.type);
+                        break;
+    
+                }
                 }
             }
         }
-        )
+    }
+}
+
+class cell extends Phaser.GameObjects.Sprite
+{
+    constructor(scene,x,y,sprite, grid)
+    {
+        super(scene,x,y,sprite);
+        this.setInteractive();
+        this.on("pointerdown", this.click)
+        scene.add.existing(this);
+        this.grid = grid;
+    }
+    setType(type)
+    {
+        if(this.type!=="bloqued")
+        {
+            this.type=type;
+            console.log("type: " + this.type);
+        }
+    }
+    setSubtype(subtype)
+    {
+        if(this.subtype!=="bloqued")
+        {
+            this.subtype=subtype;
+            console.log("subtype: "+this.subtype);
+        }
+    }
+    click()
+    {
+        this.grid.cellClicked(this);
     }
 }

@@ -68,13 +68,11 @@ import {tilemap} from './tilemap.js';
         this.hero.body.setSize(12,12);
         this.hero.body.offset.y=14;
         this.hero.body.setCollideWorldBounds(true);
-        console.log(this.game.dungeon.rooms[0].enemies.summonEnemies(this,this.hero,this.hero.weapon,this.tileMap.Walls));
-        //this.zombie.body.setCollideWorldBounds(true);
+
+        this.game.dungeon.rooms[0].enemies.summonEnemies(this,this.hero,this.hero.weapon,this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
 
 
         this.physics.add.collider(this.hero, this.tileMap.Walls);
-        //this.physics.add.collider(this.zombie, this.tileMap.Walls);
-        //this.physics.add.collider(this.hero, this.zombie);
 
 
         this.physics.add.overlap(this.hero, exitRec, () => 
@@ -86,8 +84,6 @@ import {tilemap} from './tilemap.js';
             entranceRec.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8;
             exitRec.x = (16*12) - ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8;
         });
-        //this.physics.add.overlap(this.hero.weapon, this.zombie, ()=> this.zombie.kill());
-        //this.physics.add.overlap(this.hero, this.zombie.zone, () => this.zombie.spotPlayer(this.hero.sprite),null,this);
    },
     update: function(delta)
    {

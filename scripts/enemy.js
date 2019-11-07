@@ -3,7 +3,7 @@ export class enemy extends livingEntity
 {
     constructor(scene, x, y, speed,sprite,anim)
     {
-        super(scene,x,y, sprite,speed);
+        super(scene, x, y, sprite,speed);
         this.zone = scene.add.zone(x,y,16*3,16*3);
         scene.physics.add.existing(this.zone);
         this.zone.body.debugBodyColor = "0xFFFF00"
@@ -40,6 +40,7 @@ export class enemy extends livingEntity
         }
         if(this.sprite.body!==undefined)
         {
+            console.log(this.sprite.x/16)
             this.move();
             this.scene.time.delayedCall(1000,this.findDir,[],this)
         }
@@ -57,12 +58,12 @@ export class enemy extends livingEntity
 
 export class zombie extends enemy
 {
-    constructor (scene, x, y)
+    constructor (scene, x, y) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
         let anim = "idleZ";
-        let speed = 10;
+        let speed = 0;
         let sprite = "zombie_idle0";
-        super(scene, x, y, speed,sprite,anim);
+        super(scene, 16 + x*16, 16 + y*16, speed,sprite,anim);
    }
 
 }
@@ -76,6 +77,7 @@ export class enemyInfo
     addEnemy(enemy)
     {
         this.enemies.push(enemy);
+        console.log("un zombie ha sido añadido")
     }
     removeEnemy(enemy)
     {
@@ -117,6 +119,8 @@ export class enemyInfo
                     scene.physics.add.collider(z, walls);
                     scene.physics.add.collider(z, hero);
                     z.body.setCollideWorldBounds(true);
+                    console.log("Se ha invocado un zombie en");
+                    console.log(enemy.pos);
                     break;
                 default:
                     console.log("No se puede crear un enemigo de tipo "+enemy.type);
@@ -124,6 +128,7 @@ export class enemyInfo
 
             }
 
+            
 
         }
         this.enemies.forEach(summon);
