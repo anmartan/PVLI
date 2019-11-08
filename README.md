@@ -1,4 +1,4 @@
-# Mazmo Chachis - Documento
+# Mazmo Chachis - Documento de Diseño
 ## Te lo resumo así no más:
 [Juego con cámara top-down 1v1 multiplayer en el que cada jugador toma uno de dos roles. El héroe y el antihéroe. El objetivo del héroe es superar los obstáculos que ponga el antihéroe y llegar superar los niveles de la mazmorra, y el del antihéroe que el primero no lo consiga.]
 
