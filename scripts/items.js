@@ -51,26 +51,26 @@ import {itemAtlas} from "somewhere";
 
 function getItemFromAtlas(ItemName)
 {
-    return itemAtlas.getItem(ItemName);
+    return itemAtlas[ItemName];
 }
 //  Todo inventario guardará referencia a todos los tipos de objeto (de nivel 1) aunque en algunos casos guarde 0 unidades de este
 class inventory
 {
-    constructor(gold = 0)
+    constructor(gold = 100)
     {
         /*    --Moneda--    */
         this.gold = gold;
 
         /* Carga de objetos del Atlas */
-        let potions = getItemFromAtlas("potions").Units=0;      //  Cambiar las unidades a 0 porque 
-        let radar = getItemFromAtlas("radar").Units=0;          //  por defecto un inventario empieza 
-        let arrows = getItemFromAtlas("arrows").Units=0;        //  con 0 consumibles.
-        let grenades = getItemFromAtlas("grenades").Units=0;    //
+        let potions = getItemFromAtlas("Potions").Units=0;      //  Cambiar las unidades a 0 porque 
+        let radar = getItemFromAtlas("Radar").Units=0;          //  por defecto un inventario empieza 
+        let arrows = getItemFromAtlas("Arrows").Units=0;        //  con 0 consumibles.
+        let grenades = getItemFromAtlas("Grenades").Units=0;    //
 
-        let armor  = getItemFromAtlas("armor1" );               //  Todos son item1 porque al crearun inventario 
-        let sword  = getItemFromAtlas("sword1" );               //  se empieza con armadura y espada lvls 1 por defecto. 
-        let shield = getItemFromAtlas("shield1").Units=0;       
-        let bow    = getItemFromAtlas("bow1").Units=0;          
+        let armor  = getItemFromAtlas("Armor_1" ).Units=0;      //  Todos son item1 porque al crearun inventario 
+        let sword  = getItemFromAtlas("Sword_0" );              //  se empieza con armadura y espada lvls 1 por defecto. 
+        let shield = getItemFromAtlas("Shield_1").Units=0;       
+        let bow    = getItemFromAtlas("Bow1").Units=0;          
 
         /*  --Consumibles-- */
         this.potions    = new item (potions,    this);
@@ -169,7 +169,7 @@ class item
         }
         else if(!this.consumible)
         {
-            if(this.effect.target)
+            if(this.effect.target);
         }
     }
     /*

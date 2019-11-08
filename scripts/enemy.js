@@ -45,7 +45,7 @@ export class enemy extends livingEntity
             this.zone.x = this.x;
             this.zone.y = this.y;
         }
-        if(this.body!==undefined)
+        if(this.body!==undefined) //Si no he muerto
         {
             this.move();
             this.scene.time.delayedCall(1000,this.findDir,[],this)
@@ -55,14 +55,17 @@ export class enemy extends livingEntity
     kill()
     {
         if(this.zone!==undefined)this.zone.destroy();
+        if(this.player !==undefined)this.player=undefined;
         this.enemyManager.removeEnemy(this);
         this.body.destroy();
         this.destroy();
     }
     hide()  //cuando cambias de habitación los enemigos que queden vivos se deben ocultar
     {
+        
         this.setVisible(false);
         this.body.setEnable(false);
+        if(this.player !==undefined)this.player=undefined;
         if(this.zone!==undefined)this.zone.destroy();
 
     }
@@ -70,11 +73,8 @@ export class enemy extends livingEntity
     {
         this.setVisible(true);
         this.body.setEnable(true);
-        if(true)
-        {
-            console.log("estoyaquí");
-            this.zone = this.createZone(this.scene);
-        }
+        this.zone = this.createZone(this.scene);
+       
 
     }
 } 
