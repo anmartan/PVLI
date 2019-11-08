@@ -18,15 +18,15 @@ const ItemShop =
         background.setOrigin(0,0);
         this.inventory = new inventory(100);
         console.log(this.inventory.gold);
-        let x = 8;
+        let x = 0;
         let hsize =30;
         let y = 44;
         let vsize =24;
 
         for(let i = 0; i< 4;i++)
         {
-            new itemButton(this,   x + hsize, y + i * vsize, "button", i);
-            new itemButton(this, 93-x + hsize, y + i * vsize, "button", i);
+            new itemButton(this, hsize, y + i * vsize, "button", i,"420");
+            new itemButton(this, 88 + hsize, y + i * vsize, "button", i,"69");
         }
 
 
@@ -40,7 +40,7 @@ const ItemShop =
             basicColor : "#00",
             style : {fontFamily:"arial", fontSize:"15px"},
         }
-        let continuar = new textButton(config,96,142,"Continuar");
+        let continuar = new textButton(config,96,150,"Continuar");
         continuar.on("pointerdown", () =>
         {
             this.game.scene.start("DungeonEditor");
