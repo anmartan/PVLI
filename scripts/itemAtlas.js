@@ -162,5 +162,10 @@ export const itemAtlas =
         Price: 3,
         //Units: 10,
         Effect:{} //+2 pto daño / flecha
+    },
+    getItem: 
+    function(itemName)
+    {
+        return this[itemName]; //no se si se puede usar this o hay que usar itemAtlas, porque el this hace cosas raras a veces
     }
 }
