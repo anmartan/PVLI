@@ -1,0 +1,64 @@
+--->>¿Quiénes somos?
+
+De un tercio de los desarrolladores de Play My Life (porque no nos dejaban hacer equipos más grandes)
+Presentamos FFOOFF (más bien la idea, porque lo que viene siendo el juego...) ---> Somos el futuro de la industria. ChachiGames revolucionará el mercado
+Nuestra primera entrega saciará todas vuestras ganas de matar a vuestros amigos y familiares
+
+
+Delfín progresivo -> #FF00FF en llamas
+
+Prometer:
+    - Tenemos dos roles diferentes (Que darán una experiencia única y alucinante)
+    - Porque habrá que masacrar enemigos (la animación no es para tanto)
+    - En un entorno creado por el propio jugador (en resumen, el mejor indie del año)
+
+
+--->>¿De qué va el juego?
+
+Recuerdas el: 
+    Zelda? FOF es MEJOR (pero sin tanta historia)
+    Isaac? FOF es MEJOR (pero sin tanta innovación)
+    Tekken? FOF es MEJOR (pero sin tantos golpes)
+    Dungeons and Dragons? FOF es infnitamente MEJOR (porque no necesitas amigos)
+
+--->>Vale ahora en serio ¿de qué va?
+
+    El juego consistirá en una partida de 10 minutos en la que dos jugadores
+    compiten por la victoria
+    --- Uno pa uno sin camiseta en el  Barón Nashor
+    Customiza una mazmorra con todo nivel de detalle, dispon a tu parecer monstruos y trampas!
+    -- Crea tu palacio del mal y llenalo todo de trampas
+    Con una variedad exquisita de monstruos y mecánicas
+    --- O Mata toda una familia de arañas porque tú puedes, ¡PORQUE NO TE DAN MIEDO!
+
+--->>¿Qué hemos hecho?
+ Un documento de diseño con todas las características del videojuego a desarrollador
+ perfectamente especificadas -- > google doc con cosas del juego 
+ Un repositorio en un sistema de control de versiones de Microsoft que garantiza la eficiencia del trabajo
+ en equipo --> Github repo
+ Una página web con extremo detalle y arte espectacular -> con el pie de página al principio
+ Una representación gráfica de un diagráma de la arquitectura del videojuego --> (un esquemita de mierda en paint)
+ Una pantalla en negro con un sprite que se mueve -> tal cual, esto no se puede vender mejor
+ Una infraestrctura del sistema de clases que permitirá un desarrollo robusto y eficiente 
+ --> tenemos clase Player heredando de sprite!
+
+
+
+--->>¿Hacia dónde vamos?
+ *Siguiente hito:
+ 
+ Queremos tener el sistema de edición de mazmorras creado --> Tener el juego terminado
+
+ *Producto final:
+
+ Al final del desarrollo, queremos tener también una tienda de mejoras para el héroe, así como poder 
+ hacer que el juego sea multijugador ( si no, daríamos al jugador la opción de escoger qué papel quiere jugar 
+ contra la máquina) --> Vender nuestro juego a (INSERTE NOMBRE DE COMPAÑÍA MULTIMILLONARIA) y bañarnos en dinero
+
+
+
+
+
+
+
+pollo asado
