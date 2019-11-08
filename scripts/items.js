@@ -104,7 +104,7 @@ class inventory
     {
         switch(type)
         {
-            case "portions":
+            case "potions":
                 item = this.potions;
                 return item;
             case "radar":
@@ -114,7 +114,7 @@ class inventory
                 item = this.arrows;
                 return item;
             case "grenades":
-                item = this.pogrenadestions;
+                item = this.grenades;
                 return item;
             case "default":
                 Console.log("invalid item");
