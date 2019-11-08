@@ -5,7 +5,7 @@ import {enemyManager} from './enemy.js';
 
 const  scene =
 {
-    key: "scene2",
+    key: "DungeonEditor",
     preload: function()
     {
         
@@ -42,8 +42,8 @@ const  scene =
         let continuar = new textButton(config,110,160,"Continuar");
         continuar.on("pointerdown", () =>
         {
-            this.game.scene.start("scene1");
-            this.game.scene.stop("scene2");
+            this.game.scene.start("DungeonRun");
+            this.game.scene.stop("DungeonEditor");
             this.game.dungeon = new dungeon(this.rooms);
             this.editorMenu.save(this.game.dungeon);
         })

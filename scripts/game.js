@@ -1,5 +1,5 @@
-import scene1 from './scene1.js'
-import scene2 from './scene2.js'
+import DungeonEditor from './dungeonEditor.js'
+import DungeonRun from './dungeonRun.js'
 
 var config = {
     pixelArt: true,
@@ -17,7 +17,7 @@ var config = {
             debug: true
         }
     },
-    scene: [scene2, scene1]
+    scene: [DungeonEditor, DungeonRun]
 
 }
 

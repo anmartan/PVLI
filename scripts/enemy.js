@@ -6,7 +6,6 @@ export class enemy extends livingEntity
         super(scene, x, y, sprite, speed);
         this.enemyManager = enemyManager;
         this.zone = this.createZone(scene);
-        this.zone.body.debugBodyColor = "0xFFFF00"
         this.play(anim);
         this.findDir();                     //Encuentra una dirección aleatoria mientras no haya referencia a player
         this.scene = scene;
@@ -15,6 +14,7 @@ export class enemy extends livingEntity
     {
         let zone = scene.add.zone(this.x,this.y,16*3,16*3);
         scene.physics.add.existing(zone);
+        zone.body.debugBodyColor = "0xFFFF00"
         return zone;
     }
     spotPlayer(player)

@@ -2,29 +2,29 @@ import {player} from "./player.js";
 import {zombie} from "./enemy.js";
 import {tilemap} from './tilemap.js';
 
-    const scene = {
-        key: "scene1",
-        preload: function()
-        {
-            //Cargar tiles
-            this.load.image("DungeonTiles","../assets/ground/DungeonStarter.png");
-            this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
+const scene = {
+    key: "DungeonRun",
+    preload: function()
+    {
+        //Cargar tiles
+        this.load.image("DungeonTiles","../assets/ground/DungeonStarter.png");
+        this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
 
-            //cargar imágenes del player
-            this.load.image("caballero_idle0", "../assets/player/knight_m_idle_anim_f0.png")
-            this.load.image("caballero_idle1", "../assets/player/knight_m_idle_anim_f1.png")
-            this.load.image("caballero_idle2", "../assets/player/knight_m_idle_anim_f2.png")
-            this.load.image("caballero_idle3", "../assets/player/knight_m_idle_anim_f3.png")
+        //cargar imágenes del player
+        this.load.image("caballero_idle0", "../assets/player/knight_m_idle_anim_f0.png")
+        this.load.image("caballero_idle1", "../assets/player/knight_m_idle_anim_f1.png")
+        this.load.image("caballero_idle2", "../assets/player/knight_m_idle_anim_f2.png")
+        this.load.image("caballero_idle3", "../assets/player/knight_m_idle_anim_f3.png")
 
-            this.load.image("sword", "../assets/player/weapon_anime_sword.png")
+        this.load.image("sword", "../assets/player/weapon_anime_sword.png")
 
-            this.load.image("zombie_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
-            this.load.image("zombie_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
-            this.load.image("zombie_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
-            this.load.image("zombie_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
-        },
-        create: function()
-        {
+        this.load.image("zombie_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
+        this.load.image("zombie_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
+        this.load.image("zombie_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
+        this.load.image("zombie_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
+    },
+    create: function()
+    {
         //Cargar tile map
         this.tileMap = new tilemap(this, "tiles",16, 1, "DungeonTiles");
         this.actual=0;

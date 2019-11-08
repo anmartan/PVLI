@@ -47,9 +47,6 @@ export class player extends livingEntity
         // Recolocan la espada donde debe estar dependiendo de la dirección ataque
         this.weapon.offsetX=0; 
         this.weapon.offsetY=0;
-
-
-
     }
     handleLogic()
     {
