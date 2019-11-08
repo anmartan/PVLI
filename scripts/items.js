@@ -105,7 +105,7 @@ class inventory
         let item;
         switch(type)
         {
-            case "portions":
+            case "potions":
                 item = this.potions;
                 return item;
             case "radar":
