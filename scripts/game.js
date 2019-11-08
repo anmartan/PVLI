@@ -1,5 +1,6 @@
 import DungeonEditor from './dungeonEditor.js'
 import DungeonRun from './dungeonRun.js'
+import ItemShop from "./itemShop.js"
 
 var config = {
     pixelArt: true,
@@ -17,7 +18,7 @@ var config = {
             debug: true
         }
     },
-    scene: [DungeonEditor, DungeonRun]
+    scene: [ItemShop,DungeonEditor, DungeonRun]
 
 }
 

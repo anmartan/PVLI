@@ -1,4 +1,4 @@
-import {itemAtlas} from "somewhere"; 
+import {itemAtlas} from "./itemAtlas.js"; 
 /*
     En este atlas se guardará toda la información referente a los objetos para poder instanciarlos en el inventario
     El formato a seguir será el siguiente:
@@ -49,12 +49,8 @@ import {itemAtlas} from "somewhere";
 */
 
 
-function getItemFromAtlas(ItemName)
-{
-    return itemAtlas.getItem(ItemName);
-}
 //  Todo inventario guardará referencia a todos los tipos de objeto (de nivel 1) aunque en algunos casos guarde 0 unidades de este
-class inventory
+export class inventory
 {
     constructor(gold = 0)
     {
@@ -62,15 +58,15 @@ class inventory
         this.gold = gold;
 
         /* Carga de objetos del Atlas */
-        let potions = getItemFromAtlas("potions").Units=0;      //  Cambiar las unidades a 0 porque 
-        let radar = getItemFromAtlas("radar").Units=0;          //  por defecto un inventario empieza 
-        let arrows = getItemFromAtlas("arrows").Units=0;        //  con 0 consumibles.
-        let grenades = getItemFromAtlas("grenades").Units=0;    //
+        let potions = itemAtlas["Potion"].Units=0;        //  Cambiar las unidades a 0 porque 
+        let radar = itemAtlas["Radar"].Units=0;           //  por defecto un inventario empieza 
+        let arrows = itemAtlas["Arrow_normal"].Units=0;   //  con 0 consumibles.
+        let grenades = itemAtlas["Grenade"].Units=0;      //
 
-        let armor  = getItemFromAtlas("armor1" );               //  Todos son item1 porque al crearun inventario 
-        let sword  = getItemFromAtlas("sword1" );               //  se empieza con armadura y espada lvls 1 por defecto. 
-        let shield = getItemFromAtlas("shield1").Units=0;       
-        let bow    = getItemFromAtlas("bow1").Units=0;          
+        let armor  = itemAtlas["Armor_1" ].Units=0;       //  Todos son item1 porque al crearun inventario 
+        let sword  = itemAtlas["Sword_0" ];               //  se empieza con armadura y espada lvls 1 por defecto. 
+        let shield = itemAtlas["Shield_1"].Units=0;       
+        let bow    = itemAtlas["Bow_1"].Units=0;          
 
         /*  --Consumibles-- */
         this.potions    = new item (potions,    this);
@@ -202,6 +198,6 @@ class item
     //método muy tonto que se utiliza para el escudo únicamente
     breakItem()
     {
-        this.units=0;
+        this;
     }
 }

@@ -9,6 +9,7 @@ export class textButton extends Phaser.GameObjects.Text{
         this.basicColor = config.basicColor;
         this.clickedColor = config.clickedColor;
         this.cursorOverColor = config.cursorOverColor;
+        this.setFill(this.basicColor);
         this.setInteractive();        
         this.over();
         this.out();
@@ -142,7 +143,7 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
     }
 }
 
-class Button extends Phaser.GameObjects.Sprite
+export class Button extends Phaser.GameObjects.Sprite
 {
     constructor(scene, x, y, sprite)
     {

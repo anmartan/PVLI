@@ -246,7 +246,7 @@ export const itemAtlas =
     },
     
 
-    Health_Potion :
+    Potion :
     {
         Consumible: true,
         Price:  15,
