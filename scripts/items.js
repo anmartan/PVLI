@@ -151,22 +151,39 @@ class item
     {
         if(this.consumible && this.units > 0)
         {
-            if(this.target = "self")
+            if(this.effect.target = "self")
             {
-
+                let health;
+                health+= this.effect.Data;
             }
-            if(this.target = "other")
+            if(this.effect.target = "other")
             {
-                
+                if(this.Data.time === -1){
+                    //player.dispararFlecha(this.effect.Data)
+                }
+                else {
+                    //player.lanzarGranada(this.effect.Data)
+                }
             }
-
             this.unit--;
         }
+        else if(!this.consumible)
+        {
+            if(this.effect.target)
+        }
     }
-    /*(Consumible)
-    Effect: 
+    /*
+    (!Consumible)
+    Effect:
     {
-        Target    :   "self" || "other"  -> Si es una poción o el radar usar "self", de lo contrario es un proyectil y se debe usar "other"
-        Cuantity  :   positive number    -> Si es una poción la vida a curar, si es una flecha el daño, si es el radar poner el radio
-    }*/
+        Target    :   "self" || "other" -> Si es un arma "other" de lo contrario "self"
+        Data      :    
+            {
+                Attribute   :    "health" || "damage" || "speed" || -1   -> en orden son para Armaduras || Armas || Botas || Escudos
+                Cuantity    :    positive number                         -> cantidad de vida/daño/velocidad del atributo (golpes que aguanta en el caso del escudo)
+                Cooldown    :    positive number                         -> Cantidad de tiempo para poder volver a utilizar el arma/escudo || Tiempo de inmunidad con la armadura || Opcional para las botas
+            }
+    }
+    Disclaimer -> Hazlo primero en un .js y Le pedimos ayuda a Carlos para hacer un JSON y ser chachis
+    */
 }
