@@ -69,7 +69,7 @@ import {tilemap} from './tilemap.js';
         this.hero.body.offset.y=14;
         this.hero.body.setCollideWorldBounds(true);
 
-        this.game.dungeon.rooms[0].enemies.summonEnemies(this,this.hero,this.hero.weapon,this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
+        this.game.dungeon.rooms[this.actual].enemies.summonEnemies(this,this.hero,this.hero.weapon,this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
 
 
         this.physics.add.collider(this.hero, this.tileMap.Walls);
@@ -77,12 +77,14 @@ import {tilemap} from './tilemap.js';
 
         this.physics.add.overlap(this.hero, exitRec, () => 
         {
+            this.game.dungeon.rooms[this.actual].enemies.hideAllAlive();
             this.actual = (this.actual+1)%3;
             this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
-            this.hero.sprite.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8; 
-            this.hero.sprite.y = (16*5) +2 ; 
+            this.hero.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8; 
+            this.hero.y = (16*5) + 2; 
             entranceRec.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8;
             exitRec.x = (16*12) - ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8;
+            this.game.dungeon.rooms[this.actual].enemies.summonEnemies(this,this.hero,this.hero.weapon,this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
         });
    },
     update: function(delta)

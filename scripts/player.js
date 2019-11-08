@@ -1,17 +1,13 @@
-export class livingEntity extends Phaser.GameObjects.Container
+export class livingEntity extends Phaser.GameObjects.Sprite
 {
     
     constructor(scene,x,y,spriteID,speed)
     {
-        super(scene, 0, 0)
+        super(scene, x, y, spriteID)
         this.speed = speed;
         this.dir = {x:0,y:0}                        //Movement direction (0,0) initial value
-        let sprite = scene.add.sprite(x,y,spriteID);
-        this.add(sprite);
-        scene.add.existing(sprite);
-        scene.physics.add.existing(sprite);
-        this.body = sprite.body;
-        this.sprite = sprite;
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
     }
     move()
     {
@@ -36,11 +32,10 @@ export class player extends livingEntity
         this.key_RIGHT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.key_DOWN = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.key_LEFT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        this.sprite.play(anim);
+        this.play(anim);
 
         // Crea la espada ----> TODO: Sistema de inventario
-        let weapon = scene.add.sprite(x,y,sword.name);
-        this.add(weapon);
+        let weapon = scene.add.sprite(x, y, sword.name);
         this.weapon = weapon;
         this.weapon.scale = 0.5;
         scene.add.existing(this.weapon);
@@ -62,13 +57,13 @@ export class player extends livingEntity
         if(this.key_D.isDown)
         {
             this.dir = {x:1,  y:this.dir.y}
-            this.sprite.setFlipX(false);
+            this.setFlipX(false);
             this.move();
         }
         if(this.key_A.isDown)
         {
             this.dir = {x:-1, y:this.dir.y}            
-            this.sprite.setFlipX(true);
+            this.setFlipX(true);
             this.move();
         }
         if(this.key_W.isDown)
@@ -112,8 +107,8 @@ export class player extends livingEntity
             this.attack("left")
         }
 
-        this.weapon.x = this.sprite.x + 2  + this.weapon.offsetX;
-        this.weapon.y = this.sprite.y + 5  + this.weapon.offsetY;
+        this.weapon.x = this.x + 2  + this.weapon.offsetX;
+        this.weapon.y = this.y + 5  + this.weapon.offsetY;
     }
 
     canAttack() //Este método se llama desde attack con un delay. Es para tener un cooldown en el ataque

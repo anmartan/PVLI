@@ -1,4 +1,4 @@
-export class button extends Phaser.GameObjects.Text{
+export class textButton extends Phaser.GameObjects.Text{
     constructor(config, x, y, text)
     {
 
@@ -27,14 +27,29 @@ export class button extends Phaser.GameObjects.Text{
     }
     click(){};
 }
-export class indexButton extends button //este botón servirá en la parte de edición de mazmorras para seleccionar la habitación actual que se está editando
+class indexButtons
+{
+    constructor(scene, config)
+    {
+        this.button1      = new indexButton(config,  55,  140,  '1',      0).setFill(config.clickedColor); //y es la primera de la dungeon
+        this.button2      = new indexButton(config,  85,  140,  '2',      1); 
+        this.button3      = new indexButton(config,  110, 140,  '3',      2);
+
+        this.indexButtons = scene.add.group();
+        this.indexButtons.addMultiple([this.button1,this.button2,this.button3]);
+        let indexButtonChildren = this.indexButtons.getChildren()
+        this.indexButtons.children.iterate(indexButton =>   {indexButton.click(indexButtonChildren)})
+    }
+}
+
+class indexButton extends textButton //este botón servirá en la parte de edición de mazmorras para seleccionar la habitación actual que se está editando
 {
     constructor(config, x, y, text,pos)
     {
         super(config, x, y, text,pos)
         this.buttonPos = pos; //posición relativa del botón de izquierda a derecha (si están en horizontal) o de arriba a bajo (si están en vertical) empezando desde 0
     }
-    click(indexButtonChildren,sizeButtonChildren)
+    click(indexButtonChildren)
     {
     this.on("pointerdown",()=>
     {
@@ -44,32 +59,9 @@ export class indexButton extends button //este botón servirá en la parte de ed
         for(let i  = 0; i<3;i++) //itera por todos los botones de la escena 
         {
             if(this.scene.actual!==i)indexButtonChildren[i].setFill(indexButtonChildren[i].basicColor); //pone en basic color los botones de índice no presionados
-            if(this.scene.rooms[this.scene.actual].size===sizeButtonChildren[i].roomSize)sizeButtonChildren[i].setFill(sizeButtonChildren[i].clickedColor); //pone en fill color el boton de tamaño que toca para la nueva habitación
-            else sizeButtonChildren[i].setFill(sizeButtonChildren[i].basicColor); //pone de basic color los demás
         }
     }   
     );
-    }
-}
-export class sizeButton extends button
-{
-    constructor(config, x, y, text, size)
-    {
-        super(config, x, y, text)
-        this.roomSize = size; //guarda el tamaño de la mazmorra (5x5, 7x7, 9x9)
-    }
-
-    click(sizeButtonChildren)
-    {
-    this.on("pointerdown",()=>
-    {
-        this.scene.rooms[this.scene.actual].resize(this.roomSize);
-        this.setFill(this.clickedColor); //cambia el botón seleccionado a fill color
-        for(let i  = 0; i<3;i++)
-        {
-            if(this.scene.rooms[this.scene.actual].size!==sizeButtonChildren[i].roomSize)sizeButtonChildren[i].setFill(sizeButtonChildren[i].basicColor);//cambia el resto de botones a basic color
-        }
-    });
     }
 }
 
@@ -82,95 +74,173 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
     {
         this.actualState = "Size";
         this.grid = new dungeonGrid(scene, Hoffset, Voffset);
+        this.scene = scene;
 
-        this.states = new Array(3);
-        this.states[0]= new StateButton(this,"Size",scene,10,60,"yellow", this.grid);
-        this.states[1]= new StateButton(this,"Monsters",scene,10,76,"pink", this.grid);
-        this.states[2]= new StateButton(this,"Traps",scene,10,92,"white", this.grid);
+        let statesX = 10 ;  //Posición horizontal de los botones de estado
+        let statesY = 60 ;  //Posición vertical inicial de los botones de estado
+        let optionsX = 26;  //Posición horizontal de los botones de opciones
+        let optionsY = 68;  //Posición vertical inicial de los botones de opciones
 
-        this.states[1].add(new enemyButton(scene,26,76,"pink2", this.grid,"zombie"));
-        this.states[1].add(new enemyButton(scene,26,84,"pink2", this.grid));
-        this.states[1].add(new enemyButton(scene,26,92,"pink2", this.grid));
-        this.roomNumber = 0;
+
+        //Por ahora tendremos tres botones de estados:
+        //Edición del tamaño de la habitación, colocación de enemigos y colocación de trampas
+        this.states   = new Array(3);
+        this.states[0]= new StateButton(scene, statesX, statesY,    "yellow", this, "Size"    );
+        this.states[1]= new StateButton(scene, statesX, statesY+16, "pink",   this, "Monsters");
+        this.states[2]= new StateButton(scene, statesX, statesY+32, "white",  this, "Traps"   );
+        
+        //Opciones de states[0] tamaño de habitación:
+        //--Pequeña (5x5), Mediana (7x7) y Grande (9x9)--
+        this.states[0].add(new sizeOptionButton(scene,optionsX,optionsY,  "yellow2",5,this))
+        this.states[0].add(new sizeOptionButton(scene,optionsX,optionsY+8,"yellow2",7,this))
+        this.states[0].add(new sizeOptionButton(scene,optionsX,optionsY+16,"yellow2",9,this))
+
+        //Opciones de states[1] monstruos:
+        //--Por ahora zombie--
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY,   "pink2", this.grid,"enemy","zombie")); //
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+8, "pink2", this.grid,"enemy","araña" )); // En un mundo ideal habría varios tipos más
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+16,"pink2", this.grid,"enemy","abeja" )); //
+        
+        //Opciones de states[2] trampas:
+        //--Por ahora no hay trampas implementadas--
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY,   "white2", this.grid,"trap",""));  // 
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+8, "white2", this.grid,"trap",""));  // En un mundo ideal habría varios tipos más
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+16,"white2", this.grid,"trap",""));  //
+        
+        //Esto es un traslado de la anterior implementación. Funciona por ahora, pero hay que arreglarlo.
+        let config =
+        {
+            scene : scene,
+            clickedColor : "#FF00FF",
+            cursorOverColor : "#00FF00",
+            basicColor : "#FFFFFF",
+            style : {fontFamily:"arial", fontSize:"15px"},
+        }
+        new indexButtons(scene,config);
+
+
+
     }
     changeState(st)
     {
         this.actualState = st.ID;
         console.clear();
-        console.log("state changed to "+ st.ID)
         this.states.forEach( state => {
             if(state.ID !== this.actualState)
             {
-                state.hide();
+                state.hide();                   //Esconde las opciones de los que no están pulsados
             }
             else
             {
-                state.show();
+                state.show();                   //Y muestra las opciones del que está pulsado
             }
         });
-
     }
     save(dungeon)
     {
-        console.log("guardando..")
         this.grid.saveEnemies(dungeon);
     }
 }
 
-class StateButton extends Phaser.GameObjects.Sprite //Botones de cada estado (Botón de edición de dimensión de la habitación, botón de monstruos y botón de trampas)
+class Button extends Phaser.GameObjects.Sprite
 {
-    constructor(EditorMenu, ID, scene, x,y,sprite, grid)
+    constructor(scene, x, y, sprite)
+    {
+        super(scene, x, y, sprite);
+        this.setInteractive();
+        scene.add.existing(this);
+        this.click();                           // -->Todos los Button deben implementar su método Click<--
+
+        this.clickDefault();                    // |  Método default para al clicar en el botón           |
+        this.overDefault();                     // |  Método default para al pasar  el ratón en el botón  |
+        this.outDefault();                      // |  Método default para al quitar el ratón en el botón  |
+
+        this.scene = scene;
+    }
+    clickDefault()
+    {
+        this.on("pointerdown",() => {/*Por implementar cambio a sprite clicado*/ } )
+    }
+    overDefault()
+    {
+        this.on("pointerover",() => this.setAlpha(1,0,1,0))
+    }
+    outDefault()
+    {
+        this.on("pointerout",() => this.setAlpha(1) )
+    }
+} 
+
+
+class StateButton extends Button //Botones de cada estado (Botón de edición de dimensión de la habitación, botón de monstruos y botón de trampas)
+{
+    constructor(scene, x, y, sprite, EditorMenu, ID)
     {
         super(scene,x,y,sprite);
-        this.setInteractive();
         this.ID = ID;                           //Identificador para saber qué estado soy (Size, Traps, Enemies)
         this.editorMenu = EditorMenu;           //Referencia al manager para poder comunicarnos con él 
         this.StateOptions = new Array(3);       //Un array con las opciones para la edición (Tipos de trampas, enemigos, tamaño de mazmorra..)
-
-        
-        this.click();
-        scene.add.existing(this);
     }
-    show(){ console.log("show " + this.ID + " options"); this.StateOptions.forEach(option => {
-        option.setVisible(true);
-    });};
-    hide(){ console.log("hide " + this.ID + " options"); this.StateOptions.forEach(option => {
-        option.setVisible(false);
-        option.hideGrid();
-    });};
+    show()                                      //Este método es llamado desde el "EditorMenu" cuando se clica en este estado
+    { 
+        this.StateOptions.forEach(option => {   // ||                                            ||
+            option.setVisible(true);            // || Muestra los botones de opciones del estado ||
+        });                                     // ||                                            ||
+    }
+    hide()
+    { 
+        this.StateOptions.forEach(option => {   // ||                                            ||
+            option.setVisible(false);           // || Oculta  los botones de opciones del estado ||
+            if(option.hideGrid)                 // ||                                            ||
+                option.hideGrid();                                      
+        });
+    }
     click(){ this.on("pointerdown", ()=>
     {
-        console.log("Clicked " + this.ID);
         this.editorMenu.changeState(this);
     });
     }
     add(button)
     {
         this.StateOptions.push(button);
-        console.log(button + " has been added");
+    }
+}
+class sizeOptionButton extends Button //Botón de tipo de size (Modificará el tamaño de la habitación actual)
+{
+    constructor(scene, x, y, sprite, size, editorMenu)
+    {
+        super(scene, x,y,sprite);
+        this.size = size;
+        this.setVisible(false);     //Los botones de opciones se inicializan invisibles
+    }
+    click()
+    {
+        this.on("pointerdown",() =>
+        {
+            this.scene.rooms[this.scene.actual].resize(this.size); //Cambia el tamaño de la habitación  (Salto de fe de que la escena tiene tanto "rooms" como "actual". 
+        });                                                        //Como la escena siempre será la de edición, siempre los tendrá) 
     }
 }
 
-export class enemyButton extends Phaser.GameObjects.Sprite //Botón de tipo de enemigo
+class gridOptionButton extends Button //Botón que modifica el grid (botones de Trampas o Enemigos)
 {
-    constructor(scene, x, y, sprite, grid, enemyType)
+    constructor(scene, x, y, sprite, grid, Type, optionType)
     {
         super(scene, x,y,sprite);
-        this.setInteractive();
         this.grid = grid;
-        this.enemyType = enemyType;
-        this.click();
-        scene.add.existing(this);
-        this.setVisible(false);
+        this.optionType = optionType;
+        this.type = Type;
+        this.setVisible(false);     //Los botones de opciones se inicializan invisibles
     }
     click()
     {
         this.on("pointerdown",() => 
         {
-            console.log("show")
-            this.grid.hide();
-            this.grid.show(this.scene.rooms[this.scene.actual].size);
-            this.grid.setCurrentType("enemy", this.enemyType);
+            console.clear();
+            this.hideGrid()                                             //Ocultamos el grid para mostrar solo las celdas que toque mostrar
+            this.grid.show(this.scene.rooms[this.scene.actual].size);   //Se muestran las celdas en función del tamaño de la mazmorra
+            this.grid.setCurrentType(this.type, this.optionType);       
+            console.log(this.type+" type: "+this.optionType);
         });
     }
     hideGrid(){this.grid.hide();}
@@ -180,164 +250,167 @@ class dungeonGrid
 {
     constructor( scene, Hoffset, Voffset)
     {
-        this.cells = new Array(9);                  // cells es un array de 9 elementos
-        for (let i = 0; i < this.cells.length; i++) 
-        {
-            this.cells[i] = new Array(9);           // Por cada elemento en cells creamos otro array de 9
-        }                                           // this.cells = array de 9x9
-        this.Hoffset = Hoffset;
-        this.Voffset = Voffset;
-        this.scene = scene;
+        this.cells = new Array(9);                  // || Salagadoola mechicka boola; Bibbidi-bobbidi-boo!       || //
+        for (let i = 0; i < this.cells.length; i++) // || A bidimensional array in Javascript you want to do?    || //
+        {                                           // ||                Bibbidi-bobbidi-boo!                    || //
+            this.cells[i] = new Array(9);           // || Salagadoola mechicka boola; Bibbidi-bobbidi-boo!       || //
+        }                                           // || You wanted to [9,9] but now you love this language too || //
 
-        let offset = this.getOffsetBySize(this.scene.rooms[this.scene.actual].size)
-        for(let i  = 0; i<9;i++)
-        {
-            for(let j =0 ; j<9; j++)
-            {
-                this.cells[i][j] =new cell(this.scene, offset+ this.Hoffset + i*8, offset + this.Voffset + j*8, "default",this);  //ese 8*7 ahí hard coded es una mierda, lo sé
-            }
-        }
+        let screenCenter = 7*8;                     // Calcula el centro de la pantalla, pues la posición del tilemap toma este como 0,0
+        this.Hoffset = Hoffset + screenCenter;      // Sumamos los offsets dados en el constructor con el centro previamente calculado
+        this.Voffset = Voffset + screenCenter;      // para guardar los offsets con referencia  al  0,0 de la escena (Que es como los utiliza Sprite)
+        this.scene = scene;                        
+        
+          
+        //Creamos nueve celdas, pues la mayor habitación posible es de 9x9    
+        for(let i= 0;i<9;i++)
+           for(let j=0;j<9;j++) 
+               this.cells[i][j] = new cell(this.scene, 0, 0 , "default", this, i, j);
 
         this.currentType = "enemy";
         this.currentSubtype = "zombie";
-
-        this.Hoffset = Hoffset;
-        this.Voffset = Voffset;
         this.hide();
+    }
 
+    getOffsetBySize(size)   //Conseguimos el número celdas que hay que desplazar en diagonal ( ⭸ ), dependiendo del tamaño de la habitación actual,                                   ( ⭸ ⇲ ↘ ⬂ ⬊ ⭨ )
+    {                       //para conseguir que la primera se centre en la que corresponde con el tilemap
+        return (9-size)/2   //Mathematical Bibbidi-bobbidi-boo!
     }
     setPosition()
     {
         let offset = this.getOffsetBySize(this.scene.rooms[this.scene.actual].size)
         for(let i  = 0; i<9;i++)
         {
-            for(let j =0 ; j<9; j++)
-            {
-                this.cells[i][j].x = offset+ this.Hoffset + i*8;
-                this.cells[i][j].y = offset+ this.Voffset + j*8;
-            }
+            for(let j =0 ; j<9; j++)                                // || La "i" y la "j" son números enteros que representan la posición en el grid.                      ||
+            {                                                       // || Offset es la unidad que le sumamos al iterador (i o j)  para conseguir la posición               ||
+                this.cells[i][j].x = (offset+i)* 8 + this.Hoffset ; // || desplazada. Multiplicamos por el tamaño del tile y sumamos el offset en píxeles correspondiente  ||
+                this.cells[i][j].y = (offset+j)* 8 + this.Voffset ; 
+            }                                                       
         }
     }
-    getOffsetBySize(size)
-    {
-        console.log(size);
-        if(size===5)
-        {
-            return 8*9;
-        }
-        else if(size==7)
-        {
-            return 8*8;
-        }
-        else if(size==9)
-        {
-            return 8*7;
-        }
-    }
+
     show(length)
     {
-        this.setPosition();
+        this.setPosition();                                         //Recalcula la posición primero, por si el tamaño de la habitación ha cambiado
         for(let i = 0; i<length; i++)
         {
             for(let j = 0; j<length;j++)
             {
-                this.cells[i][j].setVisible(true);
+                this.cells[i][j].setVisible(true);                  //Solo hace visibles las celdas que se encuentren en el tilemap de la habitación actual (lengthxlenght)
             }
         }
     }
-    hide()
+    hide()                                                          
     {
         for(let i = 0; i<9; i++)
         {
             for(let j = 0; j<9;j++)
             {
-                this.cells[i][j].setVisible(false);
+                this.cells[i][j].setVisible(false);                 //Oculta todas las celdas
             }
         }
     }
 
-    setCurrentType(type, subtype)
-    {
+    //Al pulsar un botón de opcíón se llamará a este método
+    setCurrentType(type, subtype)                                   //Las celdas guardan un typo (Enemigo o trampa) y un subtipo (zombies, trampa de fuego...) dependiendo del botón
+    {                                                               //de opciones que esté pulsado. 
         this.currentType = type;
         this.currentSubtype = subtype;
     }
-    setCell(x,y)
+    setCell(x,y)                                                    //Este método para guarda los tipos actuales en la celda [x] [y].
     {
         this.cells[x][y].setType(this.currentType);
         this.cells[x][y].setSubtype(this.currentSubtype);
     }
-    getPos(x,y)
-    {
-        let pos = {x : (x - 8*7 + this.Hoffset)/8-8, y : (y - 8*7 + this.Voffset)/8};
-        return pos;
-    }
+    
+    //Al pulsar una celda se llamará este método
     cellClicked(cell)
     {
-        let pos = this.getPos(cell.x, cell.y);
-        console.log(pos.x + " " + pos.y);
-        this.setCell(pos.x,pos.y);
+        console.clear();
+        cell.actual = this.scene.actual;        //Necesitamos guardar "actual" que hace referencia al número de la habitación de la celda
+        this.setCell(cell.i, cell.j);
     }
 
+    //Este método guarda en la dungeon dada la información de las celdas
     saveEnemies(dungeon)
     {
         for(let i  = 0 ; i< 9 ;i++)
         {
             for(let j = 0; j<9;j++)
             {
-                let cell = this.cells[i][j];
-                if(cell.type==="enemy")
-                {
-                switch (cell.subtype)
-                {
-                    case "zombie":
-                        let z;
-                        let pos = this.getPos(cell.x,cell.y)
-                        z =
-                        {
-                            type: "zombie",
-                            pos: {
-                                x : pos.x,
-                                y : pos.y
-                            }
-                        }
-                        console.log(dungeon);
-                        dungeon.rooms[0].enemies.addEnemy(z);
-                        break;
-                    default:
-                        console.log("No se puede crear un enemigo de tipo "+ cell.type);
-                        break;
-    
-                }
-                }
+                saveCell(i,j, this); //Para cada celda llama a la función SaveCell
             }
+        }
+
+
+        function saveCell(i,j, grid)
+        {
+        let cell = grid.cells[i][j];
+        if(cell.type==="enemy")
+        {
+            let actualRoom = dungeon.rooms[cell.actual];
+            let enemyConfig;                                                        //En esta variable se guardará la información necesaria para crear el enemigo
+            let offset = (grid.getOffsetBySize(actualRoom.size))             
+            switch (cell.subtype)
+            {
+                case "zombie":
+                    enemyConfig =
+                    {
+                        type: "zombie",
+                        pos: {
+                            x : cell.i+offset,
+                            y : cell.j+offset
+                        }
+                    }
+                    break;
+                default:
+                    console.log("No se puede crear un enemigo de tipo "+ cell.subtype);
+                    break;
+            }
+            if(enemyConfig!==undefined) actualRoom.enemies.addEnemy(enemyConfig); //Si se ha encontrado un enemigo posible en el switch se añade la configuración a la lista cprres`pmoemte
+
+        }
         }
     }
 }
 
 class cell extends Phaser.GameObjects.Sprite
 {
-    constructor(scene,x,y,sprite, grid)
+    constructor(scene,x,y,sprite, grid,i,j)
     {
         super(scene,x,y,sprite);
         this.setInteractive();
         this.on("pointerdown", this.click)
         scene.add.existing(this);
         this.grid = grid;
+        this.actual = -1;
+        this.type = "";
+        this.subtype = "";
+        this.i=i;
+        this.j=j;
     }
     setType(type)
     {
-        if(this.type!=="bloqued")
+        if(this.type==="")
         {
             this.type=type;
             console.log("type: " + this.type);
         }
+        else
+        {
+            console.log("cant place -> " + type + " because there is -> " + this.type)
+        }
     }
     setSubtype(subtype)
     {
-        if(this.subtype!=="bloqued")
+        if(this.subtype==="")
         {
             this.subtype=subtype;
             console.log("subtype: "+this.subtype);
+        }
+        else
+        {
+            console.log("cant place -> " + subtype + " because there is -> " + this.subtype)
         }
     }
     click()

@@ -18,7 +18,7 @@ export class tilemap
     {
         let leftOffset,rightOffset,offset;
 
-        leftOffset=(10-(size+1))/2;                          //     Desde donde empieza a pintar tiles (izquierda)       -> Sirve para esquinas y paredes
+        leftOffset=(9-size)/2;                               //     Desde donde empieza a pintar tiles (izquierda)       -> Sirve para esquinas y paredes
         rightOffset=10-leftOffset;                           //     Hasta donde pinta tiles (derecha)                    -> Sirve para esquinas y paredes
         offset=1+leftOffset;                                 //     Desde donde empieza la pate jugable de la habitación -> Sirve para tiles de suelo
 
@@ -44,7 +44,7 @@ export class tilemap
     putWall(tileIndex, x, y)
     {
         this.Walls.putTileAt(tileIndex,x,y);
-        this.tileMap.getTileAt(x,y,this.Walls).properties.collides = "true";
+        this.tileMap.getTileAt(x,y,this.Walls).properties.collides = "true"; //Importante, porque si no lo haces no va
     }
     removeLoops(offset)
     {
