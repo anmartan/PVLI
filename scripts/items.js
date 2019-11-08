@@ -24,8 +24,14 @@ import {itemAtlas} from "somewhere";
     (Consumible)
     Effect: 
     {
-        Target    :   "self" || "other"  -> Si es una poción o el radar usar "self", de lo contrario es un proyectil y se debe usar "other"
-        Cuantity  :   positive number    -> Si es una poción la vida a curar, si es una flecha el daño, si es el radar poner el radio
+        Target    :   "self" || "other"           -> Si es una poción o el radar usar "self", de lo contrario es un proyectil y se debe usar "other"
+        Data  :   number || proyectileData    -> Si es una poción numer es la vida a aumentar, si es un radar number es -1
+                proyectileData = 
+                {
+                    maxDistance
+                    speed
+
+                }
     }
 
     (Others)
@@ -65,16 +71,16 @@ class inventory
         let bow    = getItemFromAtlas("bow1").Units=0;          
 
         /*  --Consumibles-- */
-        this.potions    = new item (potions);
-        this.radar      = new item(radar);
-        this.arrows     = new item(arrows);
-        this.grenades   = new item(grenades);
+        this.potions    = new item (potions,    this);
+        this.radar      = new item(radar,       this);
+        this.arrows     = new item(arrows,      this);
+        this.grenades   = new item(grenades,     this);
 
         /*  --Estaticos--   */
-        this.armor  = new item(armor);
-        this.sword  = new item(sword);
-        this.shield = new item(shield);
-        this.bow    = new item(bow);
+        this.armor  = new item(armor,    this);
+        this.sword  = new item(sword,    this);
+        this.shield = new item(shield,   this);
+        this.bow    = new item(bow,      this);
     }
     addConsumible(type, cuantity)
     {

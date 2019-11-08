@@ -85,7 +85,7 @@ export class zombie extends enemy
     constructor (scene, x, y, enemyManager) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
         let anim = "idleZ";
-        let speed = 0;
+        let speed = 10;
         let sprite = "zombie_idle0";
         super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager);
    }
