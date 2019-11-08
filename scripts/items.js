@@ -102,6 +102,7 @@ class inventory
     }
     getConsumibleByType(type)
     {
+        let item;
         switch(type)
         {
             case "portions":
@@ -114,7 +115,7 @@ class inventory
                 item = this.arrows;
                 return item;
             case "grenades":
-                item = this.pogrenadestions;
+                item = this.grenades;
                 return item;
             case "default":
                 Console.log("invalid item");
@@ -151,6 +152,7 @@ class item
     {
         if(this.consumible && this.units > 0)
         {
+            let data=this.effect.Data;
             if(this.effect.target = "self")
             {
                 let health;
@@ -158,32 +160,48 @@ class item
             }
             if(this.effect.target = "other")
             {
-                if(this.Data.time === -1){
-                    //player.dispararFlecha(this.effect.Data)
+                if(data.time === -1){
+                    //player.dispararFlecha(data)
                 }
                 else {
-                    //player.lanzarGranada(this.effect.Data)
+                    //player.lanzarGranada(data)
                 }
             }
             this.unit--;
         }
         else if(!this.consumible)
         {
-            if(this.effect.target)
+            if(this.effect.target === "other")
+            {
+                let data = this.effect.Data;
+                //player.attack(data);
+                //esto va a doler programarlo y mucho, tengo la sensación xD
+            }
+            else if(this.effect.target ==="self")
+            {
+                switch(data.Attribute)
+                {
+                    case "health":
+                        //player.setMaxHealth(data.Cuantity)
+                        //player.inmuneTimer(data.Cooldown)
+                        break;
+                    case "speed":
+                        //player.cahngeSpeed(data.Cuantity)
+                        break;
+                    case -1:
+                        if(data.Cuantity > 0)
+                        {
+                            data.Cuantity--;
+                            //player.block() cuantity
+                        }
+                        break;
+                }
+            }
         }
     }
-    /*
-    (!Consumible)
-    Effect:
+    //método muy tonto que se utiliza para el escudo únicamente
+    breakItem()
     {
-        Target    :   "self" || "other" -> Si es un arma "other" de lo contrario "self"
-        Data      :    
-            {
-                Attribute   :    "health" || "damage" || "speed" || -1   -> en orden son para Armaduras || Armas || Botas || Escudos
-                Cuantity    :    positive number                         -> cantidad de vida/daño/velocidad del atributo (golpes que aguanta en el caso del escudo)
-                Cooldown    :    positive number                         -> Cantidad de tiempo para poder volver a utilizar el arma/escudo || Tiempo de inmunidad con la armadura || Opcional para las botas
-            }
+        this.units=0;
     }
-    Disclaimer -> Hazlo primero en un .js y Le pedimos ayuda a Carlos para hacer un JSON y ser chachis
-    */
 }
