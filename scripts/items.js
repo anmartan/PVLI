@@ -7,8 +7,7 @@ import {itemAtlas} from "somewhere";
         Level: Si es un objeto con varios niveles se definirá cada uno con su nivel correspondiente, si no tiene no hace falta poner Level: 1
         Price: Precio del objeto o pack si se venden varias unidades juntas
         Units: Si el objeto se vende por unidad única (todo menos las flechas) no hace falta específicar. De lo contrario dar un número
-        Effect: -> En el futuro esto será un objeto con que sea fácil de parsear para trabajar con el objeto
-        pero por ahora no sé cómo definirlo.
+        Effect: Es un objeto que contiene lo necesario para utilizar cada objeto. En las plantillas vienen ejemplos de cómo crearlo
 
     Plantillas:
 
@@ -25,22 +24,25 @@ import {itemAtlas} from "somewhere";
     Effect: 
     {
         Target    :   "self" || "other"           -> Si es una poción o el radar usar "self", de lo contrario es un proyectil y se debe usar "other"
-        Data  :   number || proyectileData    -> Si es una poción numer es la vida a aumentar, si es un radar number es -1
-                proyectileData = 
-                {
-                    maxDistance
-                    speed
-
-                }
+        Data      :   number || Object            -> Si es una poción numer es la vida a aumentar, si es un radar number es -1, si es un proyectil Data es un objeto como el siguiente 
+            {
+                maxDistance : number        -> Distancia en casillas máxima que puede viajar
+                speed       : number
+                damage      : number
+                time        : number || -1  -> Si es una bomba el número sera el tiempo que tarda en explotar, si es una flecha -1
+            }
     }
 
-    (Others)
+    (!Consumible)
     Effect:
     {
         Target    :   "self" || "other" -> Si es un arma "other" de lo contrario "self"
-        Cuantity  :    positive number  -> Cantidad de vida si es armadura, de daño si es un arma, número de golpes que aguanta el escudo...
-        Cooldown  :    positive number  -> Cantidad de tiempo para poder volver a utilizar el arma/escudo O tiempo de inmunidad con la armadura
-
+        Data      :    
+            {
+                Attribute   :    "health" || "damage" || "speed" || -1   -> en orden son para Armaduras || Armas || Botas || Escudos
+                Cuantity    :    positive number                         -> cantidad de vida/daño/velocidad del atributo (golpes que aguanta en el caso del escudo)
+                Cooldown    :    positive number                         -> Cantidad de tiempo para poder volver a utilizar el arma/escudo || Tiempo de inmunidad con la armadura || Opcional para las botas
+            }
     }
     Disclaimer -> Hazlo primero en un .js y Le pedimos ayuda a Carlos para hacer un JSON y ser chachis
 
