@@ -14,6 +14,11 @@ export const itemAtlas =
                 Quantity:1,
                 Cooldown:0
             }
+        },
+        Sprite:
+        {
+            ID : "Sword_0",
+            Scale: 0.5,
         }    
     },
     Sword_1 :
@@ -30,6 +35,11 @@ export const itemAtlas =
                 Quantity:2,              //+2 pto ataque
                 Cooldown:0
             }
+        },
+        Sprite:
+        {
+            ID : "Sword_1",
+            Scale: 0.5,
         }    
     },
     
@@ -47,6 +57,11 @@ export const itemAtlas =
                 Quantity:3,             //+2 pto ataque
                 Cooldown:0
             }
+        },
+        Sprite:
+        {
+            ID : "Sword_2",
+            Scale: 0.5,
         }  
     
     },
@@ -66,6 +81,11 @@ export const itemAtlas =
                 Cooldown:0
                 //daño de área
             }
+        },
+        Sprite:
+        {
+            ID : "Sword_3",
+            Scale: 0.5,
         }  
     
     },
@@ -135,6 +155,10 @@ export const itemAtlas =
                 Quantity: 4, // Alcance: 4 jugadores.
                 Cooldown: 2  // Velocidad de carga: 2 s
             }
+        },
+        Sprite:
+        {
+            ID : ""
         }
     
     },
@@ -186,6 +210,10 @@ export const itemAtlas =
                 Quantity: 2,        //Bloquea 2 puntos de ataques
                 Cooldown: 0
             }
+        },
+        Sprite:
+        {
+            ID : ""
         }
     
     },

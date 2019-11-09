@@ -18,6 +18,11 @@ const ItemShop =
         this.load.image("number_3lvls","../assets/ui/itemShop/buttons/3lvls/mask_3lvls.png");
         this.load.image("lvlButton","../assets/ui/itemShop/buttons/3lvls/lvlButton.png");
 
+        this.load.image("Sword_0", "../assets/player/sword_0.png")
+        this.load.image("Sword_1", "../assets/player/sword_1.png")
+        this.load.image("Sword_2", "../assets/player/sword_2.png")
+        this.load.image("Sword_3", "../assets/player/sword_3.png")
+
     },
     create: function()
     {

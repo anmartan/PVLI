@@ -131,6 +131,11 @@ class item
         this.Consumible = itemParams.Consumible;
         this.Price      = itemParams.Price;
         this.Effect     = itemParams.Effect;
+        if(itemParams.Sprite===undefined)
+        {
+            this.Sprite={ID:""};
+        }
+        else this.Sprite =  itemParams.Sprite;
         if(itemParams.Level===undefined)
         {
             this.Level = 1;

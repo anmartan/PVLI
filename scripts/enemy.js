@@ -169,7 +169,7 @@ export class enemyManager
             case "zombie":
             let z;
             z = new zombie(scene, enemy.pos.x, enemy.pos.y, this);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-            scene.physics.add.overlap(weapon, z, () => z.damage(weapon.damage));                               //
+            scene.physics.add.overlap(weapon, z, () => hero.attack(z,weapon.damage));                               //
             scene.physics.add.overlap(hero, z.zone, () => z.spotPlayer(hero),null,scene);       //
             scene.physics.add.collider(z, walls);                                               // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
             scene.physics.add.collider(z, hero);                                                //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio

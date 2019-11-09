@@ -1,4 +1,4 @@
-class weaponManager
+export default class weaponManager
 {
     constructor(player)
     {
@@ -11,32 +11,43 @@ class weaponManager
         SwordObject.scale = Sword.Sprite.Scale;
         scene.add.existing(SwordObject);
         scene.physics.add.existing(SwordObject);
-        SwordObject.body.setEnable(false);
-        SwordObject.body.setSize(0,0);
+        SwordObject.body.setEnable(true);
+        SwordObject.body.setSize(1,1);
 
         let BowObject = scene.add.sprite(0,0,Bow.Sprite.ID);
         BowObject.scale = Bow.Sprite.Scale;
         scene.add.existing(BowObject);
         scene.physics.add.existing(BowObject);
         BowObject.body.setEnable(true);
-        BowObject.body.setSize(0,0);
+        BowObject.body.setSize(1,1);
 
         let ShieldObject = scene.add.sprite(0,0,Shield.Sprite.ID);
         ShieldObject.scale = Shield.Sprite.Scale;
         scene.add.existing(ShieldObject);
         scene.physics.add.existing(ShieldObject);
         ShieldObject.body.setEnable(true);
-        ShieldObject.body.setSize(0,0);
+        ShieldObject.body.setSize(1,1);
 
 
         this.SwordObject  = SwordObject;
         this.BowObject    = BowObject;
         this.ShieldObject = ShieldObject;
-        this.weapon = this.SwordObject;
+        this.weapon       = this.SwordObject;
+        this.weapon.damage = Sword.Effect.Data.Quantity;
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.scene   = scene;
+        this.showWeapon(false);
     }
     selectWeapon(itemName)
     {
         this.weapon = this[itemName+"Object"];
+    }
+    haveAttacked()
+    {
+        this.offsetX=0;        
+        this.offsetY=5;  
+        this.showWeapon(false);
     }
     useWeapon(dir)
     {
@@ -44,63 +55,64 @@ class weaponManager
         {
             this.attacking = true;
             let angle;
-            let size = 
+            let vertical;
+            let size
+            let vsize = 
             {
                 x: 14, 
                 y: 32, 
-                swap: () => 
-                {
-                    let aux = this.x;
-                    this.x = this.y;
-                    this.y = aux;
-                    this.vertical = !this.vertical;
-                },
-                vertical: true
+            }
+            let hsize = 
+            {
+                x: 32, 
+                y: 14, 
             }
 
-            switch (dir) {
+            switch (dir) 
+            {
                 case "up":
-                    this.weapon.offsetX=-2;
-                    this.weapon.offsetY=-12;
-
-                    if(!size.vertical)size.swap();
+                    this.offsetX=-2;
+                    this.offsetY=-12;
+                    size = vsize;
                     angle=0;
                     break;
                 case "down":
-                    this.weapon.offsetX=-2;
-                    this.weapon.offsetY= 12;
+                    this.offsetX=-2;
+                    this.offsetY= 12;
 
-                    if(!size.vertical)size.swap();
+                    size = vsize;
                     angle = 180;
                     break;
                 case "right":
-                    this.weapon.offsetX=12;
-                    this.weapon.offsetY=2;
+                    this.offsetX=12;
+                    this.offsetY=2;
                     this.weapon.setFlipX(false);
-
-                    if(size.vertical)size.swap();
+                    
+                    size = hsize;
                     angle=90; 
                     break;
                 case "left":
-                    this.weapon.offsetX=-14;
-                    this.weapon.offsetY=2;
+                    this.offsetX=-14;
+                    this.offsetY=2;
                     this.weapon.setFlipX(true);
-
-                    if(size.vertical)size.swap();
+                    
+                    size = hsize;
                     angle=-90; 
                     break;
             }
             this.weapon.body.setSize(size.x,size.y);
             this.weapon.setAngle(angle); 
 
-            this.weapon.setVisible(true);
-            this.scene.time.delayedCall(1000,this.haveAttacked,[],this)
-            this.scene.time.delayedCall(1000,this.canAttack,[],this)
+            this.showWeapon(true);
+            this.scene.time.delayedCall(1000,   this.haveAttacked,[],this)
+            this.scene.time.delayedCall(1000,   ()=> this.attacking=false);
         }
     }
-    enableWeapon(bool)
+    showWeapon(bool)
     {
         this.weapon.body.setEnable(bool);
+        this.weapon.body.debugShowBody=bool;
+        this.weapon.setVisible(bool);
     }
 }
 

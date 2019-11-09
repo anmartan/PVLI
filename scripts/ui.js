@@ -125,7 +125,7 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
     changeState(st)
     {
         this.actualState = st.ID;
-        console.clear();
+        //console.clear();
         this.states.forEach( state => {
             if(state.ID !== this.actualState)
             {
@@ -237,7 +237,7 @@ class gridOptionButton extends Button //Botón que modifica el grid (botones de 
     {
         this.on("pointerdown",() => 
         {
-            console.clear();
+            //console.clear();
             this.hideGrid()                                             //Ocultamos el grid para mostrar solo las celdas que toque mostrar
             this.grid.show(this.scene.rooms[this.scene.actual].size);   //Se muestran las celdas en función del tamaño de la mazmorra
             this.grid.setCurrentType(this.type, this.optionType);       
@@ -327,7 +327,7 @@ class dungeonGrid
     //Al pulsar una celda se llamará este método
     cellClicked(cell)
     {
-        console.clear();
+        //console.clear();
         cell.actual = this.scene.actual;        //Necesitamos guardar "actual" que hace referencia al número de la habitación de la celda
         this.setCell(cell.i, cell.j);
     }

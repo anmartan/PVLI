@@ -60,6 +60,7 @@ export class shopUiManager
                         scene[itemName+"_Button"].text.text ="x"+newItemLevelPrice;
                         console.log(itemName+"_"+scene.inventory[itemName].Level) 
                     }
+                    else(console.log("No te dan los monedos"));
                     return scene.inventory[itemName].Level;
                 case 2:
                     toBuyItemLevel = arrowLevel;
@@ -213,6 +214,15 @@ export class itemButton3lvl
         container.add(scene.add.image(0,0,number).setTintFill("0xc3c3c3"));
         container.add(scene.add.image(0,0,border));
 
+        if(itemID === "Sword")
+        {
+            let stringMalHecha = scene.inventory[itemID].Level+1;
+            this.expositor = scene.add.image(0,-3,itemID+"_"+stringMalHecha);
+            this.expositor.angle=90;
+            container.add(this.expositor);
+        }
+
+
 
         let style = {fontFamily:"arial", fontSize:"15px", color:"#00"};
         this.text = scene.add.text(bg.width/2+4, - bg.height/2+4, "x"+price, style);
@@ -231,6 +241,15 @@ export class itemButton3lvl
             {
                 this["button"+index].setTintFill("0x3f0d59");
             }
+            if(itemID === "Sword")
+            {
+                container.remove(this.expositor, true);
+                this.stringMalHecha = scene.inventory[itemID].Level+1;
+                this.expositor = scene.add.image(0,-3, itemID+"_"+this.stringMalHecha );
+                this.expositor.angle=90;
+                container.add(this.expositor);
+            }
+
         })
     }
 }
