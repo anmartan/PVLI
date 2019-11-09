@@ -23,8 +23,8 @@ import {itemAtlas} from "./itemAtlas.js";
     (Consumible)
     Effect: 
     {
-        Target    :   "self" || "other"           -> Si es una poción o el radar usar "self", de lo contrario es un proyectil y se debe usar "other"
-        Data      :   number || Object            -> Si es una poción numer es la vida a aumentar, si es un radar number es -1, si es un proyectil Data es un objeto como el siguiente 
+        Target    :   "self" || "other"           -> Si es una poción o el Radar usar "self", de lo contrario es un proyectil y se debe usar "other"
+        Data      :   number || Object            -> Si es una poción numer es la vida a aumentar, si es un Radar number es -1, si es un proyectil Data es un objeto como el siguiente 
             {
                 maxDistance : number        -> Distancia en casillas máxima que puede viajar
                 speed       : number
@@ -58,65 +58,45 @@ export class inventory
         this.gold = gold;
 
         /* Carga de objetos del Atlas */
-        let potions = itemAtlas["Potion"].Units=0;        //  Cambiar las unidades a 0 porque 
-        let radar = itemAtlas["Radar"].Units=0;           //  por defecto un inventario empieza 
-        let arrows = itemAtlas["Arrow_normal"].Units=0;   //  con 0 consumibles.
-        let grenades = itemAtlas["Grenade"].Units=0;      //
+        let Potion = itemAtlas["Potion"];               
+        let Radar = itemAtlas["Radar"];                 
+        let Arrow = itemAtlas["Arrow_1"];          
+        let Grenade = itemAtlas["Grenade"];             
 
-        let armor  = itemAtlas["Armor_1" ].Units=0;       //  Todos son item1 porque al crearun inventario 
-        let sword  = itemAtlas["Sword_0" ];               //  se empieza con armadura y espada lvls 1 por defecto. 
-        let shield = itemAtlas["Shield_1"].Units=0;       
-        let bow    = itemAtlas["Bow_1"].Units=0;          
+        let Armor  = itemAtlas["Armor_1" ];              
+        let Sword  = itemAtlas["Sword_0" ];             
+        let Shield = itemAtlas["Shield_1"];       
+        let Bow    = itemAtlas["Bow_1"];          
 
+        Sword.Units=1; //  se empieza con espada lvl 0 por defecto.
         /*  --Consumibles-- */
-        this.potions    = new item (potions,    this);
-        this.radar      = new item(radar,       this);
-        this.arrows     = new item(arrows,      this);
-        this.grenades   = new item(grenades,     this);
+        this.Potion    = new item (Potion,    this);
+        this.Radar      = new item(Radar,       this);
+        this.Arrow     = new item(Arrow,      this);
+        this.Grenade   = new item(Grenade,     this);
 
         /*  --Estaticos--   */
-        this.armor  = new item(armor,    this);
-        this.sword  = new item(sword,    this);
-        this.shield = new item(shield,   this);
-        this.bow    = new item(bow,      this);
+        this.Armor  = new item(Armor,    this);
+        this.Sword  = new item(Sword,    this);
+        this.Shield = new item(Shield,   this);
+        this.Bow    = new item(Bow,      this);
     }
     addConsumible(type, cuantity)
     {
-        let item = getConsumibleByType(type)
-        if(item!=-1)
-            item.Units+cuantity;
+        let item = this[type];
+        if(item!==undefined)
+            item.Units+=cuantity;
         return item;
     }
 
     substractConsumible(type, cuantity=1)
     {
-        let item = getConsumibleByType(type)
-        if(item!=-1)
-            item.Units-cuantity;
-        return item;
-
-    }
-    getConsumibleByType(type)
-    {
-        let item;
-        switch(type)
+        let item = this[type];
+        if(item!==undefined && item.Units > 0)
         {
-            case "potions":
-                item = this.potions;
-                return item;
-            case "radar":
-                item = this.radar;
-                return item;
-            case "arrows":
-                item = this.arrows;
-                return item;
-            case "grenades":
-                item = this.grenades;
-                return item;
-            case "default":
-                Console.log("invalid item");
-                return -1
+            item.Units-=cuantity;
         }
+        return item;
     }
     addGold(gold)
     {
@@ -124,37 +104,58 @@ export class inventory
     }
     substractGold(gold)
     {
-        if(this.gold-gold>=0)
+        if(this.gold-gold >= 0)
         {
             this.gold -= gold;
             return this.gold
         }
         else return -1;         //-1 porque la resta no se ha podido realizar -> Para la implementación de la tienda que sea más sencillo comprobar si puedes o no comprar algo
     }
+    upgradeItem(type)
+    {
+        if(this[type].Level < 3)
+        {
+            let newLevel = this[type].Level+1;
+            let newItem = itemAtlas[type+"_"+newLevel];
+            newItem.Units = 1;
+            return this[type] = new item(newItem, this);
+        }
+        else
+            throw("No se puede upgradear");
+    }
 
 
 }
 class item
 {
-    constructor(itemFromAtlas, Inventory)
+    constructor(itemParams, Inventory)
     {
-        this.consumible = itemFromAtlas.Consumible;
-        this.level      = itemFromAtlas.Level;
-        this.price      = itemFromAtlas.Price;
-        this.units      = itemFromAtlas.Units;
-        this.effect     = itemFromAtlas.Effect;
+        this.Consumible = itemParams.Consumible;
+        this.Price      = itemParams.Price;
+        this.Effect     = itemParams.Effect;
+        if(itemParams.Level===undefined)
+        {
+            this.Level = 1;
+        }
+        else this.Level = itemParams.Level;
+
+        if(itemParams.Units===undefined)
+        {
+            this.Units = 0;
+        }
+        else this.Units = itemParams.Units;
     }
     use()
     {
-        if(this.consumible && this.units > 0)
+        if(this.Consumible && this.Units > 0)
         {
-            let data=this.effect.Data;
-            if(this.effect.target = "self")
+            let data=this.Effect.Data;
+            if(this.Effect.target = "self")
             {
                 let health;
-                health+= this.effect.Data;
+                health+= this.Effect.Data;
             }
-            if(this.effect.target = "other")
+            if(this.Effect.target = "other")
             {
                 if(data.time === -1){
                     //player.dispararFlecha(data)
@@ -163,17 +164,17 @@ class item
                     //player.lanzarGranada(data)
                 }
             }
-            this.unit--;
+            this.Units--;
         }
-        else if(!this.consumible)
+        else if(!this.Consumible)
         {
-            if(this.effect.target === "other")
+            if(this.Effect.target === "other")
             {
-                let data = this.effect.Data;
+                let data = this.Effect.Data;
                 //player.attack(data);
                 //esto va a doler programarlo y mucho, tengo la sensación xD
             }
-            else if(this.effect.target ==="self")
+            else if(this.Effect.target ==="self")
             {
                 switch(data.Attribute)
                 {

@@ -284,7 +284,7 @@ export const itemAtlas =
         }
     
     },
-    Arrow_normal:
+    Arrow_1:
     {
         Consumible: true,
         Price: 1,
@@ -299,9 +299,10 @@ export const itemAtlas =
             }
         }
     },
-    Arrow_fire:
+    Arrow_2:
     {
         Consumible: true,
+        Level: 2,
         Price: 3,
         Effect:
         {
