@@ -1,19 +1,63 @@
 export class livingEntity extends Phaser.GameObjects.Sprite
 {
     
-    constructor(scene,x,y,spriteID,speed)
+    constructor(scene,x,y,spriteID,speed, health)
     {
         super(scene, x, y, spriteID)
         this.speed = speed;
         this.dir = {x:0,y:0}                        //Movement direction (0,0) initial value
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        
+        /* Sistema de vida */
+        this.vulnerable =  true;
+        this.health    = health.maxHealth;
+        this.maxHealth = health.maxHealth;
+        this.scene     = scene;
+        console.log(this.scene);
+
+
     }
+    damage(points)
+    {
+        if(this.vulnerable && this.body !== undefined)
+        {
+            this.vulnerable = false;
+            this.scene.time.delayedCall(1000, this.makeVulnerable, [], this)
+            this.knockback();
+            this.health -= points;
+            if(this.health<=0){ this.kill()};
+        }
+
+    }
+    makeVulnerable(){this.vulnerable = true};
+    heal(points)
+    {
+        if(this.health+=points > this.maxHealth)
+            this.health=this.maxHealth;
+        return this.health;
+    }
+    augmentMaxHealth(points)
+    {
+        return this.maxHealth+=points;
+    }
+
     move()
     {
         this.body.setVelocity(this.dir.x*this.speed,this.dir.y*this.speed)
+        if(this.dir.x <0)
+        {
+            this.setFlipX(true);
+        }
+        else{
+            this.setFlipX(false);
+
+        }
     }
-    attack(dir){};
+    attack(other, points)
+    {
+        console.log(other.damage(points));
+    };
 }
 
 
@@ -22,27 +66,40 @@ export class player extends livingEntity
 {
     constructor(scene, x, y, speed,sprite, anim, sword)
     {
-        super(scene,x,y, sprite,speed)
+        super(scene,x -8 ,y, sprite,speed, {maxHealth: 6})
+   
+        /*----        corrigiendo collider y activando worldbounds      -----*/
+        this.body.setSize(14,14);
+        this.body.offset.y=14;
+        this.body.setCollideWorldBounds(true);
+
+
+
         // Lectura de input y ejecución de la animación ----> TODO: Clase teclado o input que se encargue de hacer esto más bonito
-        this.key_D = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        this.key_A = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        this.key_S = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        this.key_W = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-        this.key_UP = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        this.key_D     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D    );
+        this.key_A     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A    );
+        this.key_S     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S    );
+        this.key_W     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W    );
+        this.key_UP    = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP   );
         this.key_RIGHT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        this.key_DOWN = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-        this.key_LEFT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        this.key_DOWN  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN );
+        this.key_LEFT  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT );
+
         this.play(anim);
 
         // Crea la espada ----> TODO: Sistema de inventario
-        let weapon = scene.add.sprite(x, y, sword.name);
+        let weapon = scene.add.sprite(100, 100, sword.name);
         this.weapon = weapon;
-        this.weapon.scale = 0.5;
+        this.weapon.scale = sword.scale;
         scene.add.existing(this.weapon);
         scene.physics.add.existing(this.weapon);
         this.weapon.setVisible(false);
         this.weapon.body.setEnable(true);
         this.weapon.body.setSize(1,1);
+        
+        //Intento de meter el inventario
+        this.inventory = this.scene.game.inventory;
+        this.weapon.damage=this.inventory.Sword.Effect.Data.Quantity;
 
         // Recolocan la espada donde debe estar dependiendo de la dirección ataque
         this.weapon.offsetX=0; 
@@ -54,13 +111,11 @@ export class player extends livingEntity
         if(this.key_D.isDown)
         {
             this.dir = {x:1,  y:this.dir.y}
-            this.setFlipX(false);
             this.move();
         }
         if(this.key_A.isDown)
         {
             this.dir = {x:-1, y:this.dir.y}            
-            this.setFlipX(true);
             this.move();
         }
         if(this.key_W.isDown)

@@ -3,6 +3,7 @@ import {shopUiManager} from "./itemShopUI.js"
 
 const ItemShop = 
 {
+    key: "ItemShop",
     preload: function()
     {
         this.load.image("background","../assets/ui/itemShop/itemShopBG.png");

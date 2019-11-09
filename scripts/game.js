@@ -18,7 +18,7 @@ var config = {
             debug: true
         }
     },
-    scene: [ItemShop,DungeonEditor, DungeonRun]
+    scene: [ItemShop, DungeonEditor, DungeonRun]
 
 }
 

@@ -1,9 +1,9 @@
 import {livingEntity} from "./player.js";
 export class enemy extends livingEntity
 {
-    constructor(scene, x, y, speed, sprite,anim, enemyManager)
+    constructor(scene, x, y, speed, sprite,anim, enemyManager, health)
     {
-        super(scene, x, y, sprite, speed);
+        super(scene, x, y, sprite, speed, health);
         this.enemyManager = enemyManager;
         this.zone = this.createZone(scene);
         this.play(anim);
@@ -47,10 +47,9 @@ export class enemy extends livingEntity
         }
         if(this.body!==undefined) //Si no he muerto
         {
-            this.move();
+            if(!this.knockbacked)this.move();
             this.scene.time.delayedCall(1000,this.findDir,[],this)
         }
-
     }
     kill()
     {
@@ -59,6 +58,7 @@ export class enemy extends livingEntity
         this.enemyManager.removeEnemy(this);
         this.body.destroy();
         this.destroy();
+        console.log("zombie muerto")
     }
     hide()  //cuando cambias de habitación los enemigos que queden vivos se deben ocultar
     {
@@ -74,8 +74,15 @@ export class enemy extends livingEntity
         this.setVisible(true);
         this.body.setEnable(true);
         this.zone = this.createZone(this.scene);
-       
-
+    }
+    knockback()
+    {
+        this.dir.x*=-1;
+        this.dir.y*=-1;
+        this.speed*=2;
+        this.move();
+        this.knockbacked = true;
+        this.scene.time.delayedCall(500,()=> {this.knockbacked = false;this.speed/=2});
     }
 } 
 
@@ -87,7 +94,7 @@ export class zombie extends enemy
         let anim = "idleZ";
         let speed = 10;
         let sprite = "zombie_idle0";
-        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager);
+        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 4 });
    }
 
 
@@ -109,8 +116,6 @@ export class enemyManager
         for(let i=0; i<this.enemies.length;i++) 
         {
             this.enemies[i].hide();
-            console.log(i);
-            console.log(this.enemies.length);
         }
     }
     showAllAlive()
@@ -118,7 +123,6 @@ export class enemyManager
         for(let i = 0; i < this.enemies.length;i++) 
         {
             this.enemies[i].show();
-            console.log(i);
         }
     }
     removeEnemy(enemy)
@@ -165,7 +169,7 @@ export class enemyManager
             case "zombie":
             let z;
             z = new zombie(scene, enemy.pos.x, enemy.pos.y, this);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-            scene.physics.add.overlap(weapon, z, () => z.kill());                               //
+            scene.physics.add.overlap(weapon, z, () => z.damage(weapon.damage));                               //
             scene.physics.add.overlap(hero, z.zone, () => z.spotPlayer(hero),null,scene);       //
             scene.physics.add.collider(z, walls);                                               // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
             scene.physics.add.collider(z, hero);                                                //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio

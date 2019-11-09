@@ -37,7 +37,6 @@ export class shopUiManager
 
         scene.buy = function(itemName, lvls, arrowLevel)
         {
-            console.log(itemName);
             
             let toBuyItemLevel;
             let price;
@@ -59,19 +58,19 @@ export class shopUiManager
                         let newItemLevelPrice = itemAtlas[itemName+"_"+toBuyItemLevel].Price;
                         text.text = scene.inventory.gold;
                         scene[itemName+"_Button"].text.text ="x"+newItemLevelPrice;
-                        console.log(itemName+"_"+toBuyItemLevel) 
-                        console.log(itemAtlas[itemName+"_"+toBuyItemLevel]) 
+                        console.log(itemName+"_"+scene.inventory[itemName].Level) 
                     }
                     return scene.inventory[itemName].Level;
                 case 2:
                     toBuyItemLevel = arrowLevel;
                     price = itemAtlas[itemName+"_"+arrowLevel].Price;
-                    buyResult = scene.inventory.substractGold(price);
+                    buyResult = scene.inventory.substractGold(price*10);
                     if(buyResult!=-1)
                     {
                         scene.inventory.gold = buyResult;
-                        scene.inventory.addConsumible(itemName,1);        
+                        scene.inventory.addConsumible(itemName,10);        
                         text.text = scene.inventory.gold;
+                        console.log(itemName+"_"+scene.inventory[itemName].Level + " - "+scene.inventory[itemName].Units) 
                     }
                     else(console.log("No te dan los monedos"));
                     break;
@@ -84,6 +83,7 @@ export class shopUiManager
                         scene.inventory.gold = buyResult;
                         scene.inventory.addConsumible(itemName,1);        
                         text.text = scene.inventory.gold;
+                        console.log(itemName+"_"+scene.inventory[itemName].Level + " - "+scene.inventory[itemName].Units) 
                     }
                     else(console.log("No te dan los monedos"));
                     break;
@@ -109,6 +109,7 @@ export class shopUiManager
         {
             scene.game.scene.start("DungeonEditor");
             scene.game.scene.stop("ItemShop");
+            scene.game.inventory = scene.inventory;
         })
         }
 
@@ -226,7 +227,6 @@ export class itemButton3lvl
         {
             bg.setTintFill("0x3f0d59");
             let index = scene.buy(this.itemID, 3) - 1;
-            console.log(index);
             if(index >= 0)
             {
                 this["button"+index].setTintFill("0x3f0d59");

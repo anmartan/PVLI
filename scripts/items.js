@@ -123,8 +123,6 @@ export class inventory
         else
             throw("No se puede upgradear");
     }
-
-
 }
 class item
 {
@@ -171,6 +169,7 @@ class item
             if(this.Effect.target === "other")
             {
                 let data = this.Effect.Data;
+                return data;
                 //player.attack(data);
                 //esto va a doler programarlo y mucho, tengo la sensación xD
             }
