@@ -393,7 +393,7 @@ class dungeonGrid
                     break;
             }
 
-            if(trapConfig!==undefined) actualRoom.traps.addTrap(trapConfig);
+            if(trapConfig!==undefined) actualRoom.traps.AddTrap(trapConfig);
         }
         }
     }

@@ -1,7 +1,9 @@
-import {dungeon, room, trap} from './dungeon.js';
+import {dungeon, room} from './dungeon.js';
 import {textButton, editorMenu} from './ui.js';
 import {tilemap} from './tilemap.js';
 import {enemyManager} from './enemy.js';
+import {trapManager} from "./traps.js";
+
 
 const  scene =
 {
@@ -20,7 +22,7 @@ const  scene =
         this.load.image("spikes", "../assets/traps/spikes.png");
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
         
-        this.rooms = [ new room(5,0,new enemyManager(),this),new room(7,0,new enemyManager(),this), new room(9,0,new enemyManager(),this) ];
+        this.rooms = [ new room(5,new trapManager(),new enemyManager(),this),new room(7,new trapManager(),new enemyManager(),this), new room(9,new trapManager(),new enemyManager(),this) ];
         this.dungeon = new dungeon(this.rooms);
         this.actual = 0;
         

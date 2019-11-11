@@ -20,7 +20,7 @@ export class room
         this.scene.tileMap.changeRoom(size);    
     }
 
-}
+}/*
 export class trap extends Phaser.GameObjects.Sprite
 {
     constructor(scene,x,y,sprite)
@@ -31,4 +31,4 @@ export class trap extends Phaser.GameObjects.Sprite
     }
     activate(){};
     deactivate(){};
-}
+}*/

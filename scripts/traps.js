@@ -27,13 +27,17 @@ export class trapManager
         if(!this.created)
         {
             this.created = true;
-            for (let i=0; i< this.traps.length(); i++)
+            for (let i=0; i< this.traps.length; i++)
+            {
                 this.traps[i] = this.Create(this.traps[i], scene, hero, walls);
+            }
         }
         //Si no, se muestran las que quedan activas
         else{
             for (let i=0; i < this.traps.length; i++)
+            {
                 this.traps[i].show();
+            }
         }
     }
 
@@ -138,7 +142,7 @@ export class spikes extends Traps
     constructor(scene, x, y, trapsManager)
     {
         let anim = "spikesAnim";
-        let sprite = "groundTrap";
+        let sprite = "spikes";
         let effect = function(){};             //Definir función
         super(scene, x, y, sprite, effect, trapsManager);
     }
