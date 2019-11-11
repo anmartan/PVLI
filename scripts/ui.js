@@ -104,7 +104,7 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         
         //Opciones de states[2] trampas:
         //--Por ahora no hay trampas implementadas--
-        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY,   "white2", this.grid,"trap",""));  // 
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY,   "white2", this.grid,"trap", "spikes"));  // 
         this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+8, "white2", this.grid,"trap",""));  // En un mundo ideal habría varios tipos más
         this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+16,"white2", this.grid,"trap",""));  //
         
@@ -140,6 +140,7 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
     save(dungeon)
     {
         this.grid.saveEnemies(dungeon);
+        //this.grid.saveTraps(dungeon);
     }
 }
 
@@ -370,6 +371,29 @@ class dungeonGrid
             }
             if(enemyConfig!==undefined) actualRoom.enemies.addEnemy(enemyConfig); //Si se ha encontrado un enemigo posible en el switch se añade la configuración a la lista cprres`pmoemte
 
+        }
+        //Ahora también guardamos trampas
+        else if(cell.type === "trap")
+        {
+            let actualRoom = dungeon.rooms[cell.actual];
+            let trapConfig;                                                        
+            let offset = (grid.getOffsetBySize(actualRoom.size))             
+            switch (cell.subtype)
+            {
+                case "spikes":
+                    trapConfig=
+                    {
+                        type: "spikes",
+                        pos : {x: cell.i +offset, y: cell.j + offset}
+                    }
+                    break;
+                
+                default:
+                    console.log("No se puede poner una trampa de tipo " + cell.subtype);
+                    break;
+            }
+
+            if(trapConfig!==undefined) actualRoom.traps.addTrap(trapConfig);
         }
         }
     }

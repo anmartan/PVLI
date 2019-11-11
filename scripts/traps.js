@@ -1,5 +1,3 @@
-import { enemy } from "./enemy";
-
 
 //Se encarga de transformar la información en el editor de mazmorras en trampas dentro de la habitación
 export class trapManager
@@ -42,7 +40,7 @@ export class trapManager
     //Crea una sola trampa
     Create(trap, scene, hero, walls)
     {
-        switch(enemy.type)
+        switch(trap.type)
         {
             case "spikes":
                 let spiky= new spikes(scene, trap.pos.x, trap.pos.y, this);

@@ -17,6 +17,7 @@ const  scene =
         this.load.image("yellow2","../assets/debug/yellow2.png");
         this.load.image("pink","../assets/debug/pink.png");
         this.load.image("pink2","../assets/debug/pink2.png");
+        this.load.image("spikes", "../assets/traps/spikes.png");
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
         
         this.rooms = [ new room(5,0,new enemyManager(),this),new room(7,0,new enemyManager(),this), new room(9,0,new enemyManager(),this) ];
