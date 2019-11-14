@@ -1,6 +1,7 @@
 import {player} from "./player.js";
 import {zombie, enemyManager} from "./enemy.js";
 import {tilemap} from './tilemap.js';
+import {spikes} from "./traps.js";
 
 const scene = {
     key: "DungeonRun",
@@ -25,6 +26,8 @@ const scene = {
         this.load.image("zombie_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
         this.load.image("zombie_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
         this.load.image("zombie_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
+
+        this.load.image("spikes", "../assets/traps/spikes.png");
     },
     create: function()
     {
@@ -71,7 +74,6 @@ const scene = {
         
 
         this.hero = new player (this, (16*4), (16*5), 30, "caballero_idle0", playerIdle, {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
-        
         this.enemies = new enemyManager(this.game.dungeon.rooms[this.actual].enemies.enemies);
         console.log(this.enemies);
         this.enemies.summonEnemies(this,this.hero, this.hero.weaponManager.weapon,this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
