@@ -377,15 +377,20 @@ class dungeonGrid
         {
             let actualRoom = dungeon.rooms[cell.actual];
             let trapConfig;                                                        
-            let offset = (grid.getOffsetBySize(actualRoom.size))             
+            let offset = (grid.getOffsetBySize(actualRoom.size));           
             switch (cell.subtype)
             {
                 case "spikes":
                     trapConfig=
                     {
                         type: "spikes",
-                        pos : {x: cell.i +offset, y: cell.j + offset}
+                        pos : 
+                        {
+                            x: (cell.i +offset),    //Ajustar el valor
+                            y: (cell.j + offset)   //Ajustar el valor
+                        }
                     }
+                    console.log(trapConfig.pos.x + "y en y: " + trapConfig.pos.y);
                     break;
                 
                 default:

@@ -48,7 +48,7 @@ export class trapManager
         {
             case "spikes":
                 let spiky= new spikes(scene, trap.pos.x, trap.pos.y, this);
-                scene.physics.add.overlap(hero, spiky.zone, ()=>spiky.effect(), null, scene);
+                scene.physics.add.overlap(hero, spiky.zone, ()=>spiky.Activate(), null, scene);
                 scene.physics.add.collider(spiky, walls);               //Hace falta? Yo creo que no pero por si acaso XD
                 return spiky;
             default:
@@ -78,15 +78,14 @@ export class Traps extends Phaser.GameObjects.Sprite
 {
     //Una trampa es un sprite con una zona (para activarse) y un efecto
     //Hace falta decirle quién es el héroe?
-    constructor(scene, x, y, spriteID, effect, trapManager)//, hero)
+    constructor(scene, x, y, spriteID, trapManager)//, hero)
     {
-        super(scene, x, y, spriteID)
+        super(scene, x*16 +24, y*16 +24, spriteID)
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
         this.trapManager = trapManager;
         this.zone=this.createZone(scene)
-        this.effect = effect();             //Con o sin paréntesis???
         //this.hero=hero;
     }
     
@@ -143,7 +142,8 @@ export class spikes extends Traps
     {
         let anim = "spikesAnim";
         let sprite = "spikes";
-        let effect = function(){};             //Definir función
-        super(scene, x, y, sprite, effect, trapsManager);
+        super(scene, x, y, sprite, trapsManager);
     }
+    effect()
+    {console.log("Has activado spkies trap")}
 }
