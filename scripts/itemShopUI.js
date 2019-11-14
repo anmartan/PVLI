@@ -2,6 +2,7 @@ import {Button} from './ui.js';
 
 import {inventory} from "./items.js"
 import {textButton} from "./ui.js"
+import {dungeon} from './dungeon.js';
 
 import {itemAtlas} from "./itemAtlas.js"; 
 
@@ -108,9 +109,16 @@ export class shopUiManager
         let continuar = new textButton(config,96,150,"Continuar");
         continuar.on("pointerdown", () =>
         {
-            scene.game.scene.start("DungeonEditor");
             scene.game.scene.stop("ItemShop");
             scene.game.inventory = scene.inventory;
+            socket.emit("finished",  scene.inventory);
+            console.log(socket);
+            socket.on("startDung", (dung, inventory) =>
+            {
+                scene.game.dungeon = dung;
+                console.log(scene.game.dungeon);
+                scene.game.scene.start("DungeonRun");
+            })
         })
         }
 

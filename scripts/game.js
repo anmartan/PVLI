@@ -1,7 +1,10 @@
 import DungeonEditor from './dungeonEditor.js'
 import DungeonRun from './dungeonRun.js'
+import DungeonRunAH from './serverDependentSide/dungeonRunAH.js'
+import SelectGameMode from './selectMode.js'
 import ItemShop from "./itemShop.js"
 
+let scenes = [SelectGameMode,ItemShop, DungeonEditor, DungeonRun,DungeonRunAH]
 var config = {
     pixelArt: true,
     type: Phaser.AUTO,
@@ -18,7 +21,10 @@ var config = {
             debug: true
         }
     },
-    scene: [ItemShop, DungeonEditor, DungeonRun]
+    scene: scenes,
+    dom: {
+        createContainer: true
+      }
 
 }
 

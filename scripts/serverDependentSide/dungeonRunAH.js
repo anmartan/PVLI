@@ -1,9 +1,9 @@
-import {player} from "./player.js";
-import {zombie, enemyManager} from "./enemy.js";
-import {tilemap} from './tilemap.js';
+import {dummiePlayer} from "./dummieEntitties.js";
+import {zombie, enemyManager, enemy} from "../enemy.js";
+import {tilemap} from '../tilemap.js';
 
 const scene = {
-    key: "DungeonRun",
+    key: "DungeonRunAH",
     preload: function()
     {
         //Cargar tiles
@@ -11,6 +11,7 @@ const scene = {
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
 
         //cargar imágenes del player
+        
         this.load.image("caballero_idle0", "../assets/player/knight_m_idle_anim_f0.png")
         this.load.image("caballero_idle1", "../assets/player/knight_m_idle_anim_f1.png")
         this.load.image("caballero_idle2", "../assets/player/knight_m_idle_anim_f2.png")
@@ -61,43 +62,19 @@ const scene = {
             frameRate: 10,
             repeat: -1,
         });
-        let entranceRec = this.add.zone(16*2+8, 16*5+8, 16, 16)
-        this.physics.add.existing(entranceRec);
-        entranceRec.body.debugBodyColor="0x00ff00";
-
-        let exitRec = this.add.zone(16*8+8, 16*5+8, 16, 16);
-        this.physics.add.existing(exitRec);
-        exitRec.body.debugBodyColor="0x00ff00";
-        
-
-        this.hero = new player (this, (16*4), (16*5), 30, "caballero_idle0", playerIdle, {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
-        
+    
+        //this.hero = new player (this, (16*4), (16*5), 30, "caballero_idle0", playerIdle, {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
+        this.hero = new dummiePlayer(this, (16*4), (16*5), "caballero_idle0", "Sword_0", 0.5 ).play(playerIdle);
         this.enemies = new enemyManager(this.game.dungeon.rooms[this.actual].enemies.enemies);
+        this.enemies.summonDummyEnemies(this); //invoca a los enemigos
         console.log(this.enemies);
-        this.enemies.summonEnemies(this,this.hero, this.hero.weaponManager.weapon,this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
 
 
-        this.physics.add.collider(this.hero, this.tileMap.Walls);
 
-        this.physics.add.overlap(this.hero, exitRec, () => 
-        {
-            this.enemies.hideAllAlive();
-            this.actual = (this.actual+1)%3;
-            this.enemies = new enemyManager(this.game.dungeon.rooms[this.actual].enemies.enemies);
-            this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
-            this.hero.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8; 
-            this.hero.y = (16*5) + 2; 
-            entranceRec.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8;
-            exitRec.x = (16*12) - ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8;
-            this.enemies.summonEnemies(this, this.hero, this.hero.weaponManager.weapon, this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
-        });
    },
     update: function(delta)
    {
 
-        this.hero.handleLogic();
-        this.enemies.enemies.forEach(enemy => {enemy.update();     
-        });
    }
    
 };

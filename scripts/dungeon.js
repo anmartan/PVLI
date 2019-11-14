@@ -12,7 +12,7 @@ export class room
         this.size=size;
         this.traps = traps;
         this.enemies = enemies;
-        this.scene = scene;
+        //this.scene = scene;
     }
     resize(size)
     {

@@ -47,6 +47,7 @@ export default class weaponManager
     {
         this.offsetX=0;        
         this.offsetY=5;  
+        socket.emit("playerHaveAttacked");
         this.showWeapon(false);
     }
     useWeapon(dir)
@@ -104,6 +105,7 @@ export default class weaponManager
             this.weapon.setAngle(angle); 
 
             this.showWeapon(true);
+            socket.emit("playerAttack", {angle: angle, offsetX: this.offsetX, offsetY:this.offsetY});
             this.scene.time.delayedCall(1000,   this.haveAttacked,[],this)
             this.scene.time.delayedCall(1000,   ()=> this.attacking=false);
         }

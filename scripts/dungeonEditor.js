@@ -3,6 +3,9 @@ import {textButton, editorMenu} from './ui.js';
 import {tilemap} from './tilemap.js';
 import {enemyManager} from './enemy.js';
 
+
+
+
 const  scene =
 {
     key: "DungeonEditor",
@@ -22,6 +25,8 @@ const  scene =
         this.rooms = [ new room(5,0,new enemyManager(),this),new room(7,0,new enemyManager(),this), new room(9,0,new enemyManager(),this) ];
         this.dungeon = new dungeon(this.rooms);
         this.actual = 0;
+        this.game.dungeon = new dungeon(this.rooms);
+
         
     },
     create : function()
@@ -31,6 +36,7 @@ const  scene =
         this.tileMap = new tilemap(this, "tiles", 16, 0.5, "DungeonTiles",hoffset, voffset);
         this.editorMenu = new editorMenu(this,hoffset,voffset);
         
+
         let config =
         {
             scene : this,
@@ -40,12 +46,27 @@ const  scene =
             style : {fontFamily:"arial", fontSize:"15px"},
         }
         let continuar = new textButton(config,110,160,"Continuar");
+        let scene;
         continuar.on("pointerdown", () =>
         {
-            this.game.scene.start("DungeonRun");
+            console.log(this);
             this.game.scene.stop("DungeonEditor");
-            this.game.dungeon = new dungeon(this.rooms);
-            this.editorMenu.save(this.game.dungeon);
+            let dungeon = update(this);
+            console.log(dungeon);
+            socket.emit("finished", dungeon);
+            console.log("Después de lanzar mensaje");
+
+        },[],this)
+
+        let update = function updateGameDungeon(scene) {
+            scene.game.dungeon = new dungeon(scene.rooms);
+            scene.editorMenu.save(scene.game.dungeon);
+            return scene.game.dungeon;
+        }
+        socket.on("startDung", (dungeon, inventory) =>
+        {
+            this.game.inventory = inventory;
+            this.game.scene.start("DungeonRunAH");
         })
     },
     update : function(delta)
@@ -55,4 +76,6 @@ const  scene =
     
 }
 export default scene;
+
+
 

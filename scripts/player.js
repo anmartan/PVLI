@@ -143,6 +143,8 @@ export class player extends livingEntity
             this.dir ={x:this.dir.x,y:0}
             this.move();
         }
+        let flip = (this.dir.x < 0);
+        socket.emit("playerMove",{pos:{x:this.x,y:this.y},flip:flip});
 
 
         //Teclas de attaque, atacar en la dirección

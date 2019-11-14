@@ -1,7 +1,8 @@
 import {livingEntity} from "./player.js";
+import { dummieEnemy } from "./serverDependentSide/dummieEntitties.js";
 export class enemy extends livingEntity
 {
-    constructor(scene, x, y, speed, sprite,anim, enemyManager, health)
+    constructor(scene, x, y, speed, sprite,anim, enemyManager, health, id)
     {
         super(scene, x, y, sprite, speed, health);
         this.enemyManager = enemyManager;
@@ -9,6 +10,7 @@ export class enemy extends livingEntity
         this.play(anim);
         this.findDir();                     //Encuentra una dirección aleatoria mientras no haya referencia a player
         this.scene = scene;
+        this.id = id;
     }
     createZone(scene)
     {
@@ -47,7 +49,10 @@ export class enemy extends livingEntity
         }
         if(this.body!==undefined) //Si no he muerto
         {
-            if(!this.knockbacked)this.move();
+            if(!this.knockbacked)
+            {
+                this.moveEnemy();
+            }
             this.scene.time.delayedCall(1000,this.findDir,[],this)
         }
     }
@@ -58,6 +63,7 @@ export class enemy extends livingEntity
         this.enemyManager.removeEnemy(this);
         this.body.destroy();
         this.destroy();
+        socket.emit("enemyDead", this.id);
         console.log("zombie muerto")
     }
     hide()  //cuando cambias de habitación los enemigos que queden vivos se deben ocultar
@@ -80,21 +86,29 @@ export class enemy extends livingEntity
         this.dir.x*=-1;
         this.dir.y*=-1;
         this.speed*=2;
-        this.move();
+        this.moveEnemy();
         this.knockbacked = true;
         this.scene.time.delayedCall(500,()=> {this.knockbacked = false;this.speed/=2});
+    }
+    moveEnemy()
+    {
+        this.move();
+    }
+    update()
+    {
+        socket.emit("enemyMove", {pos:{x:this.x,y:this.y},flip:this.dir.x<0,id:this.id});
     }
 } 
 
 
 export class zombie extends enemy
 {
-    constructor (scene, x, y, enemyManager) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
         let anim = "idleZ";
         let speed = 10;
         let sprite = "zombie_idle0";
-        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 4 });
+        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 4 }, id);
    }
 
 
@@ -102,14 +116,19 @@ export class zombie extends enemy
 
 export class enemyManager
 {
-    constructor()
+    constructor(enemies=undefined)
     {
-        this.enemies = new Array(); //Este array de enemigos contendrá lo necesario para invocar a cada enemigo en cada habitación antes de que se invoquen. Y al invocarlos a los mismos enemigos
+        if(enemies===undefined){this.enemies = new Array();} //Este array de enemigos contendrá lo necesario para invocar a cada enemigo en cada habitación antes de que se invoquen. Y al invocarlos a los mismos enemigos
+        else 
+        {
+            this.enemies = enemies;
+        }
         this.summoned =false;
     }
     addEnemy(enemy)
     {
-        this.enemies.push(enemy);
+        let id = this.enemies.push(enemy) - 1; //La posición en el array
+        this.enemies[id].id = id;
     }
     hideAllAlive()
     {
@@ -144,13 +163,12 @@ export class enemyManager
 
     summonEnemies(scene, hero, weapon, walls)
     {
-
         if(!this.summoned)
         {
             this.summoned = true;
             for(let i = 0; i<this.enemies.length;i++)
             {
-                this.enemies[i] = this.summon(this.enemies[i], scene, hero, weapon, walls)
+                this.enemies[i] = this.summon(this.enemies[i], scene, hero, weapon, walls, i)
             }
         }
         else 
@@ -162,13 +180,14 @@ export class enemyManager
         }
 
     }
-    summon(enemy, scene, hero, weapon, walls)
+
+    summon(enemy, scene, hero, weapon, walls, id)
     {
         switch (enemy.type)
         {
             case "zombie":
             let z;
-            z = new zombie(scene, enemy.pos.x, enemy.pos.y, this);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            z = new zombie(scene, enemy.pos.x, enemy.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
             scene.physics.add.overlap(weapon, z, () => hero.attack(z,weapon.damage));                               //
             scene.physics.add.overlap(hero, z.zone, () => z.spotPlayer(hero),null,scene);       //
             scene.physics.add.collider(z, walls);                                               // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
@@ -181,5 +200,39 @@ export class enemyManager
             break;
         }
     }
+    summonDummyEnemies(scene)
+    {
+        this.summoned = true;
+            for(let i = 0; i<this.enemies.length;i++)
+            {
+                this.enemies[i] = this.summonDummy(this.enemies[i],scene,i)
+            }
+        socket.on("enemyMove", data =>
+        {
+            this.enemies[data.id].move(data.pos, data.flip);
+        })
+        socket.on("enemyDead", id =>
+        {
+            this.enemies[id].killDumie();
+        })
 
+        
+    }
+    summonDummy(enemy,scene,i)
+    {
+        switch (enemy.type)
+        {
+            case "zombie":
+            {
+                let zombie;
+                zombie = new dummieEnemy(scene,enemy.pos.x,enemy.pos.y,"zombie_idle0","idleZ",this,i);
+                return zombie;
+            }
+
+            default:
+                console.log("No se puede crear un enemigo de tipo " + enemy.subtype);
+                break;
+                
+        }
+    }
 }

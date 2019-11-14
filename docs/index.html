@@ -4,17 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="/docs/theme.css">  
     <title>Chachigames</title>
-    <link rel="stylesheet" type="text/css" href="theme.css">
-    <script src = "../scripts/phaser.js"></script>
+   
+    <script src = "/scripts/phaser.js"></script>
     
-    <script type="module" src = "../scripts/game.js"></script>
+    <script type="module" src = "/scripts/game.js"></script>
 
 
 </head>
 <body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+            const direccion = 'localhost';
+            const puerto = 3000;
+            const socket = io('http://' + direccion + ':' + puerto);
+    </script>
     <!-- Con el width al 100% hacemos que la imagen se ajuste al tamaño de la ventana-->
-    <img src="../assets/page/Cabecera.png" alt="" width="100%"> 
+    <img src="/assets/page/Cabecera.png" alt="" width="100%"> 
     <p>
         Error 420: chachi game not found
     </p>
