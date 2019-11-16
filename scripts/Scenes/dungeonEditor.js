@@ -16,6 +16,7 @@ const  scene =
         
         this.load.image("DungeonTiles","../assets/ground/DungeonStarter.png");
         this.load.image("default","../assets/debug/default.png");
+        this.load.image("default2","../assets/debug/default2.png");
         this.load.image("white","../assets/debug/white.png");
         this.load.image("white2","../assets/debug/white2.png");
         this.load.image("yellow","../assets/debug/yellow.png");

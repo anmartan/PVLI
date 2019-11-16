@@ -166,18 +166,19 @@ export class Button extends Phaser.GameObjects.Sprite
         if(Array.isArray(sprite))
         {
             super(scene, x, y, sprite[0]);
-            if(sprite.length > 1)
+            scene.add.existing(this);                                                   //dentro del if para que se pinte antes que el sprite over si existe
+            if(sprite.length > 2)
             {
-                for(let i = 1; i<sprite.length;i++)
-                {
-                    scene.add.sprite(-x, -y, sprite[i]);
-                }
+                this.overSprite = scene.add.sprite(-x, -y, sprite[2]).setVisible(false);//creando el sprite over fuera de la pantalla e invisible
             }
             this.sprite = sprite;
         }
-        else super(scene, x, y, sprite);
+        else
+        {
+            super(scene, x, y, sprite);
+            scene.add.existing(this);
+        } 
         this.setInteractive();
-        scene.add.existing(this);
         this.click();                           // -->Todos los Button deben implementar su método Click<--
 
         this.clickDefault();                    // |  Método default para al clicar en el botón           |
@@ -188,23 +189,57 @@ export class Button extends Phaser.GameObjects.Sprite
     }
     clickDefault()
     {
-        this.on("pointerdown",() => 
+        if(Array.isArray(this.sprite))
         {
-            if(Array.isArray(this.sprite))
+            this.on("pointerdown",() => 
             {
-                let defaultSprite = this.scene.textures.get(this.sprite[0]);
-                if(this.texture === defaultSprite) this.setClickedSprite()
-                else this.setDefaultSprite();
-            }
-        })
+                let clicikedSprite = this.scene.textures.get(this.sprite[1]);
+                if(this.texture !== clicikedSprite) this.setClickedSprite()
+                else
+                {
+                    this.setDefaultSprite();            
+                }
+            })
+        } 
+
+
     }
     overDefault()
     {
-        this.on("pointerover",() => this.setAlpha(1,0,1,0))
+        if(Array.isArray(this.sprite) && this.sprite.length > 2)        //si tinee imagen de over
+        {
+            this.on("pointerover",() =>{
+                /*let defaultSprite = this.scene.textures.get(this.sprite[0]);    
+                let overSprite = this.scene.textures.get(this.sprite[2]);    
+                if(this.texture === defaultSprite && this.texture !== overSprite)
+                    this.setOverSprite();*/
+                    this.overSprite.x = this.x;
+                    this.overSprite.y = this.y;
+                    this.overSprite.setVisible(true);
+            }
+            ); 
+        }
+        else
+        {
+            this.on("pointerover",() => this.setAlpha(1,0,1,0));
+        }
     }
     outDefault()
     {
-        this.on("pointerout",() => this.setAlpha(1) )
+        if(Array.isArray(this.sprite) && this.sprite.length > 2)
+        {
+            this.on("pointerout",() =>
+            {
+                /*let overSprite = this.scene.textures.get(this.sprite[2]);
+                if(this.texture === overSprite) this.setDefaultSprite();
+                console.log("no he salido bro");*/
+                this.overSprite.setVisible(false);
+            });
+        }
+        else
+        {
+            this.on("pointerout",() => {this.setAlpha(1); console.log("no he salido bro")});
+        }
     }
     setDefaultSprite()
     {
@@ -213,6 +248,10 @@ export class Button extends Phaser.GameObjects.Sprite
     setClickedSprite()
     {
         this.setTexture(this.sprite[1]);        
+    }
+    setOverSprite()
+    {
+        this.setTexture(this.sprite[2]);        
     }
 } 
 
@@ -332,7 +371,7 @@ class dungeonGrid
         //Creamos nueve celdas, pues la mayor habitación posible es de 9x9    
         for(let i= 0;i<9;i++)
            for(let j=0;j<9;j++) 
-               this.cells[i][j] = new cell(this.scene, 0, 0 , "default", this, i, j);
+               this.cells[i][j] = new cell(this.scene, 0, 0 , ["default","green2","default2"], this, i, j);
 
         this.currentType = "enemy";
         this.currentSubtype = "zombie";
@@ -469,14 +508,11 @@ class dungeonGrid
     }
 }
 
-class cell extends Phaser.GameObjects.Sprite
+class cell extends Button
 {
     constructor(scene,x,y,sprite, grid,i,j)
     {
         super(scene,x,y,sprite);
-        this.setInteractive();
-        this.on("pointerdown", this.click)
-        scene.add.existing(this);
         this.grid = grid;
         this.actual = -1;
         this.type = "";
@@ -510,6 +546,6 @@ class cell extends Phaser.GameObjects.Sprite
     }
     click()
     {
-        this.grid.cellClicked(this);
+        this.on("pointerdown",()=>this.grid.cellClicked(this));
     }
 }
