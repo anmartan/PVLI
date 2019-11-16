@@ -1,11 +1,11 @@
-import DungeonEditor from './dungeonEditor.js'
-import DungeonRun from './dungeonRun.js'
-import DungeonRunAH from './serverDependentSide/dungeonRunAH.js'
-import SelectGameMode from './selectMode.js'
-import ItemShop from "./itemShop.js"
+import DungeonEditor from './Scenes/dungeonEditor.js'
+import DungeonRun from './Scenes/dungeonRun.js'
+import DungeonRunAH from  './Scenes/dungeonRunAH.js'
+import SelectGameMode from './Scenes/selectMode.js'
+import ItemShop from "./Scenes/itemShop.js"
 
 let scenes = [SelectGameMode,ItemShop, DungeonEditor, DungeonRun,DungeonRunAH]
-var config = {
+let config = {
     pixelArt: true,
     type: Phaser.AUTO,
     width: 176,//960,
@@ -28,7 +28,7 @@ var config = {
 
 }
 
-var game = new Phaser.Game(config);
+let  game = new Phaser.Game(config);
 game.dungeon;
 game.tiles;
 

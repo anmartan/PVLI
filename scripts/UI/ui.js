@@ -73,7 +73,7 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
 {
     constructor(scene, Hoffset, Voffset)
     {
-        this.actualState = "Size";
+        this.actualState = "";
         this.grid = new dungeonGrid(scene, Hoffset, Voffset);
         this.scene = scene;
 
@@ -86,28 +86,30 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         //Por ahora tendremos tres botones de estados:
         //Edición del tamaño de la habitación, colocación de enemigos y colocación de trampas
         this.states   = new Array(3);
-        this.states[0]= new StateButton(scene, statesX, statesY,    "yellow", this, "Size"    );
-        this.states[1]= new StateButton(scene, statesX, statesY+16, "pink",   this, "Monsters");
-        this.states[2]= new StateButton(scene, statesX, statesY+32, "white",  this, "Traps"   );
+        this.states[0]= new StateButton(scene, statesX, statesY,    ["yellow", "green"], this, "Size"    );
+        this.states[1]= new StateButton(scene, statesX, statesY+16, ["pink",   "green"], this, "Monsters");
+        this.states[2]= new StateButton(scene, statesX, statesY+32, ["white",  "green"],   this, "Traps"   );
         
         //Opciones de states[0] tamaño de habitación:
         //--Pequeña (5x5), Mediana (7x7) y Grande (9x9)--
-        this.states[0].add(new sizeOptionButton(scene,optionsX,optionsY,  "yellow2",5,this))
-        this.states[0].add(new sizeOptionButton(scene,optionsX,optionsY+8,"yellow2",7,this))
-        this.states[0].add(new sizeOptionButton(scene,optionsX,optionsY+16,"yellow2",9,this))
+        this.states[0].add(new sizeOptionButton(scene,optionsX,optionsY,    ["yellow2","green2"], 5))
+        this.states[0].add(new sizeOptionButton(scene,optionsX,optionsY+8,  ["yellow2","green2"], 7))
+        this.states[0].add(new sizeOptionButton(scene,optionsX,optionsY+16, ["yellow2","green2"], 9))
 
         //Opciones de states[1] monstruos:
         //--Por ahora zombie--
-        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY,   "pink2", this.grid,"enemy","zombie")); //
-        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+8, "pink2", this.grid,"enemy","araña" )); // En un mundo ideal habría varios tipos más
-        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+16,"pink2", this.grid,"enemy","abeja" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY,    ["pink2","green2"], this.grid,"enemy","zombie")); //
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+8,  ["pink2","green2"], this.grid,"enemy","araña" )); // En un mundo ideal habría varios tipos más
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+16, ["pink2","green2"], this.grid,"enemy","abeja" )); //
         
         //Opciones de states[2] trampas:
         //--Por ahora no hay trampas implementadas--
-        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY,   "white2", this.grid,"trap", "spikes"));  // 
-        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+8, "white2", this.grid,"trap",""));  // En un mundo ideal habría varios tipos más
-        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+16,"white2", this.grid,"trap",""));  //
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY,    ["white2","green2"], this.grid,"trap", "spikes"));  // 
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+8,  ["white2","green2"], this.grid,"trap",""));  // En un mundo ideal habría varios tipos más
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+16, ["white2","green2"], this.grid,"trap",""));  //
         
+        this.states[0].emit("pointerdown")                                                                            //Empezamos por defecto con el estado "Size"
+        this.states[0].stateOptions[0].emit("pointerdown")                                                                 //Empezamos por defecto con el Size pequeño
         //Esto es un traslado de la anterior implementación. Funciona por ahora, pero hay que arreglarlo.
         let config =
         {
@@ -118,24 +120,37 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
             style : {fontFamily:"arial", fontSize:"15px"},
         }
         new indexButtons(scene,config);
-
-
-
     }
     changeState(st)
-    {
-        this.actualState = st.ID;
-        //console.clear();
-        this.states.forEach( state => {
-            if(state.ID !== this.actualState)
-            {
-                state.hide();                   //Esconde las opciones de los que no están pulsados
-            }
-            else
-            {
-                state.show();                   //Y muestra las opciones del que está pulsado
-            }
-        });
+    {   
+        //Si el estado es distinto al actual, actualiza el estado y los demás botones de estado
+        if (this.actualState !== st)
+        {
+            this.actualState = st;
+            this.states.forEach( state => {
+                if(state.ID !== this.actualState)
+                {
+                    state.hide();                   //Esconde las opciones de los que no están pulsados
+                    state.setDefaultSprite();
+                }
+                else
+                {
+                    state.show();                   //Y muestra las opciones del que está pulsado
+                }
+            });
+        } 
+        else //Si haz clicado el mismo estado, deseleciona el estado seleccionado
+        {
+            this.states.forEach( state => {
+                if(state.ID === this.actualState)
+                {
+                    state.hide();                   //Esconde las opciones del que acabas de despulsar
+                    //state.setDefaultSprite();
+                }
+            });
+            this.actualState= '';                   //Resetea el estado
+        }
+
     }
     save(dungeon)
     {
@@ -148,7 +163,19 @@ export class Button extends Phaser.GameObjects.Sprite
 {
     constructor(scene, x, y, sprite)
     {
-        super(scene, x, y, sprite);
+        if(Array.isArray(sprite))
+        {
+            super(scene, x, y, sprite[0]);
+            if(sprite.length > 1)
+            {
+                for(let i = 1; i<sprite.length;i++)
+                {
+                    scene.add.sprite(-x, -y, sprite[i]);
+                }
+            }
+            this.sprite = sprite;
+        }
+        else super(scene, x, y, sprite);
         this.setInteractive();
         scene.add.existing(this);
         this.click();                           // -->Todos los Button deben implementar su método Click<--
@@ -161,7 +188,15 @@ export class Button extends Phaser.GameObjects.Sprite
     }
     clickDefault()
     {
-        this.on("pointerdown",() => {/*Por implementar cambio a sprite clicado*/ } )
+        this.on("pointerdown",() => 
+        {
+            if(Array.isArray(this.sprite))
+            {
+                let defaultSprite = this.scene.textures.get(this.sprite[0]);
+                if(this.texture === defaultSprite) this.setClickedSprite()
+                else this.setDefaultSprite();
+            }
+        })
     }
     overDefault()
     {
@@ -170,6 +205,14 @@ export class Button extends Phaser.GameObjects.Sprite
     outDefault()
     {
         this.on("pointerout",() => this.setAlpha(1) )
+    }
+    setDefaultSprite()
+    {
+        this.setTexture(this.sprite[0]);
+    }
+    setClickedSprite()
+    {
+        this.setTexture(this.sprite[1]);        
     }
 } 
 
@@ -181,35 +224,48 @@ class StateButton extends Button //Botones de cada estado (Botón de edición de
         super(scene,x,y,sprite);
         this.ID = ID;                           //Identificador para saber qué estado soy (Size, Traps, Enemies)
         this.editorMenu = EditorMenu;           //Referencia al manager para poder comunicarnos con él 
-        this.StateOptions = new Array(3);       //Un array con las opciones para la edición (Tipos de trampas, enemigos, tamaño de mazmorra..)
+        this.stateOptions = new Array();       //Un array con las opciones para la edición (Tipos de trampas, enemigos, tamaño de mazmorra..)
     }
+    
     show()                                      //Este método es llamado desde el "EditorMenu" cuando se clica en este estado
     { 
-        this.StateOptions.forEach(option => {   // ||                                            ||
+        this.stateOptions.forEach(option => {   // ||                                            ||
             option.setVisible(true);            // || Muestra los botones de opciones del estado ||
         });                                     // ||                                            ||
     }
-    hide()
-    { 
-        this.StateOptions.forEach(option => {   // ||                                            ||
-            option.setVisible(false);           // || Oculta  los botones de opciones del estado ||
-            if(option.hideGrid)                 // ||                                            ||
-                option.hideGrid();                                      
-        });
-    }
+    
+    hide(){this.stateOptions.forEach(option => 
+    {                                       // ||                                            ||
+        option.setVisible(false);           // || Oculta  los botones de opciones del estado ||
+        option.setDefaultSprite();          // ||                                            ||
+        if(option.hideGrid)                 
+            option.hideGrid();                                      
+    });}
+    
     click(){ this.on("pointerdown", ()=>
     {
-        this.editorMenu.changeState(this);
-    });
-    }
+        this.editorMenu.changeState(this.ID);
+    });}
+
     add(button)
     {
-        this.StateOptions.push(button);
+        button.stateButton = this;
+        this.stateOptions.push(button);
+    }
+    optionClicked(option)
+    {
+        if(this.actualOption !== option)
+        {
+            this.actualOption = option;
+            this.stateOptions.forEach(button => {
+                if(button!==option) button.setDefaultSprite();
+            })
+        }
     }
 }
 class sizeOptionButton extends Button //Botón de tipo de size (Modificará el tamaño de la habitación actual)
 {
-    constructor(scene, x, y, sprite, size, editorMenu)
+    constructor(scene, x, y, sprite, size)
     {
         super(scene, x,y,sprite);
         this.size = size;
@@ -219,8 +275,16 @@ class sizeOptionButton extends Button //Botón de tipo de size (Modificará el t
     {
         this.on("pointerdown",() =>
         {
-            this.scene.rooms[this.scene.actual].resize(this.size); //Cambia el tamaño de la habitación  (Salto de fe de que la escena tiene tanto "rooms" como "actual". 
-        });                                                        //Como la escena siempre será la de edición, siempre los tendrá) 
+            this.scene.rooms[this.scene.actual].resize(this.size, this.scene); //Cambia el tamaño de la habitación  (Salto de fe de que la escena tiene tanto "rooms" como "actual". 
+            this.stateButton.optionClicked(this);                               //Como la escena siempre será la de edición, siempre los tendrá) 
+        });                                                                    
+    }
+    setDefaultSprite()
+    {
+        if(this.scene.rooms[this.scene.actual].size !== this.size )
+        {
+            super.setDefaultSprite();
+        }
     }
 }
 
@@ -242,6 +306,7 @@ class gridOptionButton extends Button //Botón que modifica el grid (botones de 
             this.hideGrid()                                             //Ocultamos el grid para mostrar solo las celdas que toque mostrar
             this.grid.show(this.scene.rooms[this.scene.actual].size);   //Se muestran las celdas en función del tamaño de la mazmorra
             this.grid.setCurrentType(this.type, this.optionType);       
+            this.stateButton.optionClicked(this);                                     
             console.log(this.type+" type: "+this.optionType);
         });
     }

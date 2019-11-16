@@ -14,10 +14,10 @@ export class room
         this.enemies = enemies;
         //this.scene = scene;
     }
-    resize(size)
+    resize(size, scene)
     {
         this.size = size;
-        this.scene.tileMap.changeRoom(size);    
+        scene.tileMap.changeRoom(size);    
     }
 
 }/*

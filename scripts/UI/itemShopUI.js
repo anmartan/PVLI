@@ -1,10 +1,10 @@
 import {Button} from './ui.js';
 
-import {inventory} from "./items.js"
+import {inventory} from "../Player and Items/items.js"
 import {textButton} from "./ui.js"
-import {dungeon} from './dungeon.js';
+import {dungeon} from '../Enemies and World/dungeon.js';
 
-import {itemAtlas} from "./itemAtlas.js"; 
+import {itemAtlas} from "../Player and Items/itemAtlas.js"; 
 
 export class shopUiManager
 {

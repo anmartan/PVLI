@@ -1,7 +1,7 @@
-import {player} from "./player.js";
-import {zombie, enemyManager} from "./enemy.js";
-import {tilemap} from './tilemap.js';
-import {spikes} from "./traps.js";
+import {player} from "../Player and Items/player.js";
+import {zombie, enemyManager} from "../Enemies and World/enemy.js";
+import {tilemap} from '../Enemies and World/tilemap.js';
+import {spikes} from "../Enemies and World/traps.js";
 
 const scene = {
     key: "DungeonRun",

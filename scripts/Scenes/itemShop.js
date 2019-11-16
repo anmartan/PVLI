@@ -1,4 +1,4 @@
-import {shopUiManager} from "./itemShopUI.js"
+import {shopUiManager} from "../UI/itemShopUI.js"
 
 
 const ItemShop = 

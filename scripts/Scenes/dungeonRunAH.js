@@ -1,6 +1,6 @@
-import {dummiePlayer} from "./dummieEntitties.js";
-import {zombie, enemyManager, enemy} from "../enemy.js";
-import {tilemap} from '../tilemap.js';
+import {dummiePlayer} from "../Enemies and World/dummieEntitties.js";
+import {zombie, enemyManager, enemy} from "../Enemies and World/enemy.js";
+import {tilemap} from '../Enemies and World/tilemap.js';
 
 const scene = {
     key: "DungeonRunAH",

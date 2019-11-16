@@ -1,5 +1,6 @@
-import {livingEntity} from "./player.js";
-import { dummieEnemy } from "./serverDependentSide/dummieEntitties.js";
+import { livingEntity } from "../Player and Items/player.js";
+import { dummieEnemy } from "./dummieEntitties.js";
+
 export class enemy extends livingEntity
 {
     constructor(scene, x, y, speed, sprite,anim, enemyManager, health, id)
