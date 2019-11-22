@@ -55,10 +55,8 @@ io.on('connection', socket => {
     {
         if(data.rooms === undefined)
         {
-            console.log("procesing the finish of shopping mode")
             players[1] = true;
             serverInventory = data;
-            console.log("finished the procesing of shopping mode")
         }
         else 
         {
@@ -92,11 +90,17 @@ io.on('connection', socket => {
     socket.on("playerHaveAttacked", () =>
     {
         clients.forEach( client => {client.emit("playerHaveAttacked")});
-    })
+    });
     socket.on("enemyDead", id =>
     {
         clients.forEach(client => {console.log("enemydead");client.emit("enemyDead",id)});
-    })
+    });
+    socket.on("changeRoom", data =>
+    {
+        clients.forEach(client => {client.emit("changeRoom",data)});
+    });
+    socket.on("trapDeactivated", id=> {console.log("trampamuerta");
+    clients.forEach(client =>{client.emit("trapDeactivated",id)})});
     
 });
 

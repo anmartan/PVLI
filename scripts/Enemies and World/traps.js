@@ -1,17 +1,20 @@
+import { dummieTrap } from "./dummieEntitties.js";
 
 //Se encarga de transformar la información en el editor de mazmorras en trampas dentro de la habitación
 export class trapManager
 {
-    constructor()
+    constructor(traps = undefined)
     {
-        this.traps = new Array();
+        if(traps===undefined)this.traps = new Array();
+        else this.traps=traps;
         this.created = false;
     }
 
     //Para añadir una nueva trampa
     AddTrap(trap)
     {
-        this.traps.push(trap);
+        let id= this.traps.push(trap) -1;
+        trap.id=id;
     }
 
     //Para quitar una trampa
@@ -47,9 +50,10 @@ export class trapManager
         switch(trap.type)
         {
             case "spikes":
-                let spiky= new spikes(scene, trap.pos.x, trap.pos.y, this);
+                let spiky= new spikes(scene, trap.pos.x, trap.pos.y, this, trap.id);
                 scene.physics.add.overlap(hero, spiky.zone, ()=>spiky.Activate(), null, scene);
-                scene.physics.add.collider(spiky, walls);               //Hace falta? Yo creo que no pero por si acaso XD
+                scene.physics.add.collider(spiky, walls);
+                spiky.setVisible(false);
                 return spiky;
             default:
                 console.log ("No existe esa trampita: "+ trap.subtype);
@@ -71,6 +75,40 @@ export class trapManager
         for(let i=0; i<this.traps.length; i++)
             this.traps[i].Show();    
     }
+
+    createDummyTraps(scene)
+    {
+        this.created = true;
+            for(let i = 0; i<this.traps.length;i++)
+            {
+                this.traps[i] = this.createDummy(this.traps[i],scene)
+            }
+            
+        socket.on("trapDeactivated", id =>
+        {
+            console.log(id);
+            this.traps[id].destroyTrap();
+        })
+
+        
+    }
+    createDummy(trap,scene)
+    {
+        switch (trap.type)
+        {
+            case "spikes":
+            {
+                let spikes;
+                spikes = new dummieTrap(scene,trap.pos.x,trap.pos.y, "spikes", this, trap.id);
+                return spikes;
+            }
+
+            default:
+                console.log("No se puede crear una trampa de tipo " + trap.subtype);
+                break;
+                
+        }
+    }
     
 }
 
@@ -78,7 +116,7 @@ export class Traps extends Phaser.GameObjects.Sprite
 {
     //Una trampa es un sprite con una zona (para activarse) y un efecto
     //Hace falta decirle quién es el héroe?
-    constructor(scene, x, y, spriteID, trapManager)//, hero)
+    constructor(scene, x, y, spriteID, trapManager, id)//, hero)
     {
         super(scene, x*16 +24, y*16 +24, spriteID)
         scene.add.existing(this);
@@ -86,13 +124,14 @@ export class Traps extends Phaser.GameObjects.Sprite
 
         this.trapManager = trapManager;
         this.zone=this.createZone(scene)
+        this.id=id;
         //this.hero=hero;
     }
     
     //Es (8,8) o (16, 16) el sprite
     createZone(scene)
     {
-        let zone = scene.add.zone(this.x,this.y, 8,8);
+        let zone = scene.add.zone(this.x,this.y, 16,16);
         scene.physics.add.existing(zone);
         zone.body.debugBodyColor = "0016FF";
         return zone;
@@ -102,7 +141,7 @@ export class Traps extends Phaser.GameObjects.Sprite
     //Hace falta decirle de nuevo quién es el nuevo héroe?
     Show(hero)
     {
-        this.setVisivle(true);
+        this.setVisible(true);
         this.body.setEnable(true);
         this.zone= this.createZone(this.scene);
         this.hero=hero;
@@ -111,7 +150,7 @@ export class Traps extends Phaser.GameObjects.Sprite
     //Oculta la trampa
     Hide()
     {
-        this.setVisivle(false);
+        this.setVisible(false);
         this.body.setEnable(false);
         this.hero=undefined;            //    Para que no active trampas desde otra habitación  //
         this.zone.destroy();            //                                                      //
@@ -127,22 +166,22 @@ export class Traps extends Phaser.GameObjects.Sprite
     //Desactiva la trampa: tanto si se ha activado ya su efecto como si se ha detectado con un radar
     Deactivate()
     {
+        socket.emit("trapDeactivated", this.id);
         this.zone.destroy();
         this.hero=undefined;
         this.trapManager.RemoveTrap(this);
         this.body.destroy();
         this.destroy();
-        console.log ("Trampa desactivada :D");
     }
 }
 
 export class spikes extends Traps
 {
-    constructor(scene, x, y, trapsManager)
+    constructor(scene, x, y, trapsManager, id)
     {
         let anim = "spikesAnim";
         let sprite = "spikes";
-        super(scene, x, y, sprite, trapsManager);
+        super(scene, x, y, sprite, trapsManager, id);
     }
     effect()
     {console.log("Has activado spkies trap")}
