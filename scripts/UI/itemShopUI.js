@@ -22,10 +22,10 @@ export class shopUiManager
             clickedColor : "#FF00FF",
             cursorOverColor : "#00FF00",
             basicColor : "#00",
-            style : {fontFamily:"arial", fontSize:"15px", color:"#00"},
+            style : {fontFamily:"m5x7", fontSize:"16px", color:"#00"},
         }
         //Texto del dinero actual
-        let text = scene.add.text(134,1,scene.inventory.gold, config.style);
+        let text = scene.add.text(136,2,scene.inventory.gold, config.style);
         
 
 
@@ -106,7 +106,7 @@ export class shopUiManager
         //Botón de continuar
         {
 
-        let continuar = new textButton(config,96,150,"Continuar");
+        let continuar = new textButton(config,106,152,"Continuar");
         continuar.on("pointerdown", () =>
         {
             scene.game.scene.stop("ItemShop");
@@ -132,7 +132,7 @@ export class itemButton extends Button
     constructor(scene, x, y, sprite, itemID, price)
     {
         super(scene,x,y,sprite);
-        let style = {fontFamily:"arial", fontSize:"15px", color:"#00"};
+        let style = {fontFamily:"m5x7", fontSize:"16px", color:"#00"};
         this.text = scene.add.text(x+this.width/2+4,y-this.height/2+4,"x"+price, style);
         this.text.setOrigin(0,0);
         this.itemID = itemID;
@@ -152,7 +152,8 @@ export class itemButton1lvl
         container.add(bg)
         container.add(scene.add.image(0,0,border));
 
-        let style = {fontFamily:"arial", fontSize:"15px", color:"#00"};
+        let style = {fontFamily:"m5x7", fontSize:"16px", color:"#00"};
+
         this.text = scene.add.text(bg.width/2+4, - bg.height/2+4, "x"+price, style);
         container.add(this.text);
         this.itemID = itemID;
@@ -180,7 +181,8 @@ export class itemButton2lvl
         container.add(rbg);
         container.add(scene.add.image(0,0,border));
 
-        let style = {fontFamily:"arial", fontSize:"15px", color:"#00"};
+        let style = {fontFamily:"m5x7", fontSize:"16px", color:"#00"};
+
         this.text = scene.add.text(rbg.width/2+4, - rbg.height/2+4, "x"+price, style);
         container.add(this.text);
         this.itemID = itemID;
@@ -232,7 +234,8 @@ export class itemButton3lvl
 
 
 
-        let style = {fontFamily:"arial", fontSize:"15px", color:"#00"};
+        let style = {fontFamily:"m5x7", fontSize:"16px", color:"#00"};
+
         this.text = scene.add.text(bg.width/2+4, - bg.height/2+4, "x"+price, style);
         container.add(this.text);
         this.itemID = itemID;

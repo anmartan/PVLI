@@ -56,7 +56,7 @@ class indexButton extends textButton //este botón servirá en la parte de edici
     {
         this.scene.actual = this.buttonPos; 
         this.setFill(this.clickedColor);
-        this.scene.rooms[this.scene.actual].resize(this.scene.rooms[this.scene.actual].size); //cambia la habitación actual a la que guarda el botón
+        this.scene.rooms[this.scene.actual].resize(this.scene.rooms[this.scene.actual].size, this.scene); //cambia la habitación actual a la que guarda el botón
         for(let i  = 0; i<3;i++) //itera por todos los botones de la escena 
         {
             if(this.scene.actual!==i)indexButtonChildren[i].setFill(indexButtonChildren[i].basicColor); //pone en basic color los botones de índice no presionados
@@ -117,7 +117,7 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
             clickedColor : "#FF00FF",
             cursorOverColor : "#00FF00",
             basicColor : "#FFFFFF",
-            style : {fontFamily:"arial", fontSize:"15px"},
+            style : {fontFamily:'m5x7', fontSize:"16px"},
         }
         new indexButtons(scene,config);
     }

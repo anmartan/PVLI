@@ -41,7 +41,7 @@ const SelectGameMode=
             })
         })
         socket.on("Role", (string)=>console.log(string.role+" is your role"))
-        this.add.dom(36,46,"p", "font: 48px Arial", 'Pa Nico');
+        this.add.text(0, 0, "hack", {font:"1px m5x7", fill:"#FFFFFF"});
 
     },
     update: function () {

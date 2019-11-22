@@ -49,7 +49,7 @@ const  scene =
             clickedColor : "#FF00FF",
             cursorOverColor : "#00FF00",
             basicColor : "#FFFFFF",
-            style : {fontFamily:"arial", fontSize:"15px"},
+            style : {fontFamily:"m5x7", fontSize:"16px"},
         }
         let continuar = new textButton(config,110,160,"Continuar");
         let scene;

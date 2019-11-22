@@ -22,9 +22,6 @@ let config = {
         }
     },
     scene: scenes,
-    dom: {
-        createContainer: true
-      }
 
 }
 
