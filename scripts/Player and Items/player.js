@@ -86,6 +86,7 @@ export class player extends livingEntity
         this.key_RIGHT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.key_DOWN  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN );
         this.key_LEFT  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT );
+        this.key_TAB   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB  );    
 
         this.play(anim);
 
@@ -167,6 +168,11 @@ export class player extends livingEntity
             this.weaponManager.useWeapon("left")
         }
 
+        //Teclas para cambiar de arma
+        if(Phaser.Input.Keyboard.JustDown(this.key_TAB))
+        {
+            this.weaponManager.changeWeapon();
+        }
         this.weaponManager.weapon.x = this.x + 2  + this.weaponManager.offsetX;
         this.weaponManager.weapon.y = this.y + 5  + this.weaponManager.offsetY;
     }

@@ -116,6 +116,14 @@ export default class weaponManager
         this.weapon.body.debugShowBody=bool;
         this.weapon.setVisible(bool);
     }
+    changeWeapon(){
+        if(this.weapon==this.SwordObject) {this.weapon=this.BowObject; console.log("Soy arco");}
+        else {this.weapon=this.SwordObject; console.log ("Soy espada");}
+    }
+
+    shootArrow()
+    {
+    }
 }
 
 /*

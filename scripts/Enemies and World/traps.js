@@ -182,7 +182,23 @@ export class spikes extends Traps
         let anim = "spikesAnim";
         let sprite = "spikes";
         super(scene, x, y, sprite, trapsManager, id);
+        this.effect = function efecto () 
+        {
+            console.log("Hago daño al héroe");
+        }
     }
-    effect()
-    {console.log("Has activado spkies trap")}
+}
+
+export class poison extends Traps
+{
+    constructor(scene, x, y, trapsManager, id)
+    {
+        let anim = "spikesAnim";
+        let sprite = "poison";
+        super(scene, x, y, sprite, trapsManager, id);
+        this.effect = function efecto () 
+        {
+            console.log("Soy una trampa de veneno y funciono");
+        }
+    }
 }
