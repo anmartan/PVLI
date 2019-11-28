@@ -107,7 +107,7 @@ export class player extends livingEntity
         //Intento de meter el inventario
         this.inventory = this.scene.game.inventory;
         this.weaponManager = new weaponManager(this);
-
+        
 
 
         //this.weapon.damage=this.inventory.Sword.Effect.Data.Quantity;

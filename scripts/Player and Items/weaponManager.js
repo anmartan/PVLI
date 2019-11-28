@@ -28,6 +28,13 @@ export default class weaponManager
         ShieldObject.body.setEnable(true);
         ShieldObject.body.setSize(1,1);
 
+        
+        //meto aquí las flechas???
+        //La idea es que cuando se compren, se metan en este grupo y se saquen cuando se destruyan
+        let arrows = this.add.group();
+        arrows.enableBody = true;
+        arrows.physicsBodyType = Phaser.Physics.ARCADE;
+
 
         this.SwordObject  = SwordObject;
         this.BowObject    = BowObject;
@@ -37,6 +44,7 @@ export default class weaponManager
         this.offsetX = 0;
         this.offsetY = 0;
         this.scene   = scene;
+        this.arrows= arrows;
         this.showWeapon(false);
     }
     selectWeapon(itemName)
@@ -56,20 +64,32 @@ export default class weaponManager
         {
             this.attacking = true;
             let angle;
-            let vertical;
-            let size
-            let vsize = 
+            let size;
+            let vsize;
+            let hsize; 
+            let delay;
+            switch(this.weapon)
             {
-                x: 14, 
-                y: 32, 
-            }
-            let hsize = 
-            {
-                x: 32, 
-                y: 14, 
-            }
+                case this.SwordObject:
+                    vsize=
+                    {
+                        x: 14, 
+                        y: 32, 
+                    }
+                    hsize = 
+                    {
+                    x: 32, 
+                    y: 14, 
+                    }
+                    delay = 1000;
+                break;
 
-            switch (dir) 
+                case (this.BowObject):
+                    //vsize= hsize=0;       //Hay que calcularlo dependiendo del sprite que metamos
+                    delay=250;
+                break;
+            }
+        switch (dir) 
             {
                 case "up":
                     this.offsetX=-2;
@@ -105,9 +125,11 @@ export default class weaponManager
             this.weapon.setAngle(angle); 
 
             this.showWeapon(true);
+            //Dos iguales o tres? XD
+            if(this.weapon == this.BowObject) this.shootArrow(this.offsetX, this.offsetY, angle);
             socket.emit("playerAttack", {angle: angle, offsetX: this.offsetX, offsetY:this.offsetY});
-            this.scene.time.delayedCall(1000,   this.haveAttacked,[],this)
-            this.scene.time.delayedCall(1000,   ()=> this.attacking=false);
+            this.scene.time.delayedCall(delay,   this.haveAttacked,[],this)
+            this.scene.time.delayedCall(delay,   ()=> this.attacking=false);
         }
     }
     showWeapon(bool)
@@ -121,8 +143,38 @@ export default class weaponManager
         else {this.weapon=this.SwordObject; console.log ("Soy espada");}
     }
 
-    shootArrow()
+
+    shootArrow(offsetX, offsetY, angle)
     {
+        let arrow = this.arrows.getFirstDead();     //Esto hace que no se dispare dos veces la misma flecha
+        if(arrow)                                   //Si no quedan flechas, no haría nada
+        {
+            arrow.reset(offsetX, offsetY);
+            arrow.angle = angle;
+            let velX;
+            let velY;
+            switch(angle)
+            {
+                case 0:
+                    velY=-3;
+                    velX=0;
+                    break;
+                case 90:
+                    velY=0;
+                    velX=3;
+                    break;
+                case 180:
+                    velY=3;
+                    velX=0;
+                    break;
+                case -90:
+                    velY=0;
+                    velX=-3;
+                    break;
+            }
+            arrow.body.velocity.x = velX;
+            arrow.body.velocity.y = velY;
+        }
     }
 }
 
