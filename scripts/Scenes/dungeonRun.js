@@ -28,6 +28,8 @@ const scene = {
         this.load.image("zombie_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
 
         this.load.image("spikes", "../assets/traps/spikes.png");
+        this.load.image("pink2","../assets/debug/pink2.png");
+
     },
     create: function()
     {

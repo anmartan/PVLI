@@ -89,31 +89,16 @@ export class player extends livingEntity
         this.key_TAB   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB  );    
 
         this.play(anim);
-
-        // Crea la espada ----> TODO: Sistema de inventario
-
-
-        /*let weapon = scene.add.sprite(100, 100, sword.name);
-        this.weapon = weapon;
-        this.weapon.scale = sword.scale;
-        scene.add.existing(this.weapon);
-        scene.physics.add.existing(this.weapon);
-        this.weapon.setVisible(false);
-        this.weapon.body.setEnable(true);
-        this.weapon.body.setSize(1,1);*/
-
-
         
         //Intento de meter el inventario
         this.inventory = this.scene.game.inventory;
         this.weaponManager = new weaponManager(this);
-        
-
-
-        //this.weapon.damage=this.inventory.Sword.Effect.Data.Quantity;
     }
     handleLogic()
     {
+        this.weaponManager.weapon.x = this.x + 2  + this.weaponManager.offsetX;
+        this.weaponManager.weapon.y = this.y + 5  + this.weaponManager.offsetY;
+        
         //Teclas de movimiento, cambiar la dirección y moverse en esa direción
         if(this.key_D.isDown)
         {
@@ -173,7 +158,6 @@ export class player extends livingEntity
         {
             this.weaponManager.changeWeapon();
         }
-        this.weaponManager.weapon.x = this.x + 2  + this.weaponManager.offsetX;
-        this.weaponManager.weapon.y = this.y + 5  + this.weaponManager.offsetY;
+
     }
 }

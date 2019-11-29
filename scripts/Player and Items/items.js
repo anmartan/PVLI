@@ -61,6 +61,7 @@ export class inventory
         let Potion = itemAtlas["Potion"];               
         let Radar = itemAtlas["Radar"];                 
         let Arrow = itemAtlas["Arrow_1"];          
+        let ArrowFire = itemAtlas["Arrow_2"];          
         let Grenade = itemAtlas["Grenade"];             
 
         let Armor  = itemAtlas["Armor_1" ];              
@@ -73,6 +74,7 @@ export class inventory
         this.Potion    = new item (Potion,    this);
         this.Radar      = new item(Radar,       this);
         this.Arrow     = new item(Arrow,      this);
+        this.ArrowFire     = new item(ArrowFire,      this);
         this.Grenade   = new item(Grenade,     this);
 
         /*  --Estaticos--   */
@@ -167,7 +169,7 @@ class item
                     //player.lanzarGranada(data)
                 }
             }
-            this.Units--;
+            return this.Units--;
         }
         else if(!this.Consumible)
         {

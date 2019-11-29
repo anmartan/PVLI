@@ -158,7 +158,8 @@ export const itemAtlas =
         },
         Sprite:
         {
-            ID : ""
+            ID : "Sword_3",
+            Scale:0.5
         }
     
     },

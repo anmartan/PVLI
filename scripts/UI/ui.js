@@ -105,7 +105,7 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         //Opciones de states[2] trampas:
         //--Por ahora no hay trampas implementadas--
         this.states[2].add(new gridOptionButton(scene,optionsX,optionsY,    ["white2","green2"], this.grid,"trap", "spikes"));  // 
-        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+8,  ["white2","green2"], this.grid,"trap","poison"));  // En un mundo ideal habría varios tipos más
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+8,  ["white2","green2"], this.grid,"trap", "poison"));  // En un mundo ideal habría varios tipos más
         this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+16, ["white2","green2"], this.grid,"trap",""));  //
         
         this.states[0].emit("pointerdown")                                                                            //Empezamos por defecto con el estado "Size"

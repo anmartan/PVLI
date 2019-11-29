@@ -27,6 +27,7 @@ const scene = {
         this.load.image("zombie_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
         this.load.image("zombie_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
         this.load.image("zombie_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
+
     },
     create: function()
     {

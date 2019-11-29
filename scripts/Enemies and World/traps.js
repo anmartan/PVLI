@@ -52,9 +52,14 @@ export class trapManager
             case "spikes":
                 let spiky= new spikes(scene, trap.pos.x, trap.pos.y, this, trap.id);
                 scene.physics.add.overlap(hero, spiky.zone, ()=>spiky.Activate(), null, scene);
-                scene.physics.add.collider(spiky, walls);
                 spiky.setVisible(false);
                 return spiky;
+
+            case "poison":
+                let poisony = new poison(scene, trap.pos.x, trap.pos.y, this, trap.id);
+                scene.physics.add.overlap(hero, poisony.zone, ()=>poisony.Activate(), null, scene);
+                poisony.setVisible(false);
+                return poisony;
             default:
                 console.log ("No existe esa trampita: "+ trap.subtype);
                 break;
@@ -102,6 +107,12 @@ export class trapManager
                 spikes = new dummieTrap(scene,trap.pos.x,trap.pos.y, "spikes", this, trap.id);
                 return spikes;
             }
+            case "poison":
+                {
+                    let spikes;
+                    spikes = new dummieTrap(scene,trap.pos.x,trap.pos.y, "poison", this, trap.id);
+                    return spikes;
+                }
 
             default:
                 console.log("No se puede crear una trampa de tipo " + trap.subtype);
@@ -182,11 +193,7 @@ export class spikes extends Traps
         this.effect = function efecto () 
         {
             console.log("Soy una spiky. Hago daño al héroe");
-            //Este es el efecto de la trampa de veneno, está aquí porque lo estaba probando
-            /*
-            for(let i=0; i<6; i++)
-            this.scene.time.delayedCall(500*i, ()=>{ console.log("Hago daño al héroe");});
-           */
+
           // Tengo problemas para implementar el stuneo. El héroe se sigue moviendo y luego no se puede volver a activar el teclado
           /*
           this.scene.input.keyboard.enabled= false;
@@ -206,8 +213,9 @@ export class poison extends Traps
         let sprite = "poison";
         super(scene, x, y, sprite, trapsManager, id);
         this.effect = function efecto () 
-        {
-            console.log("Soy una trampa de veneno y funciono");
+        {      
+            for(let i=0; i<6; i++)
+            this.scene.time.delayedCall(500*i, ()=>{ console.log("Hago daño al héroe");});
         }
     }
 }
