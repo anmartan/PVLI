@@ -115,7 +115,6 @@ export class trapManager
 export class Traps extends Phaser.GameObjects.Sprite
 {
     //Una trampa es un sprite con una zona (para activarse) y un efecto
-    //Hace falta decirle quién es el héroe?
     constructor(scene, x, y, spriteID, trapManager, id)//, hero)
     {
         super(scene, x*16 +24, y*16 +24, spriteID)
@@ -125,7 +124,6 @@ export class Traps extends Phaser.GameObjects.Sprite
         this.trapManager = trapManager;
         this.zone=this.createZone(scene)
         this.id=id;
-        //this.hero=hero;
     }
     
     //Es (8,8) o (16, 16) el sprite
@@ -138,7 +136,6 @@ export class Traps extends Phaser.GameObjects.Sprite
     }
 
     //Muestra el sprite y su zona. Crea una nueva dependencia con el nuevo héroe
-    //Hace falta decirle de nuevo quién es el nuevo héroe?
     Show(hero)
     {
         this.setVisible(true);
@@ -184,7 +181,19 @@ export class spikes extends Traps
         super(scene, x, y, sprite, trapsManager, id);
         this.effect = function efecto () 
         {
-            console.log("Hago daño al héroe");
+            console.log("Soy una spiky. Hago daño al héroe");
+            //Este es el efecto de la trampa de veneno, está aquí porque lo estaba probando
+            /*
+            for(let i=0; i<6; i++)
+            this.scene.time.delayedCall(500*i, ()=>{ console.log("Hago daño al héroe");});
+           */
+          // Tengo problemas para implementar el stuneo. El héroe se sigue moviendo y luego no se puede volver a activar el teclado
+          /*
+          this.scene.input.keyboard.enabled= false;
+          this.scene.hero.body.setVelocity(0,0);
+          console.log("No puedes moverte");
+          this.scene.time.delayedCall(3500, ()=>{ this.scene.input.keyboard.enabled= true;});
+            */
         }
     }
 }

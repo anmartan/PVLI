@@ -31,7 +31,7 @@ export default class weaponManager
         
         //meto aquí las flechas???
         //La idea es que cuando se compren, se metan en este grupo y se saquen cuando se destruyan
-        let arrows = this.add.group();
+        let arrows = scene.add.group();
         arrows.enableBody = true;
         arrows.physicsBodyType = Phaser.Physics.ARCADE;
 
@@ -153,7 +153,7 @@ export default class weaponManager
             arrow.angle = angle;
             let velX;
             let velY;
-            switch(angle)
+            switch(angle)                           //Calculamos la velocidad dependiendo del ángulo (o la dirección)
             {
                 case 0:
                     velY=-3;
