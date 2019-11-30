@@ -1,4 +1,5 @@
 import { dummieTrap } from "./dummieEntitties.js";
+import { zombie } from "./enemy.js";
 
 //Se encarga de transformar la información en el editor de mazmorras en trampas dentro de la habitación
 export class trapManager
@@ -190,7 +191,14 @@ export class spikes extends Traps
         let anim = "spikesAnim";
         let sprite = "spikes";
         super(scene, x, y, sprite, trapsManager, id);
-        this.enemyType = "zombie";
+        this.enemyType = 
+        {
+            type : "zombie",
+            pos:{
+                x: 5,
+                y: 5
+            }
+        }
         this.scene = scene;
     }
     
@@ -199,7 +207,7 @@ export class spikes extends Traps
         console.log("Soy una spiky. Hago daño al héroe");
         this.scene.enemies.addEnemy(this.enemyType);
         this.scene.enemies.summon(this.enemyType, this.scene, hero, hero.weapon, this.scene.walls, this.enemyType.id);
-        this.scene.enemies.enemies[this.enemyType.id].show();
+        console.log("id: " + this.enemyType.id);
     }
 }
 
