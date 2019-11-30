@@ -126,7 +126,7 @@ export class trapManager
 export class Traps extends Phaser.GameObjects.Sprite
 {
     //Una trampa es un sprite con una zona (para activarse) y un efecto
-    constructor(scene, x, y, spriteID, trapManager, id)//, hero)
+    constructor(scene, x, y, spriteID, trapManager, id, enemyType="")//, hero)
     {
         super(scene, x*16 +24, y*16 +24, spriteID)
         scene.add.existing(this);
@@ -167,7 +167,7 @@ export class Traps extends Phaser.GameObjects.Sprite
     //Cuando una trampa se activa: hace lo que tiene que hacer y se desactiva para que no vuelva a activarse
     Activate()
     {
-        this.effect();
+        this.effect(this.scene.hero);
         this.Deactivate();
     }
 
@@ -185,23 +185,21 @@ export class Traps extends Phaser.GameObjects.Sprite
 
 export class spikes extends Traps
 {
-    constructor(scene, x, y, trapsManager, id)
+    constructor(scene, x, y, trapsManager, id,enemyType)
     {
         let anim = "spikesAnim";
         let sprite = "spikes";
         super(scene, x, y, sprite, trapsManager, id);
-        this.effect = function efecto () 
-        {
-            console.log("Soy una spiky. Hago daño al héroe");
-
-          // Tengo problemas para implementar el stuneo. El héroe se sigue moviendo y luego no se puede volver a activar el teclado
-          /*
-          this.scene.input.keyboard.enabled= false;
-          this.scene.hero.body.setVelocity(0,0);
-          console.log("No puedes moverte");
-          this.scene.time.delayedCall(3500, ()=>{ this.scene.input.keyboard.enabled= true;});
-            */
-        }
+        this.enemyType = "zombie";
+        this.scene = scene;
+    }
+    
+    effect(hero) 
+    {
+        console.log("Soy una spiky. Hago daño al héroe");
+        this.scene.enemies.addEnemy(this.enemyType);
+        this.scene.enemies.summon(this.enemyType, this.scene, hero, hero.weapon, this.scene.walls, this.enemyType.id);
+        this.scene.enemies.enemies[this.enemyType.id].show();
     }
 }
 
@@ -209,13 +207,49 @@ export class poison extends Traps
 {
     constructor(scene, x, y, trapsManager, id)
     {
-        let anim = "spikesAnim";
+        let anim = "poisonAnim";
         let sprite = "poison";
         super(scene, x, y, sprite, trapsManager, id);
-        this.effect = function efecto () 
-        {      
-            for(let i=0; i<6; i++)
-            this.scene.time.delayedCall(500*i, ()=>{ console.log("Hago daño al héroe");});
-        }
+    }
+    effect(hero) 
+    {      
+        for(let i=0; i<6; i++)
+        this.scene.time.delayedCall(500*i, ()=>{ console.log("Hago daño al héroe");});
+    }
+}
+
+export class stun extends Traps
+{
+    constructor(scene, x, y, trapsManager, id)
+    {
+        let anim = "stunAnim";
+        let sprite = "stun";
+        super(scene, x, y, sprite, trapsManager, id);
+    }
+    effect() 
+    {
+        this.scene.hero.stunned=true;
+        this.scene.hero.body.velocity.x=0;
+        this.scene.hero.body.velocity.y=0;
+        this.scene.time.delayedCall(3000, ()=> {hero.stunned=false;}, [], this);
+    }
+}
+export class teleportation extends Traps
+{
+    constructor(scene, x, y, trapsManager, id)
+    {
+        let anim = "teleportationAnim";
+        let sprite = "teleportation";
+        super(scene, x, y, sprite, trapsManager, id);
+    }
+    effect(){}
+}
+export class spawn extends Traps
+{
+    constructor(scene, x, y, trapsManager, id)
+    {
+        let anim = "spawnAnim";
+        let sprite = "spawn";
+        super(scene, x, y, sprite, trapsManager, id);
     }
 }

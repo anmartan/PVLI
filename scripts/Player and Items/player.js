@@ -74,8 +74,9 @@ export class player extends livingEntity
         this.body.setSize(14,14);
         this.body.offset.y=14;
         this.body.setCollideWorldBounds(true);
+        this.stunned = false;
 
-
+        let keys = scene.add.group();
 
         // Lectura de input y ejecución de la animación ----> TODO: Clase teclado o input que se encargue de hacer esto más bonito
         this.key_D     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D    );
@@ -96,67 +97,66 @@ export class player extends livingEntity
     }
     handleLogic()
     {
-        this.weaponManager.weapon.x = this.x + 2  + this.weaponManager.offsetX;
-        this.weaponManager.weapon.y = this.y + 5  + this.weaponManager.offsetY;
+        if(!this.stunned)
+        {
+            this.weaponManager.weapon.x = this.x + 2  + this.weaponManager.offsetX;
+            this.weaponManager.weapon.y = this.y + 5  + this.weaponManager.offsetY;
         
-        //Teclas de movimiento, cambiar la dirección y moverse en esa direción
-        if(this.key_D.isDown)
-        {
-            this.dir = {x:1,  y:this.dir.y}
-            this.move();
-        }
-        if(this.key_A.isDown)
-        {
-            this.dir = {x:-1, y:this.dir.y}            
-            this.move();
-        }
-        if(this.key_W.isDown)
-        {
-            this.dir = {x:this.dir.x, y:-1}
-            this.move();
-        }
-        if(this.key_S.isDown)
-        {
-            this.dir = {x:this.dir.x, y:1}
-            this.move();
-        }
-        if (this.key_A.isUp && this.key_D.isUp)    //Resetear a 0 la x si ninguna de las horizontales se presiona
-        {
-            this.dir = {x:0,y:this.dir.y}
-            this.move();
-        }
-        if (this.key_W.isUp && this.key_S.isUp)   //Resetear a 0 la y si ninguna de las verticales se presiona
-        {
-            this.dir ={x:this.dir.x,y:0}
-            this.move();
-        }
-        let flip = (this.dir.x < 0);
-        socket.emit("playerMove",{pos:{x:this.x,y:this.y},flip:flip});
-
-
-        //Teclas de attaque, atacar en la dirección
-        if(this.key_DOWN.isDown)
-        {
-            this.weaponManager.useWeapon("down")
-        }
-        
-        if(this.key_UP.isDown)
-        { 
-            this.weaponManager.useWeapon("up")
-        }
-        if(this.key_RIGHT.isDown)
-        {
-            this.weaponManager.useWeapon("right")
-        }
-        if(this.key_LEFT.isDown)
-        {
-            this.weaponManager.useWeapon("left")
-        }
-
-        //Teclas para cambiar de arma
-        if(Phaser.Input.Keyboard.JustDown(this.key_TAB))
-        {
-            this.weaponManager.changeWeapon();
+            //Teclas de movimiento, cambiar la dirección y moverse en esa direción
+            if(this.key_D.isDown)
+            {
+                this.dir = {x:1,  y:this.dir.y}
+                this.move();
+            }
+            if(this.key_A.isDown)
+            {
+                this.dir = {x:-1, y:this.dir.y}            
+                this.move();
+            }
+            if(this.key_W.isDown)
+            {
+                this.dir = {x:this.dir.x, y:-1}
+                this.move();
+            }
+            if(this.key_S.isDown)
+            {
+                this.dir = {x:this.dir.x, y:1}
+                this.move();
+            }
+            if (this.key_A.isUp && this.key_D.isUp)    //Resetear a 0 la x si ninguna de las horizontales se presiona
+            {
+                this.dir = {x:0,y:this.dir.y}
+                this.move();
+            }
+            if (this.key_W.isUp && this.key_S.isUp)   //Resetear a 0 la y si ninguna de las verticales se presiona
+            {
+                this.dir ={x:this.dir.x,y:0}
+                this.move();
+            }
+            let flip = (this.dir.x < 0);
+            socket.emit("playerMove",{pos:{x:this.x,y:this.y},flip:flip});
+            //Teclas de attaque, atacar en la dirección
+            if(this.key_DOWN.isDown)
+            {
+                this.weaponManager.useWeapon("down")
+            }
+            if(this.key_UP.isDown)
+            { 
+                this.weaponManager.useWeapon("up")
+            }
+            if(this.key_RIGHT.isDown)
+            {
+                this.weaponManager.useWeapon("right")
+            }
+            if(this.key_LEFT.isDown)
+            {
+                this.weaponManager.useWeapon("left")
+            }
+            //Teclas para cambiar de arma
+            if(Phaser.Input.Keyboard.JustDown(this.key_TAB))
+            {
+                this.weaponManager.changeWeapon();
+            }
         }
 
     }

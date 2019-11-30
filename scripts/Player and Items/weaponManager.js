@@ -5,6 +5,7 @@ class Arrow extends Phaser.GameObjects.Sprite
         super(scene,x,y,"pink2")
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.body.setCollideWorldBounds(true);
         dir-=90;
         switch(dir)
         {
@@ -75,7 +76,7 @@ export default class weaponManager
         let weaponGroup = new Array();
         let arrows = scene.add.group();
         weaponGroup.push(arrows);
-        arrows.ammo = 
+        //arrows.ammo = 
         arrows.enableBody = true;
         arrows.physicsBodyType = Phaser.Physics.ARCADE;
 
@@ -187,8 +188,8 @@ export default class weaponManager
 
         if(!this.attacking)
         {
-            if(this.weapon==this.SwordObject) {this.weapon=this.BowObject; console.log("Soy arco");}
-            else {this.weapon=this.SwordObject; console.log ("Soy espada");}
+            if(this.weapon==this.SwordObject) this.weapon=this.BowObject;
+            else this.weapon=this.SwordObject;
         }
     }
 
@@ -197,7 +198,6 @@ export default class weaponManager
     {
         if(this.NormalArrows>0)
         {
-            console.log("flechas?")
             let arrow = new Arrow(this.scene,this.player.x, this.player.y, angle);     //Esto hace que no se dispare dos veces la misma flecha
             this.NormalArrows--;
         }
