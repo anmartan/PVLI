@@ -1,7 +1,7 @@
 import {player} from "../Player and Items/player.js";
 import {zombie, enemyManager} from "../Enemies and World/enemy.js";
 import {tilemap} from '../Enemies and World/tilemap.js';
-import {spikes} from "../Enemies and World/traps.js";
+import {spikes, trapManager} from "../Enemies and World/traps.js";
 
 const scene = {
     key: "DungeonRun",
@@ -75,9 +75,10 @@ const scene = {
 
         this.hero = new player (this, (16*4), (16*5), 30, "caballero_idle0", playerIdle, {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
         this.enemies = new enemyManager(this.game.dungeon.rooms[this.actual].enemies.enemies);
-        console.log(this.enemies);
         this.enemies.summonEnemies(this,this.hero, this.hero.weaponManager.weapon,this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
 
+        this.traps = new trapManager(this.game.dungeon.rooms[this.actual].traps.traps);
+        this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
 
         this.physics.add.collider(this.hero, this.tileMap.Walls);
 
@@ -86,13 +87,16 @@ const scene = {
             this.enemies.hideAllAlive();
             this.actual = (this.actual+1)%3;
             this.enemies = new enemyManager(this.game.dungeon.rooms[this.actual].enemies.enemies);
+            this.traps = new trapManager(this.game.dungeon.rooms[this.actual].traps.traps);
             this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
             this.hero.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8; 
             this.hero.y = (16*5) + 2; 
             entranceRec.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8;
             exitRec.x = (16*12) - ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8;
             this.enemies.summonEnemies(this, this.hero, this.hero.weaponManager.weapon, this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
-        });
+            this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
+            socket.emit("changeRoom");
+    });
    },
     update: function(delta)
    {

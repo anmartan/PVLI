@@ -57,3 +57,21 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite
         this.setVisible(false);
     }
 }
+export class dummieTrap extends Phaser.GameObjects.Sprite
+{
+    constructor(scene, x, y, sprite, trapManager, id)
+    {
+        super(scene, x*16+24, y*16+24, sprite);
+        scene.add.existing(this);
+        this.trapManager=trapManager;
+        this.id=id;
+        this.alpha=0.5;
+    }
+
+    destroyTrap()
+    {
+        console.log("me estoy destruyendo")
+        this.destroy();
+        this.setVisible(false);
+    }
+}

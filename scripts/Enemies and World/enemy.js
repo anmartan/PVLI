@@ -97,7 +97,7 @@ export class enemy extends livingEntity
     }
     update()
     {
-        socket.emit("enemyMove", {pos:{x:this.x,y:this.y},flip:this.dir.x<0,id:this.id});
+        socket.emit("enemyMove", {pos:{x:this.x,y:this.y},flip:this.flipX,id:this.id});
     }
 } 
 
@@ -120,10 +120,7 @@ export class enemyManager
     constructor(enemies=undefined)
     {
         if(enemies===undefined){this.enemies = new Array();} //Este array de enemigos contendrá lo necesario para invocar a cada enemigo en cada habitación antes de que se invoquen. Y al invocarlos a los mismos enemigos
-        else 
-        {
-            this.enemies = enemies;
-        }
+        else this.enemies=enemies;
         this.summoned =false;
     }
     addEnemy(enemy)

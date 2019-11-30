@@ -1,6 +1,7 @@
 import {dummiePlayer} from "../Enemies and World/dummieEntitties.js";
-import {zombie, enemyManager, enemy} from "../Enemies and World/enemy.js";
+import {enemyManager} from "../Enemies and World/enemy.js";
 import {tilemap} from '../Enemies and World/tilemap.js';
+import {trapManager} from "../Enemies and World/traps.js";
 
 const scene = {
     key: "DungeonRunAH",
@@ -67,9 +68,24 @@ const scene = {
         this.hero = new dummiePlayer(this, (16*4), (16*5), "caballero_idle0", "Sword_0", 0.5 ).play(playerIdle);
         this.enemies = new enemyManager(this.game.dungeon.rooms[this.actual].enemies.enemies);
         this.enemies.summonDummyEnemies(this); //invoca a los enemigos
+
+        this.traps = new trapManager(this.game.dungeon.rooms[this.actual].traps.traps);
+        this.traps.createDummyTraps(this);
         console.log(this.enemies);
 
-
+        socket.on("changeRoom", ()=>
+        {
+            this.enemies.hideAllAlive();
+            this.actual = (this.actual+1)%3;
+            this.enemies = new enemyManager(this.game.dungeon.rooms[this.actual].enemies.enemies);
+            //this.traps = new trapManager(this.game.dungeon.rooms[this.actual].traps.traps);
+            this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
+            this.hero.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8; 
+            this.hero.y = (16*5) + 2; 
+            this.enemies.summonDummyEnemies(this); //invoca a los enemigos, y activa las físicas y colisiones
+            //this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
+        });
+        
 
    },
     update: function(delta)
