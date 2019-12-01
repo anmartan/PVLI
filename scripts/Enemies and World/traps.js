@@ -195,8 +195,8 @@ export class spikes extends Traps
         {
             type : "zombie",
             pos:{
-                x: 5,
-                y: 5
+                x: x,
+                y: y
             }
         }
         this.scene = scene;
@@ -206,7 +206,9 @@ export class spikes extends Traps
     {
         console.log("Soy una spiky. Hago daño al héroe");
         this.scene.enemies.addEnemy(this.enemyType);
-        this.scene.enemies.summon(this.enemyType, this.scene, hero, hero.weapon, this.scene.walls, this.enemyType.id);
+        let enemyPosArray = this.scene.enemies.enemies[this.enemyType.id];
+        let monster = this.scene.enemies.summon(enemyPosArray, this.scene, hero, hero.weapon, this.scene.walls, this.enemyType.id);
+        this.scene.enemies.enemies[monster.id] = monster;
         console.log("id: " + this.enemyType.id);
     }
 }

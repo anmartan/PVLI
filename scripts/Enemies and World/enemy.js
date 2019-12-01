@@ -119,32 +119,30 @@ export class enemyManager
 {
     constructor(enemies=undefined)
     {
-        if(enemies===undefined){this.enemies = new Array();} //Este array de enemigos contendrá lo necesario para invocar a cada enemigo en cada habitación antes de que se invoquen. Y al invocarlos a los mismos enemigos
+        //if(enemies===undefined){this.enemies = new Array();} //Este array de enemigos contendrá lo necesario para invocar a cada enemigo en cada habitación antes de que se invoquen. Y al invocarlos a los mismos enemigos
+        if(enemies===undefined){this.enemies = scene.add.group(); this.id = 0;}         //Vamos a probar con un grupo, a ver por dónde explota esta vez
         else this.enemies=enemies;
         this.summoned =false;
     }
     addEnemy(enemy)
     {
-        let id = this.enemies.push(enemy) - 1; //La posición en el array
-        this.enemies[id].id = id;
+        //let id = this.enemies.push(enemy) - 1; //La posición en el array
+        //this.enemies[id].id = id;
+        this.enemies.add(enemy);
+        enemy.id = this.id;
+        this.id ++; 
     }
     hideAllAlive()
     {
-        for(let i=0; i<this.enemies.length;i++) 
-        {
-            this.enemies[i].hide();
-        }
+        this.enemies.callAll(hide());
     }
     showAllAlive()
     {
-        for(let i = 0; i < this.enemies.length;i++) 
-        {
-            this.enemies[i].show();
-        }
+        this.enemies.callAll(show());
     }
     removeEnemy(enemy)
     {
-        this.enemies.splice(this.enemies.indexOf(enemy),1);
+        this.enemies.remove(enemy);
     }
     getNth(index)
     {
@@ -171,10 +169,7 @@ export class enemyManager
         }
         else 
         {
-            for(let i = 0; i<this.enemies.length;i++)
-            {
-                this.enemies[i].show();
-            }
+            this.showAllAlive();
         }
 
     }
@@ -201,10 +196,11 @@ export class enemyManager
     summonDummyEnemies(scene)
     {
         this.summoned = true;
-            for(let i = 0; i<this.enemies.length;i++)
+        this.enemies.forEach(function(enemy){this.summonDummy(enemy, scene, enemy.id);});
+        /*for(let i = 0; i<this.enemies.length;i++)
             {
                 this.enemies[i] = this.summonDummy(this.enemies[i],scene,i)
-            }
+            }*/
         socket.on("enemyMove", data =>
         {
             this.enemies[data.id].move(data.pos, data.flip);
