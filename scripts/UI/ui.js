@@ -473,8 +473,7 @@ class dungeonGrid
                     console.log("No se puede crear un enemigo de tipo "+ cell.subtype);
                     break;
             }
-            if(enemyConfig!==undefined) actualRoom.enemies.addEnemy(enemyConfig); //Si se ha encontrado un enemigo posible en el switch se añade la configuración a la lista cprres`pmoemte
-
+            if(enemyConfig!==undefined) actualRoom.enemies.addEnemyInfo(enemyConfig); //Si se ha encontrado un enemigo posible en el switch se añade la configuración a la lista cprres`pmoemte
         }
         //Ahora también guardamos trampas
         else if(cell.type === "trap")

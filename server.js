@@ -82,6 +82,7 @@ io.on('connection', socket => {
     socket.on("enemyMove", data=>
     {
         clients.forEach( client => {client.emit("enemyMove", data)});
+        console.log("enemy moved : " +data)
     });
     socket.on("playerAttack", data =>
     {

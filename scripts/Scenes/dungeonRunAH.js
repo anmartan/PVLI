@@ -67,7 +67,7 @@ const scene = {
     
         //this.hero = new player (this, (16*4), (16*5), 30, "caballero_idle0", playerIdle, {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
         this.hero = new dummiePlayer(this, (16*4), (16*5), "caballero_idle0", "Sword_0", 0.5 ).play(playerIdle);
-        this.enemies = new enemyManager(this.game.dungeon.rooms[this.actual].enemies.enemies);
+        this.enemies = new enemyManager(this,this.game.dungeon.rooms[this.actual].enemies.enemiesInfo);
         this.enemies.summonDummyEnemies(this); //invoca a los enemigos
 
         this.traps = new trapManager(this.game.dungeon.rooms[this.actual].traps.traps);
@@ -78,7 +78,7 @@ const scene = {
         {
             this.enemies.hideAllAlive();
             this.actual = (this.actual+1)%3;
-            this.enemies = new enemyManager(this.game.dungeon.rooms[this.actual].enemies.enemies);
+            this.enemies = new enemyManager(this,this.game.dungeon.rooms[this.actual].enemies.enemiesInfo);
             //this.traps = new trapManager(this.game.dungeon.rooms[this.actual].traps.traps);
             this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
             this.hero.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8; 

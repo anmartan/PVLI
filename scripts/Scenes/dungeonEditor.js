@@ -28,8 +28,8 @@ const  scene =
         this.load.image("spikes", "../assets/traps/spikes.png");
         this.load.image("poison", "../assets/traps/spikes.png");
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
-        
-        this.rooms = [ new room(5,new trapManager(),new enemyManager(),this),new room(7,new trapManager(),new enemyManager(),this), new room(9,new trapManager(),new enemyManager(),this) ];
+        this.rooms = Array();
+        this.rooms = [ new room(5,new trapManager(),new enemyManager(this),this),new room(7,new trapManager(),new enemyManager(this),this), new room(9,new trapManager(),new enemyManager(this),this) ];
         this.dungeon = new dungeon(this.rooms);
         this.actual = 0;
         this.game.dungeon = new dungeon(this.rooms);

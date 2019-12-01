@@ -268,23 +268,51 @@ Mago                4                           3-4                     Baja    
 
 Escarabajo          3+3                         1-2                     Media           10
 */
+
+export class enemyInfo
+{
+    constructor(x,y,type)
+    {
+        this.pos  = {x:x,y:y};
+        this.type = type;
+    }
+}
+
+
 export class enemyManager
 {
-    constructor(enemies=undefined)
+    constructor(scene,enemies=undefined)
     {
         //if(enemies===undefined){this.enemies = new Array();} //Este array de enemigos contendrá lo necesario para invocar a cada enemigo en cada habitación antes de que se invoquen. Y al invocarlos a los mismos enemigos
         //else this.enemies=enemies;
-        this.enemies= this.scene.add.group()        //Vamos a probar con un grupo, a ver por dónde explota esta vez
-        this.summoned =false;
+
+        /* Si nos han pasado un Array con enemyInfo entonces estamos en el dungeonRun */
+        if(Array.isArray(enemies))
+        {
+            this.scene=scene;
+            this.enemies = this.scene.add.group()        
+            this.summoned = false;
+            this.enemiesInfo= enemies;
+            console.log("aaaaaaaaaaaaaaaaaaaa");
+        }
+        else 
+        {
+            this.enemiesInfo = new Array();
+        }
+    }
+    addEnemyInfo(enemyInfo)
+    {
+        //let id = this.enemies.push(enemy) - 1; //La posición en el array
+        //this.enemies[id].id = id;
+        enemyInfo.id=this.enemiesInfo.push(enemyInfo);
     }
     addEnemy(enemy)
     {
         //let id = this.enemies.push(enemy) - 1; //La posición en el array
         //this.enemies[id].id = id;
         this.enemies.add(enemy);
-        enemy.id = this.id;
-        this.id ++; 
     }
+    getLastID(){return this.enemies.getChildren().length;}
     hideAllAlive()
     {
         this.enemies.callAll(hide());
@@ -314,10 +342,15 @@ export class enemyManager
     {
         if(!this.summoned)
         {
+            scene.physics.add.overlap(weapon, this.enemies, (weapon, enemy) => hero.attack(enemy,weapon.damage));               //
+            scene.physics.add.overlap(hero, this.enemies.zone, () => this.enemies.spotPlayer(hero),null,scene);           //
+            scene.physics.add.collider(this.enemies, walls);                                                              // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
+            scene.physics.add.collider(this.enemies, hero);                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
+    
             this.summoned = true;
-            for(let i = 0; i<this.enemies.length;i++)
+            for(let i = 0; i<this.enemiesInfo.length;i++)
             {
-                this.enemies[i] = this.summon(this.enemies[i], scene, hero, weapon, walls, i)
+                this.addEnemy(this.summon(this.enemiesInfo[i], scene, hero, weapon, walls, i));
             }
         }
         else 
@@ -327,33 +360,28 @@ export class enemyManager
 
     }
 
-    summon(enemy, scene, hero, weapon, walls, id)
+    summon(enemyInfo, scene, hero, weapon, walls, id)
     {
-        switch (enemy.type)
+        switch (enemyInfo.type)
         {
             case "zombie":
             let z;
-            z = new zombie(scene, enemy.pos.x, enemy.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-            scene.physics.add.overlap(weapon, z, () => hero.attack(z,weapon.damage));               //
-            scene.physics.add.overlap(hero, z.zone, () => z.spotPlayer(hero),null,scene);           //
-            scene.physics.add.collider(z, walls);                                                   // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
-            scene.physics.add.collider(z, hero);                                                    //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
-            z.body.setCollideWorldBounds(true);                                                     //       aquí.
+            z = new zombie(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
             return z;
 
         default:
-            console.log("No se puede crear un enemigo de tipo " + enemy.subtype);
+            console.log("No se puede crear un enemigo de tipo " + enemyInfo.type);
             break;
         }
     }
     summonDummyEnemies(scene)
     {
         this.summoned = true;
-        this.enemies.forEach(function(enemy){this.summonDummy(enemy, scene, enemy.id);});
-        /*for(let i = 0; i<this.enemies.length;i++)
-            {
-                this.enemies[i] = this.summonDummy(this.enemies[i],scene,i)
-            }*/
+        //this.enemiesInfo.forEach(function(enemy){this.summonDummy(enemy, scene, enemy.id);});
+        for(let i = 0; i<this.enemiesInfo.length;i++)
+        {
+            this.enemies[i] = this.summonDummy(this.enemiesInfo[i],scene,i)
+        }
         socket.on("enemyMove", data =>
         {
             this.enemies[data.id].move(data.pos, data.flip);
@@ -361,9 +389,7 @@ export class enemyManager
         socket.on("enemyDead", id =>
         {
             this.enemies[id].killDumie();
-        })
-
-        
+        }) 
     }
     summonDummy(enemy,scene,i)
     {
