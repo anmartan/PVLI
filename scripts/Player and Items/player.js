@@ -41,6 +41,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     }
     augmentMaxHealth(points)
     {
+        this.health+= points;
         return this.maxHealth+=points;
     }
 

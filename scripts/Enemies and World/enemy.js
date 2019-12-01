@@ -12,6 +12,7 @@ export class enemy extends livingEntity
         this.findDir();                     //Encuentra una dirección aleatoria mientras no haya referencia a player
         this.scene = scene;
         this.id = id;
+        this.attacking = false;             //Para que haya un cooldown y no puedan atacar constantemente
     }
     createZone(scene)
     {
@@ -59,6 +60,7 @@ export class enemy extends livingEntity
     }
     kill()
     {
+        this.whenDie();                                             //Efecto que tienen algunos enemigos al morir. Si no tienen ninguno, el método no hará nada
         if(this.zone!==undefined)this.zone.destroy();
         if(this.player !==undefined)this.player=undefined;
         this.enemyManager.removeEnemy(this);
@@ -99,6 +101,15 @@ export class enemy extends livingEntity
     {
         socket.emit("enemyMove", {pos:{x:this.x,y:this.y},flip:this.flipX,id:this.id});
     }
+    attack()                               //Para que cada enemigo tenga un cooldown diferente, si no te gusta se puede quitar y ponerle siempre el mismo
+    {
+        if(!this.attacking)
+        {
+            this.attacking = true;
+            this.attackEffect(this.player);
+            this.scene.time.delayedCall(this.coolDown, ()=>{this.attacking = false;});
+        }
+    }
 } 
 
 
@@ -109,19 +120,161 @@ export class zombie extends enemy
         let anim = "idleZ";
         let speed = 10;
         let sprite = "zombie_idle0";
-        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 4 }, id);
+        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 3 }, id);
+        this.price = 3; 
+        this.coolDown = 2500;                                                                                                                   //coolDown para el ataque: orientativo de momento, se puede fijar para que todos tengan el mismo
    }
 
-
+   attackEffect(player)
+   {
+       console.log ("Salud del héroe: " + player.health());
+       player.damage(1);
+       console.log("Estoy atacando al héroe: " + player.health);
+   }
+   whenDie(){}  //no hace nada
 }
 
+export class bee extends enemy
+{
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    {
+        let anim = "idleBee";
+        let speed = 50;
+        let sprite = "bee_idle0";
+        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
+        this.price = 6; 
+        this.coolDown = 1250;
+   }
+
+   attackEffect(player)
+   {
+       console.log ("Salud del héroe: " + player.health());
+       player.damage(1);
+       console.log("Estoy atacando al héroe: " + player.health);
+   }
+   whenDie(){}  //no hace nada
+}
+
+export class spider extends enemy
+{
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    {
+        let anim = "idleSpider";
+        let speed = 15;
+        let sprite = "spider_idle0";
+        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
+        this.price = 20; 
+        this.coolDown = 1500;
+   }
+
+   attackEffect(player)
+   {
+       console.log ("Salud del héroe: " + player.health());
+       player.damage(2);
+       console.log("Estoy atacando al héroe: " + player.health);
+   }
+   whenDie()            //multiplicación de las arañas
+   {
+       //de momento son solo pruebas porque no se puede comprobar nada, porque no tenemos ni array ni grupo de enemigos :_D
+       for(let i=0; i<5; i++)                                   //i < número de arañas que queramos spawnear. Se puede cambiar más adelante
+       {
+           //adaptar el código de la trampa de spawneo: para que no todas tengan la misma posición, y sabiendo que todo son arañitas
+       }
+   }  
+}
+
+export class littleSpider extends enemy
+{
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    {
+        let anim = "idleSpider";                        //será otro sprite? O solo le vamos a cambiar la escala?
+        let speed = 25;
+        let sprite = "spider_idle0";
+        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 1 }, id);
+        this.price = 0;                                 // las arañitas no se pueden crear desde el editor de mazmorras. Solo aparecen cuando muere una araña
+        this.coolDown = 1500;
+   }
+
+   attackEffect(player)
+   {
+       console.log ("Salud del héroe: " + player.health());
+       player.damage(1);
+       console.log("Estoy atacando al héroe: " + player.health);
+   }
+   whenDie()            //multiplicación de las arañas
+   {
+       //de momento son solo pruebas porque no se puede comprobar nada, porque no tenemos ni array ni grupo de enemigos :_D
+       for(let i=0; i<5; i++)                                   //i < número de arañas que queramos spawnear. Se puede cambiar más adelante
+       {
+           //adaptar el código de la trampa de spawneo: para que no todas tengan la misma posición, y sabiendo que todo son arañitas
+       }
+   }  
+}
+
+export class wizard extends enemy
+{
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    {
+        let anim = "idleSpider";
+        let speed = 15;
+        let sprite = "spider_idle0";
+        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
+        this.price = 15; 
+        this.coolDown = 2750;
+   }
+
+   attackEffect(player)
+   {
+       console.log ("Salud del héroe: " + player.health());
+       player.damage(3);
+       console.log("Estoy atacando al héroe: " + player.health);
+   }
+   whenDie(){}      //no hace nada
+}
+
+export class beetle extends enemy
+{
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    {
+        let anim = "idleSpider";
+        let speed = 30;
+        let sprite = "spider_idle0";
+        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 6 }, id);
+        this.price = 10; 
+        this.coolDown = 1750;
+   }
+
+   attackEffect(player)
+   {
+       console.log ("Salud del héroe: " + player.health());
+       player.damage(2);
+       console.log("Estoy atacando al héroe: " + player.health);
+   }
+   whenDie(){}      //no hace nada
+}
+/*
+
+Enemigo         Puntos de vida          Puntos de ataque            Velocidad           Precio
+
+Zombie              3                           1                       Baja             3 
+ 
+Abeja               1-2                         1                       Alta            5-6   
+
+Araña               2                           2                       Baja             20
+
+Arañita             1                           1                       Media            x
+
+Mago                4                           3-4                     Baja            15
+
+Escarabajo          3+3                         1-2                     Media           10
+*/
 export class enemyManager
 {
     constructor(enemies=undefined)
     {
         //if(enemies===undefined){this.enemies = new Array();} //Este array de enemigos contendrá lo necesario para invocar a cada enemigo en cada habitación antes de que se invoquen. Y al invocarlos a los mismos enemigos
-        if(enemies===undefined){this.enemies = scene.add.group(); this.id = 0;}         //Vamos a probar con un grupo, a ver por dónde explota esta vez
-        else this.enemies=enemies;
+        //else this.enemies=enemies;
+        this.enemies= this.scene.add.group()        //Vamos a probar con un grupo, a ver por dónde explota esta vez
         this.summoned =false;
     }
     addEnemy(enemy)
