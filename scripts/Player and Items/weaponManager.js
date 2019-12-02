@@ -45,7 +45,6 @@ export default class weaponManager
         this.NormalArrows = player.inventory.Arrow.Units;    //number of normal arrows
         this.FireArrows   = player.inventory.ArrowFire.Units;//number of fire arrows
 
-
         let SwordObject = scene.add.sprite(0,0,Sword.Sprite.ID);
         SwordObject.scale = Sword.Sprite.Scale;
         scene.add.existing(SwordObject);
@@ -53,6 +52,7 @@ export default class weaponManager
         SwordObject.body.setEnable(true);
         SwordObject.body.setSize(1,1);
         SwordObject.setVisible(false);
+        SwordObject.Damage=Sword.Damage;
 
         let BowObject = scene.add.sprite(0,0,Bow.Sprite.ID);
         BowObject.scale = Bow.Sprite.Scale;
@@ -61,6 +61,8 @@ export default class weaponManager
         BowObject.body.setEnable(true);
         BowObject.body.setSize(1,1);
         BowObject.setVisible(false);
+        BowObject.Damage=Bow.Damage;
+
 
         let ShieldObject = scene.add.sprite(0,0,Shield.Sprite.ID);
         ShieldObject.scale = Shield.Sprite.Scale;
@@ -69,28 +71,27 @@ export default class weaponManager
         ShieldObject.body.setEnable(true);
         ShieldObject.body.setSize(1,1);
         ShieldObject.setVisible(false);
+        ShieldObject.Damage=Shield.Damage;
+
 
         
         //meto aquí las flechas???
         //La idea es que cuando se compren, se metan en este grupo y se saquen cuando se destruyan
-        let weaponGroup = new Array();
-        let arrows = scene.add.group();
-        weaponGroup.push(arrows);
-        //arrows.ammo = 
-        arrows.enableBody = true;
-        arrows.physicsBodyType = Phaser.Physics.ARCADE;
-
-
+        let weaponGroup = scene.add.group();
+       
+        this.NormalArrowsDamage = player.inventory.Arrow.Damage;
+        this.FireArrowsDamage = player.inventory.ArrowFire.Damage;
         this.SwordObject  = SwordObject;
         this.BowObject    = BowObject;
         this.ShieldObject = ShieldObject;
         this.weapon       = this.SwordObject;
-        this.weapon.damage = Sword.Effect.Data.Quantity;
+        //this.weapon.damage = Sword.Effect.Data.Quantity;
         this.offsetX = 0;
         this.offsetY = 0;
         this.scene   = scene;
-        this.arrows = arrows;
         this.weaponGroup = weaponGroup;
+        this.weaponGroup.add(this.SwordObject);
+        this.weaponGroup.add(this.BowObject);
         this.player = player;
         this.showWeapon(false);
     }
@@ -198,7 +199,9 @@ export default class weaponManager
     {
         if(this.NormalArrows>0)
         {
-            let arrow = new Arrow(this.scene,this.player.x, this.player.y, angle);     //Esto hace que no se dispare dos veces la misma flecha
+            let arrow = new Arrow(this.scene,this.player.x, this.player.y, angle);
+            arrow.Damage=this.NormalArrowsDamage;
+            this.weaponGroup.add(arrow);     //Esto hace que no se dispare dos veces la misma flecha
             this.NormalArrows--;
         }
     }

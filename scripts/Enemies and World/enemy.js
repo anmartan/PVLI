@@ -8,6 +8,7 @@ export class enemy extends livingEntity
         super(scene, x, y, sprite, speed, health);
         this.enemyManager = enemyManager;
         this.zone = this.createZone(scene);
+        this.enemyManager.zone.add(this.zone);
         this.play(anim);
         this.findDir();                     //Encuentra una dirección aleatoria mientras no haya referencia a player
         this.scene = scene;
@@ -19,6 +20,7 @@ export class enemy extends livingEntity
         let zone = scene.add.zone(this.x,this.y,16*3,16*3);
         scene.physics.add.existing(zone);
         zone.body.debugBodyColor = "0xFFFF00"
+        zone.parent=this;
         return zone;
     }
     spotPlayer(player)
@@ -290,7 +292,8 @@ export class enemyManager
         if(Array.isArray(enemies))
         {
             this.scene=scene;
-            this.enemies = this.scene.add.group()        
+            this.enemies = this.scene.add.group();       
+            this.zone = this.scene.add.group();       
             this.summoned = false;
             this.enemiesInfo= enemies;
             console.log("aaaaaaaaaaaaaaaaaaaa");
@@ -308,18 +311,17 @@ export class enemyManager
     }
     addEnemy(enemy)
     {
-        //let id = this.enemies.push(enemy) - 1; //La posición en el array
-        //this.enemies[id].id = id;
         this.enemies.add(enemy);
     }
-    getLastID(){return this.enemies.getChildren().length;}
+    getLastID(){return this.enemies.getChildren().length-1;}
     hideAllAlive()
     {
-        this.enemies.callAll(hide());
+       let enemies= this.enemies.getChildren();
     }
     showAllAlive()
     {
-        this.enemies.callAll(show());
+        this.enemies.getChildren().foreach(enemy, ()=>enemy.show());
+
     }
     removeEnemy(enemy)
     {
@@ -338,19 +340,19 @@ export class enemyManager
         this.enemies[index].pos = newPos;
     }
 
-    summonEnemies(scene, hero, weapon, walls)
+    summonEnemies(scene, hero, weaponGroup, walls)
     {
         if(!this.summoned)
         {
-            scene.physics.add.overlap(weapon, this.enemies, (weapon, enemy) => hero.attack(enemy,weapon.damage));               //
-            scene.physics.add.overlap(hero, this.enemies.zone, () => this.enemies.spotPlayer(hero),null,scene);           //
+            scene.physics.add.overlap(weaponGroup, this.enemies, (weapon, enemy) => {hero.attack(enemy, weapon.Damage)});         //
+            scene.physics.add.overlap(this.zone, hero , (zone) => zone.parent.spotPlayer(hero));                  //
             scene.physics.add.collider(this.enemies, walls);                                                              // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
             scene.physics.add.collider(this.enemies, hero);                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
     
             this.summoned = true;
             for(let i = 0; i<this.enemiesInfo.length;i++)
             {
-                this.addEnemy(this.summon(this.enemiesInfo[i], scene, hero, weapon, walls, i));
+                this.addEnemy(this.summon(this.enemiesInfo[i], scene, hero, weaponGroup, walls, i));
             }
         }
         else 

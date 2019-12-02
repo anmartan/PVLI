@@ -151,14 +151,14 @@ export const itemAtlas =
             Target: "other",
             Data:
             {
-                Attribute: "damage",
+                Attribute: "distance",
                 Quantity: 4, // Alcance: 4 jugadores.
                 Cooldown: 2  // Velocidad de carga: 2 s
             }
         },
         Sprite:
         {
-            ID : "Sword_3",
+            ID : "Bow_1",
             Scale:0.5
         }
     
@@ -173,10 +173,15 @@ export const itemAtlas =
             Target: "other",
             Data:
             {
-                Attribute: "damage",
+                Attribute: "distance",
                 Quantity: 6,        //Alcance: 6 jugadores
                 Cooldown: 1.5       //Velocidad de carga: 1.5 s
             }
+        },
+        Sprite:
+        {
+            ID : "Bow_2",
+            Scale:0.5
         }
     
     },
@@ -190,10 +195,15 @@ export const itemAtlas =
             Target: "other",
             Data:
             {
-                Attribute: "damage",
+                Attribute: "distance",
                 Quantity: 8,        //Alcance: 8 jugadores
                 Cooldown: 1         //Velocidad de carga: 1.5 s
             }
+        },
+        Sprite:
+        {
+            ID : "Bow_3",
+            Scale:0.5
         }
     
     },
@@ -207,7 +217,7 @@ export const itemAtlas =
             Target: "self",
             Data:
             {
-                Attribute: -1,
+                Attribute: "none",
                 Quantity: 2,        //Bloquea 2 puntos de ataques
                 Cooldown: 0
             }
@@ -230,7 +240,7 @@ export const itemAtlas =
             Target: "self",
             Data:
             {
-                Attribute: -1,
+                Attribute: "none",
                 Quantity: 4,        //Bloquea 4 puntos de ataques
                 Cooldown: 0
             }
@@ -248,7 +258,7 @@ export const itemAtlas =
             Target: "self",
             Data:
             {
-                Attribute: -1,
+                Attribute: "none",
                 Quantity: 6,    //Bloquea 6 puntos de ataques
                 Cooldown: 0
             }

@@ -1,3 +1,5 @@
+import { enemyInfo } from "../Enemies and World/enemy.js";
+
 export class textButton extends Phaser.GameObjects.Text{
     constructor(config, x, y, text)
     {
@@ -447,8 +449,6 @@ class dungeonGrid
                 saveCell(i,j, this); //Para cada celda llama a la función SaveCell
             }
         }
-
-
         function saveCell(i,j, grid)
         {
         let cell = grid.cells[i][j];
@@ -456,18 +456,13 @@ class dungeonGrid
         {
             let actualRoom = dungeon.rooms[cell.actual];
             let enemyConfig;                                                        //En esta variable se guardará la información necesaria para crear el enemigo
-            let offset = (grid.getOffsetBySize(actualRoom.size))             
+            let offset = (grid.getOffsetBySize(actualRoom.size))   
+            let x = cell.i+offset;
+            let y = cell.j+offset;          
             switch (cell.subtype)
             {
                 case "zombie":
-                    enemyConfig =
-                    {
-                        type: "zombie",
-                        pos: {
-                            x : cell.i+offset,
-                            y : cell.j+offset
-                        }
-                    }
+                    enemyConfig = new enemyInfo(x,y,"zombie")
                     break;
                 default:
                     console.log("No se puede crear un enemigo de tipo "+ cell.subtype);

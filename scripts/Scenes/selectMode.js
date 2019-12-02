@@ -5,6 +5,16 @@ const SelectGameMode=
     {
         this.load.image("button","../assets/debug/white.png");
         this.load.image("button2","../assets/debug/pink.png");
+
+        this.load.image("Sword_0", "../assets/player/sword_0.png")
+        this.load.image("Sword_1", "../assets/player/sword_1.png")
+        this.load.image("Sword_2", "../assets/player/sword_2.png")
+        this.load.image("Sword_3", "../assets/player/sword_3.png")
+
+        this.load.image("Bow_0", "../assets/player/sword_0.png")
+        this.load.image("Bow_1", "../assets/player/sword_1.png")
+        this.load.image("Bow_2", "../assets/player/sword_2.png")
+        this.load.image("Bow_3", "../assets/player/sword_3.png")
         
     },
     create:function () {

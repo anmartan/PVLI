@@ -149,18 +149,33 @@ class item
             this.Units = 0;
         }
         else this.Units = itemParams.Units;
+
+
+        if(!this.Consumible&&this.Effect.Target === "other" && this.Effect.Data.Attribute==="damage")
+        {
+            console.log("Daño"+this.Damage)
+            this.Damage = itemParams.Effect.Data.Quantity;
+            //player.attack(data);
+            //esto va a doler programarlo y mucho, tengo la sensación xD
+        }
+        else if(this.Consumible&&itemParams.Effect.Target === "other")
+        {
+            this.Damage=this.Effect.Data.damage;
+            console.log("Daño"+this.Damage)
+        }
+
     }
     use()
     {
         if(this.Consumible && this.Units > 0)
         {
             let data=this.Effect.Data;
-            if(this.Effect.target = "self")
+            if(this.Effect.target === "self")
             {
                 let health;
                 health+= this.Effect.Data;
             }
-            if(this.Effect.target = "other")
+            if(this.Effect.target === "other")
             {
                 if(data.time === -1){
                     //player.dispararFlecha(data)
@@ -171,36 +186,7 @@ class item
             }
             return this.Units--;
         }
-        else if(!this.Consumible)
-        {
-            if(this.Effect.target === "other")
-            {
-                let data = this.Effect.Data;
-                return data;
-                //player.attack(data);
-                //esto va a doler programarlo y mucho, tengo la sensación xD
-            }
-            else if(this.Effect.target ==="self")
-            {
-                switch(data.Attribute)
-                {
-                    case "health":
-                        //player.setMaxHealth(data.Cuantity)
-                        //player.inmuneTimer(data.Cooldown)
-                        break;
-                    case "speed":
-                        //player.cahngeSpeed(data.Cuantity)
-                        break;
-                    case -1:
-                        if(data.Cuantity > 0)
-                        {
-                            data.Cuantity--;
-                            //player.block() cuantity
-                        }
-                        break;
-                }
-            }
-        }
+        
     }
     //método muy tonto que se utiliza para el escudo únicamente
     breakItem()

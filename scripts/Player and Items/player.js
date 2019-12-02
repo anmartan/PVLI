@@ -20,7 +20,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     }
     damage(points)
     {
-        if(this.vulnerable && this.body !== undefined)
+        if(this.vulnerable && this.body !== undefined && points>0)
         {
             this.vulnerable = false;
             this.alpha = 0.75;
