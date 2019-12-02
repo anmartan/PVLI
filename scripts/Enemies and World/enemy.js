@@ -385,11 +385,13 @@ export class enemyManager
         //this.enemiesInfo.forEach(function(enemy){this.summonDummy(enemy, scene, enemy.id);});
         for(let i = 0; i<this.enemiesInfo.length;i++)
         {
-            this.enemies[i] = this.summonDummy(this.enemiesInfo[i],scene,i)
+            this.addEnemy(this.summonDummy(this.enemiesInfo[i],scene,i));
         }
         socket.on("enemyMove", data =>
         {
-            this.enemies[data.id].move(data.pos, data.flip);
+            let children = this.enemies.getChildren();
+            console.log(children);
+            children[data.id].move(data.pos, data.flip);
         })
         socket.on("enemyDead", id =>
         {
@@ -402,8 +404,10 @@ export class enemyManager
         {
             case "zombie":
             {
+                console.log(enemy.type + " " +enemy.pos.x +" "+enemy.pos.y)
                 let zombie;
-                zombie = new dummieEnemy(scene,enemy.pos.x,enemy.pos.y,"zombie_idle0","idleZ",this,i);
+                //zombie = new dummieEnemy(scene,enemy.pos.x,enemy.pos.y,"zombie_idle0","idleZ",this,i);
+                zombie = new dummieEnemy(scene,5,5,"zombie_idle0","idleZ",this,i);
                 return zombie;
             }
 
