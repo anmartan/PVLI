@@ -64,8 +64,12 @@ const scene = {
             this.enemies.summonDummyEnemies(this); //invoca a los enemigos, y activa las físicas y colisiones
             //this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
         });
-        
 
+        socket.on("enemySpawned", (enemy)=>
+        {
+            console.log("Voy a hacer un spawn de: " + enemy.enemy.type);
+            this.enemies.summonDummy(enemy.enemy, this.scene,enemy.id);
+        })
    },
     update: function(delta)
    {
