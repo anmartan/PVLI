@@ -10,7 +10,7 @@ const scene = {
     create: function()
     {
         //Cargar tile map
-        this.tileMap = new tilemap(this, "tiles",16, 1, "DungeonTiles");
+        this.tileMap = new tilemap(this, "tiles2",32, 1, "tilesImage");
         this.actual=0;
         console.log(this.game.dungeon);
         console.log(this.actual);

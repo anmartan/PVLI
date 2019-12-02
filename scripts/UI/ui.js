@@ -73,10 +73,10 @@ class indexButton extends textButton //este botón servirá en la parte de edici
 
 export class editorMenu  //Manager que se encarga de decidir qué botones se muestran y qué botones no
 {
-    constructor(scene, Hoffset, Voffset)
+    constructor(scene, Hoffset, Voffset, tileSize)
     {
         this.actualState = "";
-        this.grid = new dungeonGrid(scene, Hoffset, Voffset);
+        this.grid = new dungeonGrid(scene, Hoffset, Voffset, tileSize);
         this.scene = scene;
 
         let statesX = 10 ;  //Posición horizontal de los botones de estado
@@ -240,7 +240,7 @@ export class Button extends Phaser.GameObjects.Sprite
         }
         else
         {
-            this.on("pointerout",() => {this.setAlpha(1); console.log("no he salido bro")});
+            this.on("pointerout",() => {this.setAlpha(1);});
         }
     }
     setDefaultSprite()
@@ -356,7 +356,7 @@ class gridOptionButton extends Button //Botón que modifica el grid (botones de 
 
 class dungeonGrid
 {
-    constructor( scene, Hoffset, Voffset)
+    constructor( scene, Hoffset, Voffset, tileSize)
     {
         this.cells = new Array(9);                  // || Salagadoola mechicka boola; Bibbidi-bobbidi-boo!       || //
         for (let i = 0; i < this.cells.length; i++) // || A bidimensional array in Javascript you want to do?    || //
@@ -364,7 +364,7 @@ class dungeonGrid
             this.cells[i] = new Array(9);           // || Salagadoola mechicka boola; Bibbidi-bobbidi-boo!       || //
         }                                           // || You wanted to [9,9] but now you love this language too || //
 
-        let screenCenter = 7*8;                     // Calcula el centro de la pantalla, pues la posición del tilemap toma este como 0,0
+        let screenCenter = 7*tileSize/2;                     // Calcula el centro de la pantalla, pues la posición del tilemap toma este como 0,0
         this.Hoffset = Hoffset + screenCenter;      // Sumamos los offsets dados en el constructor con el centro previamente calculado
         this.Voffset = Voffset + screenCenter;      // para guardar los offsets con referencia  al  0,0 de la escena (Que es como los utiliza Sprite)
         this.scene = scene;                        
@@ -373,11 +373,12 @@ class dungeonGrid
         //Creamos nueve celdas, pues la mayor habitación posible es de 9x9    
         for(let i= 0;i<9;i++)
            for(let j=0;j<9;j++) 
-               this.cells[i][j] = new cell(this.scene, 0, 0 , ["default","green2","default2"], this, i, j);
+               this.cells[i][j] = new cell(this.scene, 0, 0 , ["default","green","default2"], this, i, j);
 
         this.currentType = "enemy";
         this.currentSubtype = "zombie";
         this.hide();
+        this.tileSize=tileSize;
     }
 
     getOffsetBySize(size)   //Conseguimos el número celdas que hay que desplazar en diagonal ( ⭸ ), dependiendo del tamaño de la habitación actual,                                   ( ⭸ ⇲ ↘ ⬂ ⬊ ⭨ )
@@ -391,8 +392,8 @@ class dungeonGrid
         {
             for(let j =0 ; j<9; j++)                                // || La "i" y la "j" son números enteros que representan la posición en el grid.                      ||
             {                                                       // || Offset es la unidad que le sumamos al iterador (i o j)  para conseguir la posición               ||
-                this.cells[i][j].x = (offset+i)* 8 + this.Hoffset ; // || desplazada. Multiplicamos por el tamaño del tile y sumamos el offset en píxeles correspondiente  ||
-                this.cells[i][j].y = (offset+j)* 8 + this.Voffset ; 
+                this.cells[i][j].x = (offset+i)* this.tileSize/2 + this.Hoffset ; // || desplazada. Multiplicamos por el tamaño del tile y sumamos el offset en píxeles correspondiente  ||
+                this.cells[i][j].y = (offset+j)* this.tileSize/2 + this.Voffset ; 
             }                                                       
         }
     }

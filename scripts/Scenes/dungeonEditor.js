@@ -22,11 +22,10 @@ const  scene =
         this.dungeon = new dungeon(this.rooms);
         this.actual = 0;
         this.game.dungeon = new dungeon(this.rooms);
-        
-        let hoffset = 8*5.5;
+        let hoffset = this.game.tileSize/2*5.5;
         let voffset = 0;
-        this.tileMap = new tilemap(this, "tiles", 16, 0.5, "DungeonTiles",hoffset, voffset);
-        this.editorMenu = new editorMenu(this,hoffset,voffset);
+        this.tileMap = new tilemap(this, "tiles2", this.game.tileSize, 0.5, "tilesImage",hoffset, voffset);
+        this.editorMenu = new editorMenu(this,hoffset,voffset,this.game.tileSize);
         
 
         let config =
