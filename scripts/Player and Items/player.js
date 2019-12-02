@@ -164,4 +164,8 @@ export class player extends livingEntity
         }
 
     }
+    kill()
+    {
+        console.log("Debería estar muriéndome");
+    }
 }

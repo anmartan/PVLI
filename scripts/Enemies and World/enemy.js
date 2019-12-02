@@ -129,9 +129,7 @@ export class zombie extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health);
        player.damage(1);
-       console.log("Estoy atacando al héroe: " + player.health);
    }
    whenDie(){}  //no hace nada
 }
@@ -150,9 +148,7 @@ export class bee extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(1);
-       console.log("Estoy atacando al héroe: " + player.health);
    }
    whenDie(){}  //no hace nada
 }
@@ -171,9 +167,7 @@ export class spider extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(2);
-       console.log("Estoy atacando al héroe: " + player.health);
    }
    whenDie()            //multiplicación de las arañas
    {
@@ -209,9 +203,7 @@ export class littleSpider extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(1);
-       console.log("Estoy atacando al héroe: " + player.health);
    } 
    whenDie(){};     //no hace nada
 }
@@ -230,9 +222,7 @@ export class wizard extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(3);
-       console.log("Estoy atacando al héroe: " + player.health);
    }
    whenDie(){}      //no hace nada
 }
@@ -251,9 +241,7 @@ export class beetle extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(2);
-       console.log("Estoy atacando al héroe: " + player.health);
    }
    whenDie(){}      //no hace nada
 }
