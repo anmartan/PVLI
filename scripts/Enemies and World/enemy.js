@@ -129,9 +129,7 @@ export class zombie extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(1);
-       console.log("Estoy atacando al héroe: " + player.health);
    }
    whenDie(){}  //no hace nada
 }
@@ -150,9 +148,7 @@ export class bee extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(1);
-       console.log("Estoy atacando al héroe: " + player.health);
    }
    whenDie(){}  //no hace nada
 }
@@ -171,9 +167,7 @@ export class spider extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(2);
-       console.log("Estoy atacando al héroe: " + player.health);
    }
    whenDie()            //multiplicación de las arañas
    {
@@ -209,9 +203,7 @@ export class littleSpider extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(1);
-       console.log("Estoy atacando al héroe: " + player.health);
    } 
    whenDie(){};     //no hace nada
 }
@@ -230,9 +222,7 @@ export class wizard extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(3);
-       console.log("Estoy atacando al héroe: " + player.health);
    }
    whenDie(){}      //no hace nada
 }
@@ -251,9 +241,7 @@ export class beetle extends enemy
 
    attackEffect(player)
    {
-       console.log ("Salud del héroe: " + player.health());
        player.damage(2);
-       console.log("Estoy atacando al héroe: " + player.health);
    }
    whenDie(){}      //no hace nada
 }
@@ -350,7 +338,7 @@ export class enemyManager
             scene.physics.add.overlap(weaponGroup, this.enemies, (weapon, enemy) => {hero.attack(enemy, weapon.Damage)});         //
             scene.physics.add.overlap(this.zone, hero , (zone) => zone.parent.spotPlayer(hero));                  //
             scene.physics.add.collider(this.enemies, walls);                                                              // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
-            scene.physics.add.collider(this.enemies, hero);                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
+            scene.physics.add.collider(this.enemies, hero, (enemy)=>{enemy.attack(hero, 1)});                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
     
             this.summoned = true;
             for(let i = 0; i<this.enemiesInfo.length;i++)

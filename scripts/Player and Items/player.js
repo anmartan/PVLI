@@ -25,7 +25,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite
             this.vulnerable = false;
             this.alpha = 0.75;
             this.scene.time.delayedCall(1000, this.makeVulnerable, [], this)
-            this.knockback();
+            if (this!== this.scene.hero)    this.knockback();
             this.health -= points;
             console.log(this.health);
             if(this.health<=0){ this.kill()};
@@ -163,5 +163,9 @@ export class player extends livingEntity
             }
         }
 
+    }
+    kill()
+    {
+        console.log("Debería estar muriéndome");
     }
 }
