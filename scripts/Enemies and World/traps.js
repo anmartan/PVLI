@@ -186,12 +186,12 @@ export class Traps extends Phaser.GameObjects.Sprite
 
 export class spikes extends Traps
 {
-    constructor(scene, x, y, trapsManager, id, enemyType)
+    constructor(scene, x, y, trapsManager, id, enemy)
     {
         let anim = "spikesAnim";
         let sprite = "spikes";
         super(scene, x, y, sprite, trapsManager, id);
-        this.enemyType = 
+        this.enemy = 
         {
             type : "zombie",
             pos:{
@@ -205,7 +205,9 @@ export class spikes extends Traps
     effect(hero) 
     {
         console.log("Soy una spiky. Hago daño al héroe");
-        this.scene.enemies.addEnemy(this.scene.enemies.summon(this.enemyType, this.scene, hero, hero.weapon, this.scene.walls, this.scene.enemies.getLastID()+1));
+        let idEnemy= this.scene.enemies.getLastID()+1;
+        this.scene.enemies.addEnemy(this.scene.enemies.summon(this.enemy, this.scene, hero, hero.weapon, this.scene.walls, idEnemy));
+        socket.emit("enemySpawned", {enemy: this.enemy, id: idEnemy});
     }
 }
 

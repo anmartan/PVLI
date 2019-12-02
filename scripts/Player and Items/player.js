@@ -27,6 +27,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite
             this.scene.time.delayedCall(1000, this.makeVulnerable, [], this)
             this.knockback();
             this.health -= points;
+            console.log(this.health);
             if(this.health<=0){ this.kill()};
         }
         else return "No se puede dañar al enemigo, es invulnerable"
@@ -37,6 +38,8 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     {
         if(this.health+=points > this.maxHealth)
             this.health=this.maxHealth;
+
+        console.log(this.health);
         return this.health;
     }
     augmentMaxHealth(points)

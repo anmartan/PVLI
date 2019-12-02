@@ -177,12 +177,22 @@ export class spider extends enemy
    }
    whenDie()            //multiplicación de las arañas
    {
-       //de momento son solo pruebas porque no se puede comprobar nada, porque no tenemos ni array ni grupo de enemigos :_D
        for(let i=0; i<5; i++)                                   //i < número de arañas que queramos spawnear. Se puede cambiar más adelante
        {
-           //adaptar el código de la trampa de spawneo: para que no todas tengan la misma posición, y sabiendo que todo son arañitas
+        let spidy = 
+        {
+            type : "littleSpider",
+            pos:
+            {
+                x: x + Phaser.Math.RND.between(-4, +4),             //para que no todas aparezcan en el mismo sitio, y se vea que hay varias arañitas
+                y: y + Phaser.Math.RND.between(-4, +4)
+            }
+        }
+         let idEnemy= this.scene.enemies.getLastID()+1;
+         this.scene.enemies.addEnemy(this.scene.enemies.summon(spidy, this.scene, hero, hero.weapon, this.scene.walls, idEnemy));
+         socket.emit("enemySpawned", {enemy: spidy, id: idEnemy});
        }
-   }  
+   } 
 }
 
 export class littleSpider extends enemy
@@ -202,15 +212,8 @@ export class littleSpider extends enemy
        console.log ("Salud del héroe: " + player.health());
        player.damage(1);
        console.log("Estoy atacando al héroe: " + player.health);
-   }
-   whenDie()            //multiplicación de las arañas
-   {
-       //de momento son solo pruebas porque no se puede comprobar nada, porque no tenemos ni array ni grupo de enemigos :_D
-       for(let i=0; i<5; i++)                                   //i < número de arañas que queramos spawnear. Se puede cambiar más adelante
-       {
-           //adaptar el código de la trampa de spawneo: para que no todas tengan la misma posición, y sabiendo que todo son arañitas
-       }
-   }  
+   } 
+   whenDie(){};     //no hace nada
 }
 
 export class wizard extends enemy

@@ -101,6 +101,11 @@ io.on('connection', socket => {
     });
     socket.on("trapDeactivated", id=> {console.log("trampamuerta");
     clients.forEach(client =>{client.emit("trapDeactivated",id)})});
+
+    socket.on("enemySpawned", enemy =>
+    {
+        clients.forEach(client => {console.log ("Enemy Spawned : "+ enemy); client.emit("enemySpawned", enemy);});
+    });
     
 });
 
