@@ -7,7 +7,7 @@ const scene = {
     key: "DungeonRun",
     preload: function()
     {
-        //Cargar tiles
+        /*//Cargar tiles
         this.load.image("DungeonTiles","../assets/ground/DungeonStarter.png");
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
 
@@ -17,10 +17,6 @@ const scene = {
         this.load.image("caballero_idle2", "../assets/player/knight_m_idle_anim_f2.png")
         this.load.image("caballero_idle3", "../assets/player/knight_m_idle_anim_f3.png")
 
-        this.load.image("Sword_0", "../assets/player/sword_0.png")
-        this.load.image("Sword_1", "../assets/player/sword_1.png")
-        this.load.image("Sword_2", "../assets/player/sword_2.png")
-        this.load.image("Sword_3", "../assets/player/sword_3.png")
 
         this.load.image("zombie_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
         this.load.image("zombie_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
@@ -28,7 +24,7 @@ const scene = {
         this.load.image("zombie_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
 
         this.load.image("spikes", "../assets/traps/spikes.png");
-        this.load.image("pink2","../assets/debug/pink2.png");
+        this.load.image("pink2","../assets/debug/pink2.png");*/
 
     },
     create: function()
