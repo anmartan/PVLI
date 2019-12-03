@@ -61,8 +61,7 @@ export class enemy extends livingEntity
         }
     }
     kill()
-    {
-        this.whenDie();                                             //Efecto que tienen algunos enemigos al morir. Si no tienen ninguno, el método no hará nada
+    {        
         if(this.zone!==undefined)this.zone.destroy();
         if(this.player !==undefined)this.player=undefined;
         this.enemyManager.removeEnemy(this);
@@ -108,7 +107,8 @@ export class enemy extends livingEntity
         if(!this.attacking)
         {
             this.attacking = true;
-            this.attackEffect(this.player);
+            this.scene.hero.damage(this.ATTKPoints);
+            console.log("Vida del héroe después del ataque: " + this.scene.hero.health);
             this.scene.time.delayedCall(this.coolDown, ()=>{this.attacking = false;});
         }
     }
@@ -124,14 +124,9 @@ export class zombie extends enemy
         let sprite = "zombie_idle0";
         super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 3 }, id);
         this.price = 3; 
+        this.ATTKPoints= 1;
         this.coolDown = 2500;                                                                                                                   //coolDown para el ataque: orientativo de momento, se puede fijar para que todos tengan el mismo
    }
-
-   attackEffect(player)
-   {
-       player.damage(1);
-   }
-   whenDie(){}  //no hace nada
 }
 
 export class bee extends enemy
@@ -143,14 +138,9 @@ export class bee extends enemy
         let sprite = "bee_idle0";
         super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
         this.price = 6; 
+        this.ATTKPoints= 1;
         this.coolDown = 1250;
    }
-
-   attackEffect(player)
-   {
-       player.damage(1);
-   }
-   whenDie(){}  //no hace nada
 }
 
 export class spider extends enemy
@@ -162,31 +152,38 @@ export class spider extends enemy
         let sprite = "spider_idle0";
         super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
         this.price = 20; 
+        this.ATTKPoints= 2;
         this.coolDown = 1500;
    }
 
-   attackEffect(player)
-   {
-       player.damage(2);
-   }
-   whenDie()            //multiplicación de las arañas
-   {
+   kill()
+   {        
+       //redefinición para añadir el spawneo de arañas
        for(let i=0; i<5; i++)                                   //i < número de arañas que queramos spawnear. Se puede cambiar más adelante
        {
-        let spidy = 
-        {
-            type : "littleSpider",
-            pos:
-            {
-                x: x + Phaser.Math.RND.between(-4, +4),             //para que no todas aparezcan en el mismo sitio, y se vea que hay varias arañitas
-                y: y + Phaser.Math.RND.between(-4, +4)
+           let spidy = 
+           {
+               type : "littleSpider",
+               pos:
+               {
+                   x: x + Phaser.Math.RND.between(-4, +4),             //para que no todas aparezcan en el mismo sitio, y se vea que hay varias arañitas
+                   y: y + Phaser.Math.RND.between(-4, +4)
+                }
             }
+            let idEnemy= this.scene.enemies.getLastID()+1;
+            this.scene.enemies.addEnemy(this.scene.enemies.summon(spidy, this.scene, hero, hero.weapon, this.scene.walls, idEnemy));
+            socket.emit("enemySpawned", {enemy: spidy, id: idEnemy});
+
+            //kill de todos los enemigos
+            if(this.zone!==undefined)this.zone.destroy();
+            if(this.player !==undefined)this.player=undefined;
+            this.enemyManager.removeEnemy(this);
+            this.body.destroy();
+            this.destroy();
+            socket.emit("enemyDead", this.id);
+            console.log("zombie muerto")
         }
-         let idEnemy= this.scene.enemies.getLastID()+1;
-         this.scene.enemies.addEnemy(this.scene.enemies.summon(spidy, this.scene, hero, hero.weapon, this.scene.walls, idEnemy));
-         socket.emit("enemySpawned", {enemy: spidy, id: idEnemy});
-       }
-   } 
+    } 
 }
 
 export class littleSpider extends enemy
@@ -198,14 +195,9 @@ export class littleSpider extends enemy
         let sprite = "spider_idle0";
         super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 1 }, id);
         this.price = 0;                                 // las arañitas no se pueden crear desde el editor de mazmorras. Solo aparecen cuando muere una araña
+        this.ATTKPoints= 1;
         this.coolDown = 1500;
    }
-
-   attackEffect(player)
-   {
-       player.damage(1);
-   } 
-   whenDie(){};     //no hace nada
 }
 
 export class wizard extends enemy
@@ -217,14 +209,18 @@ export class wizard extends enemy
         let sprite = "spider_idle0";
         super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
         this.price = 15; 
+        this.ATTKPoints= 1;
         this.coolDown = 2750;
    }
-
-   attackEffect(player)
+   attack()         //redefinido para el mago, que ataca a distancia
    {
-       player.damage(3);
-   }
-   whenDie(){}      //no hace nada
+        if(!this.attacking)
+        {
+            this.attacking = true;
+            player.damage(this.ATTKPoints);
+            this.scene.time.delayedCall(this.coolDown, ()=>{this.attacking = false;});
+        }
+    }
 }
 
 export class beetle extends enemy
@@ -236,14 +232,9 @@ export class beetle extends enemy
         let sprite = "spider_idle0";
         super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 6 }, id);
         this.price = 10; 
+        this.ATTKPoints= 2;
         this.coolDown = 1750;
    }
-
-   attackEffect(player)
-   {
-       player.damage(2);
-   }
-   whenDie(){}      //no hace nada
 }
 /*
 
@@ -287,7 +278,6 @@ export class enemyManager
             this.zone = this.scene.add.group();       
             this.summoned = false;
             this.enemiesInfo= enemies;
-            console.log("aaaaaaaaaaaaaaaaaaaa");
         }
         else 
         {

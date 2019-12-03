@@ -6,6 +6,7 @@ class Arrow extends Phaser.GameObjects.Sprite
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setCollideWorldBounds(true);
+        scene.physics.add.collider(this, scene.enemies, (enemy)=>{enemy.damage(1)});                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
         dir-=90;
         switch(dir)
         {
@@ -29,6 +30,10 @@ class Arrow extends Phaser.GameObjects.Sprite
             break;
 
         }
+    }
+    destroy()
+    {
+        
     }
 }
 
