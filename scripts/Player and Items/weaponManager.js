@@ -5,8 +5,8 @@ class Arrow extends Phaser.GameObjects.Sprite
         super(scene,x,y,"pink2")
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.body.setCollideWorldBounds(true);
-        scene.physics.add.collider(this, scene.enemies, (enemy)=>{enemy.damage(1)});                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
+        this.body.setCollideWorldBounds(true,()=> {this.kill()});
+        scene.physics.add.collider(this, scene.enemies, (enemy)=>{enemy.damage(1); this.kill();});                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
         dir-=90;
         switch(dir)
         {
@@ -31,9 +31,9 @@ class Arrow extends Phaser.GameObjects.Sprite
 
         }
     }
-    destroy()
+    kill()
     {
-        
+        console.log("Me destruyo :D");
     }
 }
 
