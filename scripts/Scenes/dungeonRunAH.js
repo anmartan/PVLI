@@ -1,4 +1,4 @@
-import {dummiePlayer} from "../Enemies and World/dummieEntitties.js";
+import {dummiePlayer, dummieEnemy} from "../Enemies and World/dummieEntitties.js";
 import {enemyManager} from "../Enemies and World/enemy.js";
 import {tilemap} from '../Enemies and World/tilemap.js';
 import {trapManager} from "../Enemies and World/traps.js";
@@ -10,7 +10,7 @@ const scene = {
     create: function()
     {
         //Cargar tile map
-        this.tileMap = new tilemap(this, "tiles",16, 1, "DungeonTiles");
+        this.tileMap = new tilemap(this, "tiles2",32, 1, "tilesImage");
         this.actual=0;
         console.log(this.game.dungeon);
         console.log(this.actual);
@@ -67,8 +67,8 @@ const scene = {
 
         socket.on("enemySpawned", (enemy)=>
         {
-            console.log("Voy a hacer un spawn de: " + enemy.enemy.type);
-            this.enemies.summonDummy(enemy.enemy, this.scene,enemy.id);
+            console.log("Voy a hacer un spawn de: " + enemy.enemy.type+" en: "+enemy.id);
+            this.enemies.addEnemy(this.enemies.summonDummy(enemy.enemy,this,enemy.id));
         })
    },
     update: function(delta)

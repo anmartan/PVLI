@@ -43,6 +43,9 @@ const SelectGameMode=
         this.load.image("DungeonTiles","../assets/ground/DungeonStarter.png");
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
 
+        this.load.image("tilesImage","../assets/ground/intento32/tileset_dungeon.png");
+        this.load.tilemapTiledJSON("tiles2","../assets/ground/intento32/intento.json");
+
 
     },
     create:function () {

@@ -39,7 +39,7 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite
 
     constructor(scene,x,y,sprite,anim, enemyManager, id)
     {
-        super(scene,x*16+24,y*16+24,sprite);
+        super(scene,x*scene.tileSize,y*scene.tileSize,sprite);
         scene.add.existing(this);
         this.enemyManager=enemyManager;
         this.play(anim);

@@ -6,12 +6,31 @@ export class tilemap
         this.tileMap = this.scene.add.tilemap(json);
         let pos = ((11*side)-((side*scale)*11))/2;
         let DungeonTiles = this.tileMap.addTilesetImage(tileImages);
-        this.Background = this.tileMap.createDynamicLayer("Background", DungeonTiles,0,0);
+        this.Background = this.tileMap.createDynamicLayer("Background", DungeonTiles,pos+hoffset,pos+voffset);
         this.Ground = this.tileMap.createDynamicLayer("Ground", DungeonTiles,pos+hoffset,pos+voffset);
         this.Walls = this.tileMap.createDynamicLayer("Walls", DungeonTiles,pos+hoffset,pos+voffset);
+        this.Background.scale=scale;
         this.Ground.scale=scale;
         this.Walls.scale=scale;
         this.Walls.setCollisionByProperty({collides: "true"});
+
+
+        this.tileIDs = {
+            TopWall:34,
+            RightWall:43,
+            LeftWall:41,
+            BottomWall:50,
+
+            TopLeftCorner:33,
+            TopRightCorner:35,
+            BottomRightCorner:51,
+            BottomLeftCorner:49,
+
+            Ground:42,
+            Background:46
+        }
+
+
     }
     
     changeRoom(size)
@@ -25,15 +44,15 @@ export class tilemap
         this.putCorners(leftOffset,rightOffset);             //     Coloca esquinas
         for(let i=offset;i<size+offset;i++)
         {
-            this.putWall(2, i,   leftOffset);                //     || Pinta la pared superior  ||
-            this.putWall(7,   leftOffset, i);                //     || Pinta la pared izquierda ||
-            this.putWall(14, i, rightOffset);                //     || Pinta la pared inferior  ||
-            this.putWall(9,   rightOffset, i);               //     || Pinta la pared derecha   ||
+            this.putWall(this.tileIDs.TopWall, i,   leftOffset);                //     || Pinta la pared superior  ||
+            this.putWall(this.tileIDs.LeftWall,   leftOffset, i);                //     || Pinta la pared izquierda ||
+            this.putWall(this.tileIDs.BottomWall, i, rightOffset);                //     || Pinta la pared inferior  ||
+            this.putWall(this.tileIDs.RightWall,   rightOffset, i);               //     || Pinta la pared derecha   ||
             
             for(let j =offset; j<size+offset;j++)
             {
                 this.Walls.removeTileAt(i, j);               //     Elimina las paredes que queden en la parte jugable de la habitación (offset -> size+offset)
-                this.Ground.putTileAt(8, i, j);              //     Coloca suelo en las mismas casillas
+                this.Ground.putTileAt(this.tileIDs.Ground, i, j);              //     Coloca suelo en las mismas casillas
             }
         }
         this.removeLoops(leftOffset-1);                      //     Elimina un loop desde el centro hasta la coordenada dada -> sirve para pasar de una habitación grande a una pequeña
@@ -74,20 +93,20 @@ export class tilemap
     {
         this.Walls.removeTileAt(x,y);
         this.Ground.removeTileAt(x,y);
-        this.Background.putTileAt(6,x,y);
+        this.Background.putTileAt(46,x,y);
     }
-    putCorners(x,y)
+    putCorners(l,r)
     {
-        this.Walls.putTileAt(1,x,x);
-        this.Walls.putTileAt(3,y,x);
-        this.Walls.putTileAt(15,y,y);
-        this.Walls.putTileAt(13,x,y);
+        this.Walls.putTileAt(this.tileIDs.TopLeftCorner,l,l);
+        this.Walls.putTileAt(this.tileIDs.TopRightCorner,r,l);
+        this.Walls.putTileAt(this.tileIDs.BottomRightCorner,r,r);
+        this.Walls.putTileAt(this.tileIDs.BottomLeftCorner,l,r);
     }
     putEntrance(x,y)
     {
         this.Walls.removeTileAt( x, 5 );
         this.Walls.removeTileAt( y, 5);
-        this.Ground.putTileAt(8,x,5);
-        this.Ground.putTileAt(8,y,5);
+        this.Ground.putTileAt(this.tileIDs.Ground,x,5);
+        this.Ground.putTileAt(this.tileIDs.Ground,y,5);
     }
 }
