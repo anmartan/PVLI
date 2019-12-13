@@ -298,11 +298,11 @@ export class enemyManager
     hideAllAlive()
     {
        let enemies= this.enemies.getChildren();
+       enemies.forEach((enemy)=>enemy.hide());
     }
     showAllAlive()
     {
         this.enemies.getChildren().foreach(enemy, ()=>enemy.show());
-
     }
     removeEnemy(enemy)
     {
@@ -363,18 +363,10 @@ export class enemyManager
         //this.enemiesInfo.forEach(function(enemy){this.summonDummy(enemy, scene, enemy.id);});
         for(let i = 0; i<this.enemiesInfo.length;i++)
         {
-            this.addEnemy(this.summonDummy(this.enemiesInfo[i],scene,i));
+            let enemy = this.summonDummy(this.enemiesInfo[i],scene,i);
+            this.addEnemy(enemy);
+
         }
-        socket.on("enemyMove", data =>
-        {
-            let children = this.enemies.getChildren();
-            console.log(children);
-            children[data.id].move(data.pos, data.flip);
-        })
-        socket.on("enemyDead", id =>
-        {
-            this.enemies[id].killDumie();
-        }) 
     }
     summonDummy(enemy,scene,i)
     {
@@ -384,11 +376,10 @@ export class enemyManager
             {
                 console.log(enemy.type + " " +enemy.pos.x +" "+enemy.pos.y)
                 let zombie;
-                //zombie = new dummieEnemy(scene,enemy.pos.x,enemy.pos.y,"zombie_idle0","idleZ",this,i);
-                zombie = new dummieEnemy(scene,5,5,"zombie_idle0","idleZ",this,i);
+                zombie = new dummieEnemy(scene,enemy.pos.x,enemy.pos.y,"zombie_idle0","idleZ",this,i);
+                //zombie = new dummieEnemy(scene,5,5,"zombie_idle0","idleZ",this,i); 
                 return zombie;
             }
-
             default:
                 console.log("No se puede crear un enemigo de tipo " + enemy.subtype);
                 break;

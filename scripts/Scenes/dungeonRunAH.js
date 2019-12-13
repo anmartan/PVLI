@@ -68,6 +68,7 @@ const scene = {
         socket.on("enemySpawned", (enemy)=>
         {
             console.log("Voy a hacer un spawn de: " + enemy.enemy.type+" en: "+enemy.id);
+            //new dummieEnemy(this,5,5,"zombie_idle0",zombieIdle,this.enemies,0);
             this.enemies.addEnemy(this.enemies.summonDummy(enemy.enemy,this,enemy.id));
         })
    },

@@ -89,13 +89,15 @@ const scene = {
             //Creamos las nuevas trampas y enemigos
             this.enemies.summonEnemies(this, this.hero, this.hero.weaponManager.weapon, this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
             this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
-        });
+        })
+        this.enemyGroup = this.enemies.enemies.getChildren();
+        ;
     },
     update: function(delta)
     {
 
         this.hero.handleLogic();
-        this.enemies.enemies.getChildren().forEach(enemy => {enemy.update();});
+        this.enemies.enemies.getChildren()/*this.enemyGroup*/.forEach(enemy => {enemy.update();},this);
     }
    
 };

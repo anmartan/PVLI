@@ -39,17 +39,27 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite
 
     constructor(scene,x,y,sprite,anim, enemyManager, id)
     {
-        super(scene,x*scene.tileSize,y*scene.tileSize,sprite);
+        super(scene,x*scene.game.tileSize,y*scene.game.tileSize,sprite);
         scene.add.existing(this);
         this.enemyManager=enemyManager;
         this.play(anim);
         this.id = id;
+        socket.on("enemyMove", data =>
+        {
+            if(data.id===this.id )this.move(data.pos, data.flip);
+        })
+        socket.on("enemyDead", id =>
+        {
+            if(id===this.id) this.killDumie();
+        })
+        console.log("me creo");
     }
     move(pos, flip)
     {
         this.x = pos.x;
         this.y = pos.y;
         this.setFlipX(flip);
+        console.log("me muevo");
     }
     killDumie()
     {
@@ -70,7 +80,6 @@ export class dummieTrap extends Phaser.GameObjects.Sprite
 
     destroyTrap()
     {
-        console.log("me estoy destruyendo")
         this.destroy();
         this.setVisible(false);
     }
