@@ -40,6 +40,26 @@ const SelectGameMode=
         this.load.image("zombie_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
         this.load.image("zombie_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
 
+        this.load.image("bee_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
+        this.load.image("bee_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
+        this.load.image("bee_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
+        this.load.image("bee_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
+
+        this.load.image("beetle_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
+        this.load.image("beetle_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
+        this.load.image("beetle_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
+        this.load.image("beetle_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
+
+        this.load.image("wizard_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
+        this.load.image("wizard_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
+        this.load.image("wizard_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
+        this.load.image("wizard_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
+
+        this.load.image("spider_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
+        this.load.image("spider_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
+        this.load.image("spider_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
+        this.load.image("spider_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
+
         this.load.image("DungeonTiles","../assets/ground/DungeonStarter.png");
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
 

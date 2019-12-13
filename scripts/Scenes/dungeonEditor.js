@@ -40,12 +40,9 @@ const  scene =
         let scene;
         continuar.on("pointerdown", () =>
         {
-            console.log(this);
             this.game.scene.stop("DungeonEditor");
             let dungeon = update(this);
-            console.log(dungeon);
             socket.emit("finished", dungeon);
-            console.log("Después de lanzar mensaje");
 
         },[],this)
 

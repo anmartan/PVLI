@@ -13,9 +13,9 @@ export class rec extends Phaser.GameObjects.Zone
     }
     setRecPos(size, exit)
     {
-        let positionInTiles=(9-size);
+        let positionInTiles=(9-size)/2;
         if(exit)positionInTiles=10-positionInTiles;
-        //this.x = (positionInTiles/2)*this.tileSize;
+        this.x = (positionInTiles)*this.tileSize;
     }
 
 }

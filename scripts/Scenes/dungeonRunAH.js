@@ -12,9 +12,6 @@ const scene = {
         //Cargar tile map
         this.tileMap = new tilemap(this, "tiles2",32, 1, "tilesImage");
         this.actual=0;
-        console.log(this.game.dungeon);
-        console.log(this.actual);
-        console.log(this.game.dungeon.rooms[this.actual]);
         this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
         //--------------------------------------------------------//
 
@@ -50,7 +47,6 @@ const scene = {
 
         this.traps = new trapManager(this.game.dungeon.rooms[this.actual].traps.traps);
         this.traps.createDummyTraps(this);
-        console.log(this.enemies);
 
         socket.on("changeRoom", ()=>
         {

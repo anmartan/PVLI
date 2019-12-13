@@ -8,6 +8,11 @@ let players = [false,false]
 let serverDungeon;
 let serverInventory;
 
+
+
+
+
+
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/docs/index.html');
 });
@@ -30,13 +35,11 @@ io.on('connection', socket => {
          {
             players[0] = true;
             socket.emit("Role", {role: "Heroe"})
-
         }
          else 
          {
              players[1] = true;
              socket.emit("Role", {role: "AntiHeroe"})
-
          }
 
          if(players[0]===true && players[1]===true)

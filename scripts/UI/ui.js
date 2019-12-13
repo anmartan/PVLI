@@ -101,8 +101,10 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         //Opciones de states[1] monstruos:
         //--Por ahora zombie--
         this.states[1].add(new gridOptionButton(scene,optionsX,optionsY,    ["pink2","green2"], this.grid,"enemy","zombie")); //
-        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+8,  ["pink2","green2"], this.grid,"enemy","araña" )); // En un mundo ideal habría varios tipos más
-        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+16, ["pink2","green2"], this.grid,"enemy","abeja" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+8,  ["pink2","green2"], this.grid,"enemy","spider" )); // En un mundo ideal habría varios tipos más
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+16, ["pink2","green2"], this.grid,"enemy","bee" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+24, ["pink2","green2"], this.grid,"enemy","beetle" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+32, ["pink2","green2"], this.grid,"enemy","wizard" )); //
         
         //Opciones de states[2] trampas:
         //--Por ahora no hay trampas implementadas--
@@ -460,15 +462,11 @@ class dungeonGrid
             let offset = (grid.getOffsetBySize(actualRoom.size))   
             let x = cell.i+offset;
             let y = cell.j+offset;          
-            switch (cell.subtype)
+            if (cell.subtype == "zombie"  ||cell.subtype == "spider" || cell.subtype == "wizard"||cell.subtype == "bee"||cell.subtype == "beetle")
             {
-                case "zombie":
-                    enemyConfig = new enemyInfo(x,y,"zombie")
-                    break;
-                default:
-                    console.log("No se puede crear un enemigo de tipo "+ cell.subtype);
-                    break;
+                enemyConfig = new enemyInfo(x,y,cell.subtype);
             }
+            else console.error("No se puede crear un enemigo de tipo "+ cell.subtype);
             if(enemyConfig!==undefined) actualRoom.enemies.addEnemyInfo(enemyConfig); //Si se ha encontrado un enemigo posible en el switch se añade la configuración a la lista cprres`pmoemte
         }
         //Ahora también guardamos trampas

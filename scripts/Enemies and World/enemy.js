@@ -5,7 +5,8 @@ export class enemy extends livingEntity
 {
     constructor(scene, x, y, speed, sprite,anim, enemyManager, health, id)
     {
-        super(scene, x, y, sprite, speed, health);
+        console.log("enemigo invocado");
+        super(scene, (x+1.5)*scene.game.tileSize, (y+1.5)*scene.game.tileSize, sprite, speed, health);
         this.enemyManager = enemyManager;
         this.zone = this.createZone(scene);
         this.enemyManager.zone.add(this.zone);
@@ -14,10 +15,11 @@ export class enemy extends livingEntity
         this.scene = scene;
         this.id = id;
         this.attacking = false;             //Para que haya un cooldown y no puedan atacar constantemente
+        this.scale=2;
     }
     createZone(scene)
     {
-        let zone = scene.add.zone(this.x,this.y,16*3,16*3);
+        let zone = scene.add.zone(this.x,this.y,scene.game.tileSize*3,scene.game.tileSize*3);
         scene.physics.add.existing(zone);
         zone.body.debugBodyColor = "0xFFFF00"
         zone.parent=this;
@@ -65,7 +67,7 @@ export class enemy extends livingEntity
         if(this.zone!==undefined)this.zone.destroy();
         if(this.player !==undefined)this.player=undefined;
         this.enemyManager.removeEnemy(this);
-        this.body.destroy();
+        //this.body.destroy();
         this.destroy();
         socket.emit("enemyDead", this.id);
         console.log("zombie muerto")
@@ -109,6 +111,7 @@ export class enemy extends livingEntity
             this.attacking = true;
             this.scene.hero.damage(this.ATTKPoints);
             console.log("Vida del héroe después del ataque: " + this.scene.hero.health);
+            if(this.specialAttack !==undefined)this.specialAttack();
             this.scene.time.delayedCall(this.coolDown, ()=>{this.attacking = false;});
         }
     }
@@ -122,11 +125,12 @@ export class zombie extends enemy
         let anim = "idleZ";
         let speed = 10;
         let sprite = "zombie_idle0";
-        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 3 }, id);
+        super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 3 }, id);
         this.price = 3; 
         this.ATTKPoints= 1;
         this.coolDown = 2500;                                                                                                                   //coolDown para el ataque: orientativo de momento, se puede fijar para que todos tengan el mismo
    }
+   specialAttack(){this.scene.time.delayedCall(this.coolDown, ()=>{this.kill();});}
 }
 
 export class bee extends enemy
@@ -136,7 +140,7 @@ export class bee extends enemy
         let anim = "idleBee";
         let speed = 50;
         let sprite = "bee_idle0";
-        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
+        super(scene, x,  y, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
         this.price = 6; 
         this.ATTKPoints= 1;
         this.coolDown = 1250;
@@ -150,7 +154,7 @@ export class spider extends enemy
         let anim = "idleSpider";
         let speed = 15;
         let sprite = "spider_idle0";
-        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
+        super(scene, x,y, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
         this.price = 20; 
         this.ATTKPoints= 2;
         this.coolDown = 1500;
@@ -161,28 +165,20 @@ export class spider extends enemy
        //redefinición para añadir el spawneo de arañas
        for(let i=0; i<5; i++)                                   //i < número de arañas que queramos spawnear. Se puede cambiar más adelante
        {
-           let spidy = 
-           {
-               type : "littleSpider",
-               pos:
-               {
-                   x: x + Phaser.Math.RND.between(-4, +4),             //para que no todas aparezcan en el mismo sitio, y se vea que hay varias arañitas
-                   y: y + Phaser.Math.RND.between(-4, +4)
-                }
-            }
+            let spidy =new enemyInfo(this.x + Phaser.Math.RND.between(-4, +4),this.y + Phaser.Math.RND.between(-4, +4),"littleSpider") 
             let idEnemy= this.scene.enemies.getLastID()+1;
-            this.scene.enemies.addEnemy(this.scene.enemies.summon(spidy, this.scene, hero, hero.weapon, this.scene.walls, idEnemy));
+            this.scene.enemies.addEnemy(this.scene.enemies.summon(spidy, this.scene, idEnemy));
             socket.emit("enemySpawned", {enemy: spidy, id: idEnemy});
-
-            //kill de todos los enemigos
-            if(this.zone!==undefined)this.zone.destroy();
-            if(this.player !==undefined)this.player=undefined;
-            this.enemyManager.removeEnemy(this);
-            this.body.destroy();
-            this.destroy();
-            socket.emit("enemyDead", this.id);
-            console.log("zombie muerto")
         }
+
+        //kill de todos los enemigos
+        if(this.zone!==undefined)this.zone.destroy();
+        if(this.player !==undefined)this.player=undefined;
+        this.enemyManager.removeEnemy(this);
+        this.body.destroy();
+        this.destroy();
+        socket.emit("enemyDead", this.id);
+        console.log("zombie muerto")
     } 
 }
 
@@ -193,7 +189,7 @@ export class littleSpider extends enemy
         let anim = "idleSpider";                        //será otro sprite? O solo le vamos a cambiar la escala?
         let speed = 25;
         let sprite = "spider_idle0";
-        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 1 }, id);
+        super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 1 }, id);
         this.price = 0;                                 // las arañitas no se pueden crear desde el editor de mazmorras. Solo aparecen cuando muere una araña
         this.ATTKPoints= 1;
         this.coolDown = 1500;
@@ -207,7 +203,7 @@ export class wizard extends enemy
         let anim = "idleSpider";
         let speed = 15;
         let sprite = "spider_idle0";
-        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
+        super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
         this.price = 15; 
         this.ATTKPoints= 1;
         this.coolDown = 2750;
@@ -230,7 +226,7 @@ export class beetle extends enemy
         let anim = "idleSpider";
         let speed = 30;
         let sprite = "spider_idle0";
-        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 6 }, id);
+        super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 6 }, id);
         this.price = 10; 
         this.ATTKPoints= 2;
         this.coolDown = 1750;
@@ -333,7 +329,7 @@ export class enemyManager
             this.summoned = true;
             for(let i = 0; i<this.enemiesInfo.length;i++)
             {
-                this.addEnemy(this.summon(this.enemiesInfo[i], scene, hero, weaponGroup, walls, i));
+                this.addEnemy(this.summon(this.enemiesInfo[i], scene, i));
             }
         }
         else 
@@ -343,7 +339,7 @@ export class enemyManager
 
     }
 
-    summon(enemyInfo, scene, hero, weapon, walls, id)
+    summon(enemyInfo, scene, id)
     {
         switch (enemyInfo.type)
         {
@@ -351,6 +347,32 @@ export class enemyManager
             let z;
             z = new zombie(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
             return z;
+
+            case "spider":
+            let s;
+            console.log("voy a invocar una araña")
+            s = new spider(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            return s;
+            
+            case "littleSpider":
+            let ls;
+            ls = new littleSpider(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            return ls;
+            
+            case "bee":
+                let b;
+                b = new bee(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            return b;
+            
+            case "wizard":
+            let w;
+            w = new wizard(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            return w;
+            
+            case "beetle":
+                let bt;
+                bt = new beetle(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            return bt;
 
         default:
             console.log("No se puede crear un enemigo de tipo " + enemyInfo.type);
