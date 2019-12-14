@@ -20,13 +20,14 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     }
     damage(points)
     {
-        if(this.vulnerable && this.body !== undefined)
+        if(this.vulnerable && this.body !== undefined && points>0)
         {
             this.vulnerable = false;
             this.alpha = 0.75;
-            this.scene.time.delayedCall(1000, this.makeVulnerable, [], this)
-            this.knockback();
+            this.scene.time.delayedCall(950, this.makeVulnerable, [], this)
+            if (this!== this.scene.hero)    this.knockback();
             this.health -= points;
+            console.log(this.health);
             if(this.health<=0){ this.kill()};
         }
         else return "No se puede dañar al enemigo, es invulnerable"
@@ -37,10 +38,13 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     {
         if(this.health+=points > this.maxHealth)
             this.health=this.maxHealth;
+
+        console.log(this.health);
         return this.health;
     }
     augmentMaxHealth(points)
     {
+        this.health+= points;
         return this.maxHealth+=points;
     }
 
@@ -74,8 +78,9 @@ export class player extends livingEntity
         this.body.setSize(14,14);
         this.body.offset.y=14;
         this.body.setCollideWorldBounds(true);
+        this.stunned = false;
 
-
+        let keys = scene.add.group();
 
         // Lectura de input y ejecución de la animación ----> TODO: Clase teclado o input que se encargue de hacer esto más bonito
         this.key_D     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D    );
@@ -86,88 +91,81 @@ export class player extends livingEntity
         this.key_RIGHT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.key_DOWN  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN );
         this.key_LEFT  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT );
+        this.key_TAB   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB  );    
 
         this.play(anim);
-
-        // Crea la espada ----> TODO: Sistema de inventario
-
-
-        /*let weapon = scene.add.sprite(100, 100, sword.name);
-        this.weapon = weapon;
-        this.weapon.scale = sword.scale;
-        scene.add.existing(this.weapon);
-        scene.physics.add.existing(this.weapon);
-        this.weapon.setVisible(false);
-        this.weapon.body.setEnable(true);
-        this.weapon.body.setSize(1,1);*/
-
-
         
         //Intento de meter el inventario
         this.inventory = this.scene.game.inventory;
         this.weaponManager = new weaponManager(this);
-
-
-
-        //this.weapon.damage=this.inventory.Sword.Effect.Data.Quantity;
     }
     handleLogic()
     {
-        //Teclas de movimiento, cambiar la dirección y moverse en esa direción
-        if(this.key_D.isDown)
+        if(!this.stunned)
         {
-            this.dir = {x:1,  y:this.dir.y}
-            this.move();
-        }
-        if(this.key_A.isDown)
-        {
-            this.dir = {x:-1, y:this.dir.y}            
-            this.move();
-        }
-        if(this.key_W.isDown)
-        {
-            this.dir = {x:this.dir.x, y:-1}
-            this.move();
-        }
-        if(this.key_S.isDown)
-        {
-            this.dir = {x:this.dir.x, y:1}
-            this.move();
-        }
-        if (this.key_A.isUp && this.key_D.isUp)    //Resetear a 0 la x si ninguna de las horizontales se presiona
-        {
-            this.dir = {x:0,y:this.dir.y}
-            this.move();
-        }
-        if (this.key_W.isUp && this.key_S.isUp)   //Resetear a 0 la y si ninguna de las verticales se presiona
-        {
-            this.dir ={x:this.dir.x,y:0}
-            this.move();
-        }
-        let flip = (this.dir.x < 0);
-        socket.emit("playerMove",{pos:{x:this.x,y:this.y},flip:flip});
-
-
-        //Teclas de attaque, atacar en la dirección
-        if(this.key_DOWN.isDown)
-        {
-            this.weaponManager.useWeapon("down")
-        }
+            this.weaponManager.weapon.x = this.x + 2  + this.weaponManager.offsetX;
+            this.weaponManager.weapon.y = this.y + 5  + this.weaponManager.offsetY;
         
-        if(this.key_UP.isDown)
-        { 
-            this.weaponManager.useWeapon("up")
-        }
-        if(this.key_RIGHT.isDown)
-        {
-            this.weaponManager.useWeapon("right")
-        }
-        if(this.key_LEFT.isDown)
-        {
-            this.weaponManager.useWeapon("left")
+            //Teclas de movimiento, cambiar la dirección y moverse en esa direción
+            if(this.key_D.isDown)
+            {
+                this.dir = {x:1,  y:this.dir.y}
+                this.move();
+            }
+            if(this.key_A.isDown)
+            {
+                this.dir = {x:-1, y:this.dir.y}            
+                this.move();
+            }
+            if(this.key_W.isDown)
+            {
+                this.dir = {x:this.dir.x, y:-1}
+                this.move();
+            }
+            if(this.key_S.isDown)
+            {
+                this.dir = {x:this.dir.x, y:1}
+                this.move();
+            }
+            if (this.key_A.isUp && this.key_D.isUp)    //Resetear a 0 la x si ninguna de las horizontales se presiona
+            {
+                this.dir = {x:0,y:this.dir.y}
+                this.move();
+            }
+            if (this.key_W.isUp && this.key_S.isUp)   //Resetear a 0 la y si ninguna de las verticales se presiona
+            {
+                this.dir ={x:this.dir.x,y:0}
+                this.move();
+            }
+            let flip = (this.dir.x < 0);
+            socket.emit("playerMove",{pos:{x:this.x,y:this.y},flip:flip});
+            //Teclas de attaque, atacar en la dirección
+            if(this.key_DOWN.isDown)
+            {
+                this.weaponManager.useWeapon("down")
+            }
+            if(this.key_UP.isDown)
+            { 
+                this.weaponManager.useWeapon("up")
+            }
+            if(this.key_RIGHT.isDown)
+            {
+                this.weaponManager.useWeapon("right")
+            }
+            if(this.key_LEFT.isDown)
+            {
+                this.weaponManager.useWeapon("left")
+            }
+            //Teclas para cambiar de arma
+            if(Phaser.Input.Keyboard.JustDown(this.key_TAB))
+            {
+                this.weaponManager.changeWeapon();
+            }
         }
 
-        this.weaponManager.weapon.x = this.x + 2  + this.weaponManager.offsetX;
-        this.weaponManager.weapon.y = this.y + 5  + this.weaponManager.offsetY;
+    }
+    kill()
+    {
+        console.log("Debería estar muriéndome");
     }
 }

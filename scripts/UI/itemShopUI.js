@@ -12,7 +12,7 @@ export class shopUiManager
     {
         let background = scene.add.image(0,0,"background");
         background.setOrigin(0,0);
-        scene.inventory = new inventory(100);
+        scene.inventory = new inventory(1000);
         console.log(scene.inventory.gold);
         
 
@@ -48,7 +48,9 @@ export class shopUiManager
                     //let maybe = (scene.inventory[itemName].Units > 0) ? 1 : 0; //esto solo aplica para la espada porque empiezas con una pero de lvl 0
                     let maybe = 1;
                     if(scene.inventory[itemName].Units === 0) maybe=0;
+                    console.log(maybe);
                     toBuyItemLevel = scene.inventory[itemName].Level + maybe;
+                    console.log(toBuyItemLevel);
                     price = itemAtlas[itemName+"_"+toBuyItemLevel].Price;
                     buyResult = scene.inventory.substractGold(price);
                     if(buyResult!==-1)
@@ -56,7 +58,8 @@ export class shopUiManager
                         if(maybe===1)scene.inventory.upgradeItem(itemName);
                         else scene.inventory[itemName].Units+=1;
                         toBuyItemLevel+=1;
-                        let newItemLevelPrice = itemAtlas[itemName+"_"+toBuyItemLevel].Price;
+                        let newItemLevelPrice = 0;
+                        if(toBuyItemLevel<4) newItemLevelPrice= itemAtlas[itemName+"_"+toBuyItemLevel].Price;
                         text.text = scene.inventory.gold;
                         scene[itemName+"_Button"].text.text ="x"+newItemLevelPrice;
                         console.log(itemName+"_"+scene.inventory[itemName].Level) 
@@ -224,7 +227,7 @@ export class itemButton3lvl
         container.add(scene.add.image(0,0,number).setTintFill("0xc3c3c3"));
         container.add(scene.add.image(0,0,border));
 
-        if(itemID === "Sword")
+        if(itemID === "Sword" || itemID === "Bow")
         {
             let stringMalHecha = scene.inventory[itemID].Level+1;
             this.expositor = scene.add.image(0,-3,itemID+"_"+stringMalHecha);
@@ -252,13 +255,16 @@ export class itemButton3lvl
             {
                 this["button"+index].setTintFill("0x3f0d59");
             }
-            if(itemID === "Sword")
+            if(itemID === "Sword" || itemID === "Bow")
             {
                 container.remove(this.expositor, true);
                 this.stringMalHecha = scene.inventory[itemID].Level+1;
-                this.expositor = scene.add.image(0,-3, itemID+"_"+this.stringMalHecha );
-                this.expositor.angle=90;
-                container.add(this.expositor);
+                if(this.stringMalHecha<4)
+                {
+                    this.expositor = scene.add.image(0,-3, itemID+"_"+this.stringMalHecha );
+                    this.expositor.angle=90;
+                    container.add(this.expositor);
+                }
             }
 
         })

@@ -1,3 +1,5 @@
+import { enemyInfo } from "../Enemies and World/enemy.js";
+
 export class textButton extends Phaser.GameObjects.Text{
     constructor(config, x, y, text)
     {
@@ -71,10 +73,10 @@ class indexButton extends textButton //este botón servirá en la parte de edici
 
 export class editorMenu  //Manager que se encarga de decidir qué botones se muestran y qué botones no
 {
-    constructor(scene, Hoffset, Voffset)
+    constructor(scene, Hoffset, Voffset, tileSize)
     {
         this.actualState = "";
-        this.grid = new dungeonGrid(scene, Hoffset, Voffset);
+        this.grid = new dungeonGrid(scene, Hoffset, Voffset, tileSize);
         this.scene = scene;
 
         let statesX = 10 ;  //Posición horizontal de los botones de estado
@@ -99,14 +101,18 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         //Opciones de states[1] monstruos:
         //--Por ahora zombie--
         this.states[1].add(new gridOptionButton(scene,optionsX,optionsY,    ["pink2","green2"], this.grid,"enemy","zombie")); //
-        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+8,  ["pink2","green2"], this.grid,"enemy","araña" )); // En un mundo ideal habría varios tipos más
-        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+16, ["pink2","green2"], this.grid,"enemy","abeja" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+8,  ["pink2","green2"], this.grid,"enemy","spider" )); // En un mundo ideal habría varios tipos más
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+16, ["pink2","green2"], this.grid,"enemy","bee" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+24, ["pink2","green2"], this.grid,"enemy","beetle" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX,optionsY+32, ["pink2","green2"], this.grid,"enemy","wizard" )); //
         
         //Opciones de states[2] trampas:
         //--Por ahora no hay trampas implementadas--
         this.states[2].add(new gridOptionButton(scene,optionsX,optionsY,    ["white2","green2"], this.grid,"trap", "spikes"));  // 
-        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+8,  ["white2","green2"], this.grid,"trap",""));  // En un mundo ideal habría varios tipos más
-        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+16, ["white2","green2"], this.grid,"trap",""));  //
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+8,  ["white2","green2"], this.grid,"trap", "poison"));  // En un mundo ideal habría varios tipos más
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+16, ["white2","green2"], this.grid,"trap", "stun"));    //
+        this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+24, ["white2","green2"], this.grid,"trap", "spawn"));   //
+        //this.states[2].add(new gridOptionButton(scene,optionsX,optionsY+32, ["white2","green2"], this.grid,"trap", "teleportation"));   // esta no funciona todavía
         
         this.states[0].emit("pointerdown")                                                                            //Empezamos por defecto con el estado "Size"
         this.states[0].stateOptions[0].emit("pointerdown")                                                                 //Empezamos por defecto con el Size pequeño
@@ -238,7 +244,7 @@ export class Button extends Phaser.GameObjects.Sprite
         }
         else
         {
-            this.on("pointerout",() => {this.setAlpha(1); console.log("no he salido bro")});
+            this.on("pointerout",() => {this.setAlpha(1);});
         }
     }
     setDefaultSprite()
@@ -354,7 +360,7 @@ class gridOptionButton extends Button //Botón que modifica el grid (botones de 
 
 class dungeonGrid
 {
-    constructor( scene, Hoffset, Voffset)
+    constructor( scene, Hoffset, Voffset, tileSize)
     {
         this.cells = new Array(9);                  // || Salagadoola mechicka boola; Bibbidi-bobbidi-boo!       || //
         for (let i = 0; i < this.cells.length; i++) // || A bidimensional array in Javascript you want to do?    || //
@@ -362,7 +368,7 @@ class dungeonGrid
             this.cells[i] = new Array(9);           // || Salagadoola mechicka boola; Bibbidi-bobbidi-boo!       || //
         }                                           // || You wanted to [9,9] but now you love this language too || //
 
-        let screenCenter = 7*8;                     // Calcula el centro de la pantalla, pues la posición del tilemap toma este como 0,0
+        let screenCenter = 7*tileSize/2;                     // Calcula el centro de la pantalla, pues la posición del tilemap toma este como 0,0
         this.Hoffset = Hoffset + screenCenter;      // Sumamos los offsets dados en el constructor con el centro previamente calculado
         this.Voffset = Voffset + screenCenter;      // para guardar los offsets con referencia  al  0,0 de la escena (Que es como los utiliza Sprite)
         this.scene = scene;                        
@@ -371,11 +377,12 @@ class dungeonGrid
         //Creamos nueve celdas, pues la mayor habitación posible es de 9x9    
         for(let i= 0;i<9;i++)
            for(let j=0;j<9;j++) 
-               this.cells[i][j] = new cell(this.scene, 0, 0 , ["default","green2","default2"], this, i, j);
+               this.cells[i][j] = new cell(this.scene, 0, 0 , ["default","green","default2"], this, i, j);
 
         this.currentType = "enemy";
         this.currentSubtype = "zombie";
         this.hide();
+        this.tileSize=tileSize;
     }
 
     getOffsetBySize(size)   //Conseguimos el número celdas que hay que desplazar en diagonal ( ⭸ ), dependiendo del tamaño de la habitación actual,                                   ( ⭸ ⇲ ↘ ⬂ ⬊ ⭨ )
@@ -389,8 +396,8 @@ class dungeonGrid
         {
             for(let j =0 ; j<9; j++)                                // || La "i" y la "j" son números enteros que representan la posición en el grid.                      ||
             {                                                       // || Offset es la unidad que le sumamos al iterador (i o j)  para conseguir la posición               ||
-                this.cells[i][j].x = (offset+i)* 8 + this.Hoffset ; // || desplazada. Multiplicamos por el tamaño del tile y sumamos el offset en píxeles correspondiente  ||
-                this.cells[i][j].y = (offset+j)* 8 + this.Voffset ; 
+                this.cells[i][j].x = (offset+i)* this.tileSize/2 + this.Hoffset ; // || desplazada. Multiplicamos por el tamaño del tile y sumamos el offset en píxeles correspondiente  ||
+                this.cells[i][j].y = (offset+j)* this.tileSize/2 + this.Voffset ; 
             }                                                       
         }
     }
@@ -447,8 +454,6 @@ class dungeonGrid
                 saveCell(i,j, this); //Para cada celda llama a la función SaveCell
             }
         }
-
-
         function saveCell(i,j, grid)
         {
         let cell = grid.cells[i][j];
@@ -456,25 +461,15 @@ class dungeonGrid
         {
             let actualRoom = dungeon.rooms[cell.actual];
             let enemyConfig;                                                        //En esta variable se guardará la información necesaria para crear el enemigo
-            let offset = (grid.getOffsetBySize(actualRoom.size))             
-            switch (cell.subtype)
+            let offset = (grid.getOffsetBySize(actualRoom.size))   
+            let x = cell.i+offset;
+            let y = cell.j+offset;          
+            if (cell.subtype == "zombie"  ||cell.subtype == "spider" || cell.subtype == "wizard"||cell.subtype == "bee"||cell.subtype == "beetle")
             {
-                case "zombie":
-                    enemyConfig =
-                    {
-                        type: "zombie",
-                        pos: {
-                            x : cell.i+offset,
-                            y : cell.j+offset
-                        }
-                    }
-                    break;
-                default:
-                    console.log("No se puede crear un enemigo de tipo "+ cell.subtype);
-                    break;
+                enemyConfig = new enemyInfo(x,y,cell.subtype);
             }
-            if(enemyConfig!==undefined) actualRoom.enemies.addEnemy(enemyConfig); //Si se ha encontrado un enemigo posible en el switch se añade la configuración a la lista cprres`pmoemte
-
+            else console.error("No se puede crear un enemigo de tipo "+ cell.subtype);
+            if(enemyConfig!==undefined) actualRoom.enemies.addEnemyInfo(enemyConfig); //Si se ha encontrado un enemigo posible en el switch se añade la configuración a la lista cprres`pmoemte
         }
         //Ahora también guardamos trampas
         else if(cell.type === "trap")
@@ -482,25 +477,19 @@ class dungeonGrid
             let actualRoom = dungeon.rooms[cell.actual];
             let trapConfig;                                                        
             let offset = (grid.getOffsetBySize(actualRoom.size));           
-            switch (cell.subtype)
+            if (cell.subtype == "spikes" || cell.subtype == "poison" || cell.subtype == "stun" || cell.subtype == "spawn")// || cell.subtype == "teleportation")
             {
-                case "spikes":
-                    trapConfig=
+                trapConfig=
+                {
+                    type: cell.subtype,
+                    pos : 
                     {
-                        type: "spikes",
-                        pos : 
-                        {
-                            x: (cell.i +offset),    //Ajustar el valor
-                            y: (cell.j + offset)   //Ajustar el valor
-                        }
+                        x: (cell.i +offset),    //Ajustar el valor
+                        y: (cell.j + offset)   //Ajustar el valor
                     }
-                    console.log(trapConfig.pos.x + "y en y: " + trapConfig.pos.y);
-                    break;
-                
-                default:
-                    console.log("No se puede poner una trampa de tipo " + cell.subtype);
-                    break;
+                }
             }
+            else console.log("No se puede poner una trampa de tipo " + cell.subtype);
 
             if(trapConfig!==undefined) actualRoom.traps.AddTrap(trapConfig);
         }

@@ -1,4 +1,5 @@
 import { dummieTrap } from "./dummieEntitties.js";
+import { zombie } from "./enemy.js";
 
 //Se encarga de transformar la información en el editor de mazmorras en trampas dentro de la habitación
 export class trapManager
@@ -52,9 +53,24 @@ export class trapManager
             case "spikes":
                 let spiky= new spikes(scene, trap.pos.x, trap.pos.y, this, trap.id);
                 scene.physics.add.overlap(hero, spiky.zone, ()=>spiky.Activate(), null, scene);
-                scene.physics.add.collider(spiky, walls);
                 spiky.setVisible(false);
                 return spiky;
+
+            case "poison":
+                let poisony = new poison(scene, trap.pos.x, trap.pos.y, this, trap.id);
+                scene.physics.add.overlap(hero, poisony.zone, ()=>poisony.Activate(), null, scene);
+                poisony.setVisible(false);
+                return poisony;
+            case "stun":
+                let stuny = new stun (scene, trap.pos.x, trap.pos.y, this, trap.id);
+                scene.physics.add.overlap(hero, stuny.zone, ()=>stuny.Activate(), null, scene);
+                stuny.setVisible(false);
+                return stuny;
+            case "spawn":
+                let spawny = new spawn (scene, trap.pos.x, trap.pos.y, this, trap.id);
+                scene.physics.add.overlap(hero, spawny.zone, ()=>spawny.Activate(), null, scene);
+                spawny.setVisible(false);
+                return spawny;
             default:
                 console.log ("No existe esa trampita: "+ trap.subtype);
                 break;
@@ -94,20 +110,13 @@ export class trapManager
     }
     createDummy(trap,scene)
     {
-        switch (trap.type)
-        {
-            case "spikes":
+        
+        if (trap.type == "spikes" || trap.type == "poison" || trap.type == "stun" || trap.type == "spawn")// || cell.subtype == "teleportation")
             {
-                let spikes;
-                spikes = new dummieTrap(scene,trap.pos.x,trap.pos.y, "spikes", this, trap.id);
-                return spikes;
+                let trappy;
+                trappy = new dummieTrap(scene, trap.pos.x, trap.pos.y, trap.type, this, trap.id);
             }
-
-            default:
-                console.log("No se puede crear una trampa de tipo " + trap.subtype);
-                break;
-                
-        }
+            else console.log("No se puede poner una trampa de tipo " + trap.type);
     }
     
 }
@@ -115,8 +124,7 @@ export class trapManager
 export class Traps extends Phaser.GameObjects.Sprite
 {
     //Una trampa es un sprite con una zona (para activarse) y un efecto
-    //Hace falta decirle quién es el héroe?
-    constructor(scene, x, y, spriteID, trapManager, id)//, hero)
+    constructor(scene, x, y, spriteID, trapManager, id, enemyType="")//, hero)
     {
         super(scene, x*16 +24, y*16 +24, spriteID)
         scene.add.existing(this);
@@ -125,10 +133,9 @@ export class Traps extends Phaser.GameObjects.Sprite
         this.trapManager = trapManager;
         this.zone=this.createZone(scene)
         this.id=id;
-        //this.hero=hero;
+        this.scene = scene;
     }
     
-    //Es (8,8) o (16, 16) el sprite
     createZone(scene)
     {
         let zone = scene.add.zone(this.x,this.y, 16,16);
@@ -138,7 +145,6 @@ export class Traps extends Phaser.GameObjects.Sprite
     }
 
     //Muestra el sprite y su zona. Crea una nueva dependencia con el nuevo héroe
-    //Hace falta decirle de nuevo quién es el nuevo héroe?
     Show(hero)
     {
         this.setVisible(true);
@@ -159,7 +165,7 @@ export class Traps extends Phaser.GameObjects.Sprite
     //Cuando una trampa se activa: hace lo que tiene que hacer y se desactiva para que no vuelva a activarse
     Activate()
     {
-        this.effect();
+        this.effect(this.scene.hero);
         this.Deactivate();
     }
 
@@ -177,12 +183,86 @@ export class Traps extends Phaser.GameObjects.Sprite
 
 export class spikes extends Traps
 {
-    constructor(scene, x, y, trapsManager, id)
+    constructor(scene, x, y, trapsManager, id, enemy)
     {
         let anim = "spikesAnim";
         let sprite = "spikes";
         super(scene, x, y, sprite, trapsManager, id);
     }
-    effect()
-    {console.log("Has activado spkies trap")}
+    
+    effect(hero) 
+    {
+        hero.damage(2);
+    }
+}
+
+export class poison extends Traps
+{
+    constructor(scene, x, y, trapsManager, id)
+    {
+        let anim = "poisonAnim";
+        let sprite = "poison";
+        super(scene, x, y, sprite, trapsManager, id);
+    }
+    effect(hero) 
+    {      
+        for(let i=0; i<3; i++)
+        
+        this.scene.time.delayedCall(1000*i, ()=>
+        {
+            console.log("Vida héroe antes: " + hero.health);
+            hero.damage(1);
+            console.log("Vida héroe después: " + hero.health);
+        });
+    }
+}
+
+export class stun extends Traps
+{
+    constructor(scene, x, y, trapsManager, id)
+    {
+        let anim = "stunAnim";
+        let sprite = "stun";
+        super(scene, x, y, sprite, trapsManager, id);
+    }
+    effect(hero) 
+    {
+        hero.stunned=true;
+        hero.body.velocity.x=0;
+        hero.body.velocity.y=0;
+        this.scene.time.delayedCall(3000, ()=> {hero.stunned=false;}, [], this);
+    }
+}
+export class teleportation extends Traps
+{
+    constructor(scene, x, y, trapsManager, id)
+    {
+        let anim = "teleportationAnim";
+        let sprite = "teleportation";
+        super(scene, x, y, sprite, trapsManager, id);
+    }
+    effect(hero){}
+}
+export class spawn extends Traps
+{
+    constructor(scene, x, y, trapsManager, id)
+    {
+        let anim = "spawnAnim";
+        let sprite = "spawn";
+        super(scene, x, y, sprite, trapsManager, id);
+        this.enemy = 
+        {
+            type : "spider",
+            pos:{
+                x: x,
+                y: y
+            }
+        }
+    }
+    effect(hero)
+    {
+        let idEnemy= this.scene.enemies.getLastID()+1;
+        this.scene.enemies.addEnemy(this.scene.enemies.summon(this.enemy, this.scene, hero, hero.weapon, this.scene.walls, idEnemy));
+        socket.emit("enemySpawned", {enemy: this.enemy, id: idEnemy});
+    }
 }

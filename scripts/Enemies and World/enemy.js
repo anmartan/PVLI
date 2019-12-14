@@ -5,19 +5,24 @@ export class enemy extends livingEntity
 {
     constructor(scene, x, y, speed, sprite,anim, enemyManager, health, id)
     {
-        super(scene, x, y, sprite, speed, health);
+        console.log("enemigo invocado");
+        super(scene, (x+1.5)*scene.game.tileSize, (y+1.5)*scene.game.tileSize, sprite, speed, health);
         this.enemyManager = enemyManager;
         this.zone = this.createZone(scene);
+        this.enemyManager.zone.add(this.zone);
         this.play(anim);
         this.findDir();                     //Encuentra una dirección aleatoria mientras no haya referencia a player
         this.scene = scene;
         this.id = id;
+        this.attacking = false;             //Para que haya un cooldown y no puedan atacar constantemente
+        this.scale=2;
     }
     createZone(scene)
     {
-        let zone = scene.add.zone(this.x,this.y,16*3,16*3);
+        let zone = scene.add.zone(this.x,this.y,scene.game.tileSize*3,scene.game.tileSize*3);
         scene.physics.add.existing(zone);
         zone.body.debugBodyColor = "0xFFFF00"
+        zone.parent=this;
         return zone;
     }
     spotPlayer(player)
@@ -58,11 +63,11 @@ export class enemy extends livingEntity
         }
     }
     kill()
-    {
+    {        
         if(this.zone!==undefined)this.zone.destroy();
         if(this.player !==undefined)this.player=undefined;
         this.enemyManager.removeEnemy(this);
-        this.body.destroy();
+        //this.body.destroy();
         this.destroy();
         socket.emit("enemyDead", this.id);
         console.log("zombie muerto")
@@ -99,6 +104,17 @@ export class enemy extends livingEntity
     {
         socket.emit("enemyMove", {pos:{x:this.x,y:this.y},flip:this.flipX,id:this.id});
     }
+    attack()                               
+    {
+        if(!this.attacking)
+        {
+            this.attacking = true;
+            this.scene.hero.damage(this.ATTKPoints);
+            console.log("Vida del héroe después del ataque: " + this.scene.hero.health);
+            if(this.specialAttack !==undefined)this.specialAttack();
+            this.scene.time.delayedCall(this.coolDown, ()=>{this.attacking = false;});
+        }
+    }
 } 
 
 
@@ -109,42 +125,189 @@ export class zombie extends enemy
         let anim = "idleZ";
         let speed = 10;
         let sprite = "zombie_idle0";
-        super(scene, 24 + x*16, 24 + y*16, speed,sprite,anim, enemyManager, { maxHealth : 4 }, id);
+        super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 3 }, id);
+        this.price = 3; 
+        this.ATTKPoints= 1;
+        this.coolDown = 2500;                                                                                                                   //coolDown para el ataque: orientativo de momento, se puede fijar para que todos tengan el mismo
+   }
+}
+
+export class bee extends enemy
+{
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    {
+        let anim = "idleBee";
+        let speed = 50;
+        let sprite = "bee_idle0";
+        super(scene, x,  y, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
+        this.price = 6; 
+        this.ATTKPoints= 1;
+        this.coolDown = 1250;
    }
 
-
+   //Al atacar, la abeja muere
+   specialAttack(){this.scene.time.delayedCall(this.coolDown, ()=>{this.kill();});}
 }
+
+export class spider extends enemy
+{
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    {
+        let anim = "idleSpider";
+        let speed = 15;
+        let sprite = "spider_idle0";
+        super(scene, x,y, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
+        this.price = 20; 
+        this.ATTKPoints= 2;
+        this.coolDown = 1500;
+   }
+
+   //Al morir, la araña spawnea otras arañana más pequeñas
+   kill()
+   {        
+       //redefinición para añadir el spawneo de arañas
+       for(let i=0; i<5; i++)                                   //i < número de arañas que queramos spawnear. Se puede cambiar más adelante
+       {
+            let spidy =new enemyInfo(this.x + Phaser.Math.RND.between(-4, +4),this.y + Phaser.Math.RND.between(-4, +4),"littleSpider") 
+            let idEnemy= this.scene.enemies.getLastID()+1;
+            this.scene.enemies.addEnemy(this.scene.enemies.summon(spidy, this.scene, idEnemy));
+            socket.emit("enemySpawned", {enemy: spidy, id: idEnemy});
+        }
+
+        //kill de todos los enemigos
+        if(this.zone!==undefined)this.zone.destroy();
+        if(this.player !==undefined)this.player=undefined;
+        this.enemyManager.removeEnemy(this);
+        this.body.destroy();
+        this.destroy();
+        socket.emit("enemyDead", this.id);
+        console.log("zombie muerto")
+    } 
+}
+
+export class littleSpider extends enemy
+{
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    {
+        let anim = "idleSpider";                        //será otro sprite? O solo le vamos a cambiar la escala?
+        let speed = 25;
+        let sprite = "spider_idle0";
+        super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 1 }, id);
+        this.price = 0;                                 // las arañitas no se pueden crear desde el editor de mazmorras. Solo aparecen cuando muere una araña
+        this.ATTKPoints= 1;
+        this.coolDown = 1500;
+   }
+}
+
+export class wizard extends enemy
+{
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    {
+        let anim = "idleSpider";
+        let speed = 15;
+        let sprite = "spider_idle0";
+        super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
+        this.price = 15; 
+        this.ATTKPoints= 1;
+        this.coolDown = 2750;
+   }
+
+   // el mago ataca de otra manera
+   specialAttack()         
+   {
+        if(!this.attacking)
+        {
+            this.attacking = true;
+            player.damage(this.ATTKPoints);
+            this.scene.time.delayedCall(this.coolDown, ()=>{this.attacking = false;});
+        }
+    }
+}
+
+export class beetle extends enemy
+{
+    constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
+    {
+        let anim = "idleSpider";
+        let speed = 30;
+        let sprite = "spider_idle0";
+        super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 6 }, id);
+        this.price = 10; 
+        this.ATTKPoints= 2;
+        this.coolDown = 1750;
+   }
+}
+/*
+
+Enemigo         Puntos de vida          Puntos de ataque            Velocidad           Precio
+
+Zombie              3                           1                       Baja             3 
+ 
+Abeja               1-2                         1                       Alta            5-6   
+
+Araña               2                           2                       Baja             20
+
+Arañita             1                           1                       Media            x
+
+Mago                4                           3-4                     Baja            15
+
+Escarabajo          3+3                         1-2                     Media           10
+*/
+
+export class enemyInfo
+{
+    constructor(x,y,type)
+    {
+        this.pos  = {x:x,y:y};
+        this.type = type;
+    }
+}
+
 
 export class enemyManager
 {
-    constructor(enemies=undefined)
+    constructor(scene,enemies=undefined)
     {
-        if(enemies===undefined){this.enemies = new Array();} //Este array de enemigos contendrá lo necesario para invocar a cada enemigo en cada habitación antes de que se invoquen. Y al invocarlos a los mismos enemigos
-        else this.enemies=enemies;
-        this.summoned =false;
+        //if(enemies===undefined){this.enemies = new Array();} //Este array de enemigos contendrá lo necesario para invocar a cada enemigo en cada habitación antes de que se invoquen. Y al invocarlos a los mismos enemigos
+        //else this.enemies=enemies;
+
+        /* Si nos han pasado un Array con enemyInfo entonces estamos en el dungeonRun */
+        if(Array.isArray(enemies))
+        {
+            this.scene=scene;
+            this.enemies = this.scene.add.group();       
+            this.zone = this.scene.add.group();       
+            this.summoned = false;
+            this.enemiesInfo= enemies;
+        }
+        else 
+        {
+            this.enemiesInfo = new Array();
+        }
+    }
+    addEnemyInfo(enemyInfo)
+    {
+        //let id = this.enemies.push(enemy) - 1; //La posición en el array
+        //this.enemies[id].id = id;
+        enemyInfo.id=this.enemiesInfo.push(enemyInfo);
     }
     addEnemy(enemy)
     {
-        let id = this.enemies.push(enemy) - 1; //La posición en el array
-        this.enemies[id].id = id;
+        this.enemies.add(enemy);
     }
+    getLastID(){return this.enemies.getChildren().length-1;}
     hideAllAlive()
     {
-        for(let i=0; i<this.enemies.length;i++) 
-        {
-            this.enemies[i].hide();
-        }
+       let enemies= this.enemies.getChildren();
+       enemies.forEach((enemy)=>enemy.hide());
     }
     showAllAlive()
     {
-        for(let i = 0; i < this.enemies.length;i++) 
-        {
-            this.enemies[i].show();
-        }
+        this.enemies.getChildren().foreach(enemy, ()=>enemy.show());
     }
     removeEnemy(enemy)
     {
-        this.enemies.splice(this.enemies.indexOf(enemy),1);
+        this.enemies.remove(enemy);
     }
     getNth(index)
     {
@@ -159,62 +322,78 @@ export class enemyManager
         this.enemies[index].pos = newPos;
     }
 
-    summonEnemies(scene, hero, weapon, walls)
+    summonEnemies(scene, hero, weaponGroup, walls)
     {
         if(!this.summoned)
         {
+            scene.physics.add.overlap(weaponGroup, this.enemies, (weapon, enemy) => {hero.attack(enemy, weapon.Damage)});                                                  //
+            scene.physics.add.overlap(this.zone, hero , (zone) => zone.parent.spotPlayer(hero));                                                                           //
+            scene.physics.add.collider(this.enemies, walls);                                                                                                               // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
+            scene.physics.add.collider(this.enemies, hero, (enemy)=>{enemy.attack(hero, enemy.ATTKPoints)});                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
+    
             this.summoned = true;
-            for(let i = 0; i<this.enemies.length;i++)
+            for(let i = 0; i<this.enemiesInfo.length;i++)
             {
-                this.enemies[i] = this.summon(this.enemies[i], scene, hero, weapon, walls, i)
+                this.addEnemy(this.summon(this.enemiesInfo[i], scene, i));
             }
         }
         else 
         {
-            for(let i = 0; i<this.enemies.length;i++)
-            {
-                this.enemies[i].show();
-            }
+            this.showAllAlive();
         }
 
     }
 
-    summon(enemy, scene, hero, weapon, walls, id)
+    summon(enemyInfo, scene, id)
     {
-        switch (enemy.type)
+        switch (enemyInfo.type)
         {
             case "zombie":
             let z;
-            z = new zombie(scene, enemy.pos.x, enemy.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-            scene.physics.add.overlap(weapon, z, () => hero.attack(z,weapon.damage));                               //
-            scene.physics.add.overlap(hero, z.zone, () => z.spotPlayer(hero),null,scene);       //
-            scene.physics.add.collider(z, walls);                                               // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
-            scene.physics.add.collider(z, hero);                                                //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
-            z.body.setCollideWorldBounds(true);                                                 //       aquí.
+            z = new zombie(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
             return z;
 
+            case "spider":
+            let s;
+            console.log("voy a invocar una araña")
+            s = new spider(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            return s;
+            
+            case "littleSpider":
+            let ls;
+            ls = new littleSpider(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            return ls;
+            
+            case "bee":
+                let b;
+                b = new bee(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            return b;
+            
+            case "wizard":
+            let w;
+            w = new wizard(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            return w;
+            
+            case "beetle":
+                let bt;
+                bt = new beetle(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
+            return bt;
+
         default:
-            console.log("No se puede crear un enemigo de tipo " + enemy.subtype);
+            console.log("No se puede crear un enemigo de tipo " + enemyInfo.type);
             break;
         }
     }
     summonDummyEnemies(scene)
     {
         this.summoned = true;
-            for(let i = 0; i<this.enemies.length;i++)
-            {
-                this.enemies[i] = this.summonDummy(this.enemies[i],scene,i)
-            }
-        socket.on("enemyMove", data =>
+        //this.enemiesInfo.forEach(function(enemy){this.summonDummy(enemy, scene, enemy.id);});
+        for(let i = 0; i<this.enemiesInfo.length;i++)
         {
-            this.enemies[data.id].move(data.pos, data.flip);
-        })
-        socket.on("enemyDead", id =>
-        {
-            this.enemies[id].killDumie();
-        })
+            let enemy = this.summonDummy(this.enemiesInfo[i],scene,i);
+            this.addEnemy(enemy);
 
-        
+        }
     }
     summonDummy(enemy,scene,i)
     {
@@ -222,11 +401,12 @@ export class enemyManager
         {
             case "zombie":
             {
+                console.log(enemy.type + " " +enemy.pos.x +" "+enemy.pos.y)
                 let zombie;
                 zombie = new dummieEnemy(scene,enemy.pos.x,enemy.pos.y,"zombie_idle0","idleZ",this,i);
+                //zombie = new dummieEnemy(scene,5,5,"zombie_idle0","idleZ",this,i); 
                 return zombie;
             }
-
             default:
                 console.log("No se puede crear un enemigo de tipo " + enemy.subtype);
                 break;
