@@ -100,26 +100,32 @@ export class trapManager
     }
     createDummy(trap,scene)
     {
-        switch (trap.type)
+        /*switch (trap.type)
         {
             case "spikes":
-            {
                 let spikes;
                 spikes = new dummieTrap(scene,trap.pos.x,trap.pos.y, "spikes", this, trap.id);
                 return spikes;
-            }
             case "poison":
-                {
-                    let spikes;
-                    spikes = new dummieTrap(scene,trap.pos.x,trap.pos.y, "poison", this, trap.id);
-                    return spikes;
-                }
+                let spikes;
+                spikes = new dummieTrap(scene,trap.pos.x,trap.pos.y, "poison", this, trap.id);
+                return spikes;
+            case "spawn":
+                let spawn;
+                spawn = new dummieTrap(scene,trap.pos.x,trap.pos.y, "spawn", this, trap.id);
 
             default:
                 console.log("No se puede crear una trampa de tipo " + trap.subtype);
                 break;
                 
-        }
+        }*/
+        
+        if (trap.subtype == "spikes" || trap.subtype == "poison" || trap.subtype == "stun" || trap.subtype == "spawn")// || cell.subtype == "teleportation")
+            {
+                let trappy;
+                trappy = new dummieTrap(scene, trap.pos.x, trap.pos.y, trap.type, this, trap.id);
+            }
+            else console.log("No se puede poner una trampa de tipo " + cell.subtype);
     }
     
 }
@@ -136,6 +142,7 @@ export class Traps extends Phaser.GameObjects.Sprite
         this.trapManager = trapManager;
         this.zone=this.createZone(scene)
         this.id=id;
+        this.scene = scene;
     }
     
     //Es (8,8) o (16, 16) el sprite
@@ -191,23 +198,14 @@ export class spikes extends Traps
         let anim = "spikesAnim";
         let sprite = "spikes";
         super(scene, x, y, sprite, trapsManager, id);
-        this.enemy = 
-        {
-            type : "zombie",
-            pos:{
-                x: x,
-                y: y
-            }
-        }
-        this.scene = scene;
     }
     
     effect(hero) 
     {
-        console.log("Soy una spiky. Hago daño al héroe");
-        let idEnemy= this.scene.enemies.getLastID()+1;
-        this.scene.enemies.addEnemy(this.scene.enemies.summon(this.enemy, this.scene, hero, hero.weapon, this.scene.walls, idEnemy));
-        socket.emit("enemySpawned", {enemy: this.enemy, id: idEnemy});
+        console.log("Vida héroe antes: " + this.scene.hero.health);
+        this.scene.hero.damage(2);
+        console.log("Vida héroe después: " + this.scene.hero.health);
+
     }
 }
 
@@ -221,8 +219,14 @@ export class poison extends Traps
     }
     effect(hero) 
     {      
-        for(let i=0; i<6; i++)
-        this.scene.time.delayedCall(500*i, ()=>{ console.log("Hago daño al héroe");});
+        for(let i=0; i<3; i++)
+        
+        this.scene.time.delayedCall(1000*i, ()=>
+        {
+            console.log("Vida héroe antes: " + this.scene.hero.health);
+            this.scene.hero.damage(1);
+            console.log("Vida héroe después: " + this.scene.hero.health);
+        });
     }
 }
 
@@ -259,5 +263,19 @@ export class spawn extends Traps
         let anim = "spawnAnim";
         let sprite = "spawn";
         super(scene, x, y, sprite, trapsManager, id);
+        this.enemy = 
+        {
+            type : "zombie",
+            pos:{
+                x: x,
+                y: y
+            }
+        }
+    }
+    effect()
+    {
+        let idEnemy= this.scene.enemies.getLastID()+1;
+        this.scene.enemies.addEnemy(this.scene.enemies.summon(this.enemy, this.scene, hero, hero.weapon, this.scene.walls, idEnemy));
+        socket.emit("enemySpawned", {enemy: this.enemy, id: idEnemy});
     }
 }

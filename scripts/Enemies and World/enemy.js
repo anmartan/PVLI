@@ -104,7 +104,7 @@ export class enemy extends livingEntity
     {
         socket.emit("enemyMove", {pos:{x:this.x,y:this.y},flip:this.flipX,id:this.id});
     }
-    attack()                               //Para que cada enemigo tenga un cooldown diferente, si no te gusta se puede quitar y ponerle siempre el mismo
+    attack()                               
     {
         if(!this.attacking)
         {
@@ -130,7 +130,6 @@ export class zombie extends enemy
         this.ATTKPoints= 1;
         this.coolDown = 2500;                                                                                                                   //coolDown para el ataque: orientativo de momento, se puede fijar para que todos tengan el mismo
    }
-   specialAttack(){this.scene.time.delayedCall(this.coolDown, ()=>{this.kill();});}
 }
 
 export class bee extends enemy
@@ -145,6 +144,9 @@ export class bee extends enemy
         this.ATTKPoints= 1;
         this.coolDown = 1250;
    }
+
+   //Al atacar, la abeja muere
+   specialAttack(){this.scene.time.delayedCall(this.coolDown, ()=>{this.kill();});}
 }
 
 export class spider extends enemy
@@ -160,6 +162,7 @@ export class spider extends enemy
         this.coolDown = 1500;
    }
 
+   //Al morir, la araña spawnea otras arañana más pequeñas
    kill()
    {        
        //redefinición para añadir el spawneo de arañas
@@ -208,7 +211,9 @@ export class wizard extends enemy
         this.ATTKPoints= 1;
         this.coolDown = 2750;
    }
-   attack()         //redefinido para el mago, que ataca a distancia
+
+   // el mago ataca de otra manera
+   specialAttack()         
    {
         if(!this.attacking)
         {
@@ -321,10 +326,10 @@ export class enemyManager
     {
         if(!this.summoned)
         {
-            scene.physics.add.overlap(weaponGroup, this.enemies, (weapon, enemy) => {hero.attack(enemy, weapon.Damage)});         //
-            scene.physics.add.overlap(this.zone, hero , (zone) => zone.parent.spotPlayer(hero));                  //
-            scene.physics.add.collider(this.enemies, walls);                                                              // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
-            scene.physics.add.collider(this.enemies, hero, (enemy)=>{enemy.attack(hero, 1)});                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
+            scene.physics.add.overlap(weaponGroup, this.enemies, (weapon, enemy) => {hero.attack(enemy, weapon.Damage)});                                                  //
+            scene.physics.add.overlap(this.zone, hero , (zone) => zone.parent.spotPlayer(hero));                                                                           //
+            scene.physics.add.collider(this.enemies, walls);                                                                                                               // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
+            scene.physics.add.collider(this.enemies, hero, (enemy)=>{enemy.attack(hero, enemy.ATTKPoints)});                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
     
             this.summoned = true;
             for(let i = 0; i<this.enemiesInfo.length;i++)
