@@ -33,7 +33,7 @@ class Arrow extends Phaser.GameObjects.Sprite
         }
         //Hay que acceder al inventario, buscar el nivel del arco, su effect, y multiplicar el tiempo por el data.quantity
         //scene.time.addEvent({delay: 500 * scene.hero.weaponManager.BowObject.Quantity, callback: this.die() });
-        scene.time.delayedCall(3000 * scene.hero.weaponManager.BowObject.Quantity, this.die());
+        scene.time.delayedCall(100 * scene.hero.weaponManager.BowObject.Quantity,()=> this.die());
     }
     //Las flechas se desturyen después de 150ms en el campo.
     die()
@@ -74,6 +74,7 @@ export default class weaponManager
         BowObject.body.setSize(1,1);
         BowObject.setVisible(false);
         BowObject.Damage=Bow.Damage;
+        BowObject.Quantity=Bow.Quantity;
 
 
         let ShieldObject = scene.add.sprite(0,0,Shield.Sprite.ID);
@@ -97,7 +98,6 @@ export default class weaponManager
         this.BowObject    = BowObject;
         this.ShieldObject = ShieldObject;
         this.weapon       = this.SwordObject;
-        //this.weapon.damage = Sword.Effect.Data.Quantity;
         this.offsetX = 0;
         this.offsetY = 0;
         this.scene   = scene;
@@ -185,7 +185,10 @@ export default class weaponManager
             this.weapon.setAngle(angle); 
 
             this.showWeapon(true);
-            if(this.weapon === this.BowObject) this.shootArrow(this.offsetX, this.offsetY, angle);
+            if(this.weapon === this.BowObject)
+            {
+                this.shootArrow(this.offsetX, this.offsetY, angle);
+            } 
             socket.emit("playerAttack", {angle: angle, offsetX: this.offsetX, offsetY:this.offsetY});
             this.scene.time.delayedCall(delay,   this.haveAttacked,[],this)
             this.scene.time.delayedCall(delay,   ()=> this.attacking=false);
