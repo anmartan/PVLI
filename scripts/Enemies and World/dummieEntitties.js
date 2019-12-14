@@ -39,27 +39,25 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite
 
     constructor(scene,x,y,sprite,anim, enemyManager, id)
     {
-        super(scene,x*scene.game.tileSize,y*scene.game.tileSize,sprite);
+        super(scene,(x+1.5)*scene.game.tileSize,(y+1.5)*scene.game.tileSize,sprite);
         scene.add.existing(this);
         this.enemyManager=enemyManager;
         this.play(anim);
         this.id = id;
         socket.on("enemyMove", data =>
         {
-            if(data.id===this.id )this.move(data.pos, data.flip);
+            if(data.id===this.id)this.move(data.pos, data.flip);
         })
         socket.on("enemyDead", id =>
         {
             if(id===this.id) this.killDumie();
         })
-        console.log("me creo");
     }
     move(pos, flip)
     {
         this.x = pos.x;
         this.y = pos.y;
         this.setFlipX(flip);
-        console.log("me muevo");
     }
     killDumie()
     {
@@ -71,11 +69,15 @@ export class dummieTrap extends Phaser.GameObjects.Sprite
 {
     constructor(scene, x, y, sprite, trapManager, id)
     {
-        super(scene, x*16+24, y*16+24, sprite);
+        super(scene, (x+1.5)*scene.game.tileSize, (y+1.5)*scene.game.tileSize, sprite);
         scene.add.existing(this);
         this.trapManager=trapManager;
         this.id=id;
         this.alpha=0.5;
+        socket.on("trapDeactivated", id =>
+        {
+            if(id===this.id)this.destroyTrap();
+        })
     }
 
     destroyTrap()
