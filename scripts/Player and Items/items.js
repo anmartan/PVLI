@@ -158,6 +158,10 @@ class item
             //player.attack(data);
             //esto va a doler programarlo y mucho, tengo la sensación xD
         }
+        else if(!this.Consumible && this.Effect.target === "other" && this.Effect.Data.Attribute === "distance")
+        {
+            this.Quantity = this.Effect.Data.Quantity;
+        }
         else if(this.Consumible&&itemParams.Effect.Target === "other")
         {
             this.Damage=this.Effect.Data.damage;

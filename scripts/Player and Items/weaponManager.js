@@ -32,11 +32,13 @@ class Arrow extends Phaser.GameObjects.Sprite
 
         }
         //Hay que acceder al inventario, buscar el nivel del arco, su effect, y multiplicar el tiempo por el data.quantity
-        this.scene.time.delayedCall(150 * this.weaponManager.BowObject.Effect.Data.Quantity, this.die());
+        //scene.time.addEvent({delay: 500 * scene.hero.weaponManager.BowObject.Quantity, callback: this.die() });
+        scene.time.delayedCall(3000 * scene.hero.weaponManager.BowObject.Quantity, this.die());
     }
     //Las flechas se desturyen después de 150ms en el campo.
     die()
     {
+        console.log("Existo, luego pienso");
         this.body.destroy();
         this.destroy();
     }

@@ -303,8 +303,9 @@ export class enemyManager
     getLastID(){return this.enemies.getChildren().length-1;}
     hideAllAlive()
     {
-       let enemies= this.enemies.getChildren();
-       enemies.forEach((enemy)=>enemy.hide());
+       //let enemiesList= this.enemies.getChildren();
+       //enemiesList.forEach((enemy)=>{enemy.hide();});
+       this.enemies.getChildren().forEach(function(enemy){enemy.hide();});
     }
     showAllAlive()
     {
