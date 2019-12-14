@@ -136,7 +136,7 @@ export class bee extends enemy
 {
     constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleBee";
+        let anim = "idleZ";
         let speed = 50;
         let sprite = "bee_idle0";
         super(scene, x,  y, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
@@ -153,7 +153,7 @@ export class spider extends enemy
 {
     constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleSpider";
+        let anim = "idleZ";
         let speed = 15;
         let sprite = "spider_idle0";
         super(scene, x,y, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
@@ -168,7 +168,13 @@ export class spider extends enemy
        //redefinición para añadir el spawneo de arañas
        for(let i=0; i<5; i++)                                   //i < número de arañas que queramos spawnear. Se puede cambiar más adelante
        {
-            let spidy =new enemyInfo(this.x + Phaser.Math.RND.between(-4, +4),this.y + Phaser.Math.RND.between(-4, +4),"littleSpider") 
+            let x = this.x;
+            let y = this.y;
+            let pos={x:this.x,y:this.y}
+            this.scene.game.fromPixelToTile(pos);
+            x=pos.x;y=pos.y;
+            console.log("x: "+x+" y: "+y);
+            let spidy =new enemyInfo(x + Phaser.Math.RND.between(-1, +1),y + Phaser.Math.RND.between(-1, +1),"littleSpider") 
             let idEnemy= this.scene.enemies.getLastID()+1;
             this.scene.enemies.addEnemy(this.scene.enemies.summon(spidy, this.scene, idEnemy));
             socket.emit("enemySpawned", {enemy: spidy, id: idEnemy});
@@ -189,7 +195,7 @@ export class littleSpider extends enemy
 {
     constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleSpider";                        //será otro sprite? O solo le vamos a cambiar la escala?
+        let anim = "idleZ";                        //será otro sprite? O solo le vamos a cambiar la escala?
         let speed = 25;
         let sprite = "spider_idle0";
         super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 1 }, id);
@@ -203,7 +209,7 @@ export class wizard extends enemy
 {
     constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleSpider";
+        let anim = "idleZ";
         let speed = 15;
         let sprite = "spider_idle0";
         super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
@@ -228,7 +234,7 @@ export class beetle extends enemy
 {
     constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleSpider";
+        let anim = "idleZ";
         let speed = 30;
         let sprite = "spider_idle0";
         super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 6 }, id);
@@ -397,20 +403,15 @@ export class enemyManager
     }
     summonDummy(enemy,scene,i)
     {
-        switch (enemy.type)
+        
+        if(enemy.type === "zombie" ||enemy.type === "bee"||enemy.type === "beetle"||enemy.type === "spider"||enemy.type === "littleSpider"||enemy.type === "wizard" )
         {
-            case "zombie":
-            {
-                console.log(enemy.type + " " +enemy.pos.x +" "+enemy.pos.y)
-                let zombie;
-                zombie = new dummieEnemy(scene,enemy.pos.x,enemy.pos.y,"zombie_idle0","idleZ",this,i);
-                //zombie = new dummieEnemy(scene,5,5,"zombie_idle0","idleZ",this,i); 
-                return zombie;
-            }
-            default:
-                console.log("No se puede crear un enemigo de tipo " + enemy.subtype);
-                break;
-                
+            console.log(enemy.type + " " +enemy.pos.x +" "+enemy.pos.y)
+            let dummie;
+            dummie = new dummieEnemy(scene, enemy.pos.x, enemy.pos.y,"zombie_idle0","idleZ",this,i);
+            return dummie;   
         }
+        console.error("No se puede crear un enemigo de tipo " + enemy.subtype);
+        return 0;
     }
 }

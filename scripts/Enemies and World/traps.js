@@ -98,15 +98,7 @@ export class trapManager
             for(let i = 0; i<this.traps.length;i++)
             {
                 this.traps[i] = this.createDummy(this.traps[i],scene)
-            }
-            
-        socket.on("trapDeactivated", id =>
-        {
-            console.log(id);
-            this.traps[id].destroyTrap();
-        })
-
-        
+            }        
     }
     createDummy(trap,scene)
     {
@@ -126,7 +118,7 @@ export class Traps extends Phaser.GameObjects.Sprite
     //Una trampa es un sprite con una zona (para activarse) y un efecto
     constructor(scene, x, y, spriteID, trapManager, id, enemyType="")//, hero)
     {
-        super(scene, x*16 +24, y*16 +24, spriteID)
+        super(scene, (x+1.5)*scene.game.tileSize,(y+1.5)*scene.game.tileSize, spriteID)
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
@@ -207,7 +199,6 @@ export class poison extends Traps
     effect(hero) 
     {      
         for(let i=0; i<3; i++)
-        
         this.scene.time.delayedCall(1000*i, ()=>
         {
             console.log("Vida héroe antes: " + hero.health);
@@ -262,7 +253,7 @@ export class spawn extends Traps
     effect(hero)
     {
         let idEnemy= this.scene.enemies.getLastID()+1;
-        this.scene.enemies.addEnemy(this.scene.enemies.summon(this.enemy, this.scene, hero, hero.weapon, this.scene.walls, idEnemy));
+        this.scene.enemies.addEnemy(this.scene.enemies.summon(this.enemy, this.scene, idEnemy));
         socket.emit("enemySpawned", {enemy: this.enemy, id: idEnemy});
     }
 }

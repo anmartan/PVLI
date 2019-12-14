@@ -34,5 +34,13 @@ function fromTileToPixel(tileX, tileY, scale=1, offsetX=0,offsetY=0)
 {
 
 }
+game.fromPixelToTile = 
+function fromPixelToTile(pos, scale=1, offsetX=0,offsetY=0)
+{
+    pos.x = pos.x/tileSize;
+    pos.x-1.5;//(Si se utiliza el centro como pivote)
+    pos.y = pos.y/tileSize;
+    pos.y-1.5;//(Si se utiliza el centro como pivote)
+}
 
 
