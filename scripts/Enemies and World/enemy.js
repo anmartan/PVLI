@@ -15,7 +15,6 @@ export class enemy extends livingEntity
         this.scene = scene;
         this.id = id;
         this.attacking = false;             //Para que haya un cooldown y no puedan atacar constantemente
-        this.scale=2;
     }
     createZone(scene)
     {

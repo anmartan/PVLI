@@ -35,10 +35,8 @@ const SelectGameMode=
         this.load.image("caballero_idle2", "../assets/player/knight_m_idle_anim_f2.png")
         this.load.image("caballero_idle3", "../assets/player/knight_m_idle_anim_f3.png")
 
-        this.load.image("zombie_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
-        this.load.image("zombie_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
-        this.load.image("zombie_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
-        this.load.image("zombie_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
+        this.load.image("zombie_idle0", "../assets/enemies/zombie_idle0.png")
+        this.load.image("zombie_idle1", "../assets/enemies/zombie_idle1.png")
 
         this.load.image("bee_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
         this.load.image("bee_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
@@ -69,6 +67,31 @@ const SelectGameMode=
 
     },
     create:function () {
+
+        let playerIdle = this.anims.create({     //animación del jugador
+            key: 'idle',
+            frames:
+            [
+                {key: "caballero_idle0"},
+                {key: "caballero_idle1"},
+                {key: "caballero_idle2"},
+                {key: "caballero_idle3"},
+            ],
+            frameRate: 10,
+            repeat: -1,
+        });
+        let zombieIdle = this.anims.create({    //animación del zombie
+            key: 'idleZ',
+            frames:
+            [
+                {key: "zombie_idle0"},
+                {key: "zombie_idle1"},
+            ],
+            frameRate: 5,
+            repeat: -1,
+        });
+
+
         let left = this.add.sprite(10,88,"button");
         let right = this.add.sprite(166,88,"button2");
 

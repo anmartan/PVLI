@@ -23,30 +23,7 @@ const scene = {
         this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
         //--------------------------------------------------------//
 
-        let playerIdle = this.anims.create({     //animación del jugador
-            key: 'idle',
-            frames:
-            [
-                {key: "caballero_idle0"},
-                {key: "caballero_idle1"},
-                {key: "caballero_idle2"},
-                {key: "caballero_idle3"},
-            ],
-            frameRate: 10,
-            repeat: -1,
-        });
-        let zombieIdle = this.anims.create({    //animación del zombie
-            key: 'idleZ',
-            frames:
-            [
-                {key: "zombie_idle0"},
-                {key: "zombie_idle1"},
-                {key: "zombie_idle2"},
-                {key: "zombie_idle3"},
-            ],
-            frameRate: 10,
-            repeat: -1,
-        });
+
         let actualRoom=this.game.dungeon.rooms[this.actual];
         let size=actualRoom.size;
 
@@ -55,7 +32,7 @@ const scene = {
         entranceRec.setRecPos(size,false);
         exitRec.setRecPos(size,true);
 
-        this.hero = new player (this, (this.game.tileSize*4), (this.game.tileSize*5), 30, "caballero_idle0", playerIdle, {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
+        this.hero = new player (this, (this.game.tileSize*4), (this.game.tileSize*5), 30, "caballero_idle0", "idle", {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
         this.enemies = new enemyManager(this,actualRoom.enemies.enemiesInfo);
         this.enemies.summonEnemies(this,this.hero, this.hero.weaponManager.weaponGroup,this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
 

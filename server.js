@@ -2,7 +2,7 @@ let express = require('express')
 const app = express(); // servidor de aplicaciones
 const http = require('http').createServer(app); // servidor HTTP
 const io = require('socket.io')(http); // Importamos `socket.io`
-const port = 3000; // El puerto
+const port = 420; // El puerto
 var clients = [];
 let players = [false,false]
 let serverDungeon;
