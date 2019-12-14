@@ -24,7 +24,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite
         {
             this.vulnerable = false;
             this.alpha = 0.75;
-            this.scene.time.delayedCall(1000, this.makeVulnerable, [], this)
+            this.scene.time.delayedCall(950, this.makeVulnerable, [], this)
             if (this!== this.scene.hero)    this.knockback();
             this.health -= points;
             console.log(this.health);

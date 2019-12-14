@@ -61,6 +61,16 @@ export class trapManager
                 scene.physics.add.overlap(hero, poisony.zone, ()=>poisony.Activate(), null, scene);
                 poisony.setVisible(false);
                 return poisony;
+            case "stun":
+                let stuny = new stun (scene, trap.pos.x, trap.pos.y, this, trap.id);
+                scene.physics.add.overlap(hero, stuny.zone, ()=>stuny.Activate(), null, scene);
+                stuny.setVisible(false);
+                return stuny;
+            case "spawn":
+                let spawny = new spawn (scene, trap.pos.x, trap.pos.y, this, trap.id);
+                scene.physics.add.overlap(hero, spawny.zone, ()=>spawny.Activate(), null, scene);
+                spawny.setVisible(false);
+                return spawny;
             default:
                 console.log ("No existe esa trampita: "+ trap.subtype);
                 break;
@@ -100,32 +110,13 @@ export class trapManager
     }
     createDummy(trap,scene)
     {
-        /*switch (trap.type)
-        {
-            case "spikes":
-                let spikes;
-                spikes = new dummieTrap(scene,trap.pos.x,trap.pos.y, "spikes", this, trap.id);
-                return spikes;
-            case "poison":
-                let spikes;
-                spikes = new dummieTrap(scene,trap.pos.x,trap.pos.y, "poison", this, trap.id);
-                return spikes;
-            case "spawn":
-                let spawn;
-                spawn = new dummieTrap(scene,trap.pos.x,trap.pos.y, "spawn", this, trap.id);
-
-            default:
-                console.log("No se puede crear una trampa de tipo " + trap.subtype);
-                break;
-                
-        }*/
         
-        if (trap.subtype == "spikes" || trap.subtype == "poison" || trap.subtype == "stun" || trap.subtype == "spawn")// || cell.subtype == "teleportation")
+        if (trap.type == "spikes" || trap.type == "poison" || trap.type == "stun" || trap.type == "spawn")// || cell.subtype == "teleportation")
             {
                 let trappy;
                 trappy = new dummieTrap(scene, trap.pos.x, trap.pos.y, trap.type, this, trap.id);
             }
-            else console.log("No se puede poner una trampa de tipo " + cell.subtype);
+            else console.log("No se puede poner una trampa de tipo " + trap.type);
     }
     
 }
@@ -145,7 +136,6 @@ export class Traps extends Phaser.GameObjects.Sprite
         this.scene = scene;
     }
     
-    //Es (8,8) o (16, 16) el sprite
     createZone(scene)
     {
         let zone = scene.add.zone(this.x,this.y, 16,16);
@@ -202,10 +192,7 @@ export class spikes extends Traps
     
     effect(hero) 
     {
-        console.log("Vida héroe antes: " + this.scene.hero.health);
-        this.scene.hero.damage(2);
-        console.log("Vida héroe después: " + this.scene.hero.health);
-
+        hero.damage(2);
     }
 }
 
@@ -223,9 +210,9 @@ export class poison extends Traps
         
         this.scene.time.delayedCall(1000*i, ()=>
         {
-            console.log("Vida héroe antes: " + this.scene.hero.health);
-            this.scene.hero.damage(1);
-            console.log("Vida héroe después: " + this.scene.hero.health);
+            console.log("Vida héroe antes: " + hero.health);
+            hero.damage(1);
+            console.log("Vida héroe después: " + hero.health);
         });
     }
 }
@@ -238,11 +225,11 @@ export class stun extends Traps
         let sprite = "stun";
         super(scene, x, y, sprite, trapsManager, id);
     }
-    effect() 
+    effect(hero) 
     {
-        this.scene.hero.stunned=true;
-        this.scene.hero.body.velocity.x=0;
-        this.scene.hero.body.velocity.y=0;
+        hero.stunned=true;
+        hero.body.velocity.x=0;
+        hero.body.velocity.y=0;
         this.scene.time.delayedCall(3000, ()=> {hero.stunned=false;}, [], this);
     }
 }
@@ -254,7 +241,7 @@ export class teleportation extends Traps
         let sprite = "teleportation";
         super(scene, x, y, sprite, trapsManager, id);
     }
-    effect(){}
+    effect(hero){}
 }
 export class spawn extends Traps
 {
@@ -265,14 +252,14 @@ export class spawn extends Traps
         super(scene, x, y, sprite, trapsManager, id);
         this.enemy = 
         {
-            type : "zombie",
+            type : "spider",
             pos:{
                 x: x,
                 y: y
             }
         }
     }
-    effect()
+    effect(hero)
     {
         let idEnemy= this.scene.enemies.getLastID()+1;
         this.scene.enemies.addEnemy(this.scene.enemies.summon(this.enemy, this.scene, hero, hero.weapon, this.scene.walls, idEnemy));
