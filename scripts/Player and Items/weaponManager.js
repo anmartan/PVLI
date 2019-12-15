@@ -5,12 +5,14 @@ export default class weaponManager
 {
     constructor(player)
     {
-        let scene        = player.scene;
-        let Sword        = player.inventory.Sword;
-        let Bow          = player.inventory.Bow;
-        let Shield       = player.inventory.Shield;
-        this.NormalArrows = player.inventory.Arrow.Units;    //number of normal arrows
-        this.FireArrows   = player.inventory.ArrowFire.Units;//number of fire arrows
+        let scene         = player.scene;
+        let Sword         = player.inventory.Sword;
+        let Bow           = player.inventory.Bow;
+        let Shield        = player.inventory.Shield;
+        this.NormalArrows = player.inventory.Arrow.Units;       //number of normal arrows
+        this.FireArrows   = player.inventory.ArrowFire.Units;   //number of fire arrows
+        this.Grenades     = player.inventory.Grenade.Units;     //amount of grenades
+        this.Radars       = player.inventory.Radar.Units;       //amount of radars
         
         let SwordObject = scene.add.sprite(0,0,Sword.Sprite.ID);
         SwordObject.scale = Sword.Sprite.Scale;
@@ -52,14 +54,15 @@ export default class weaponManager
 
         
         this.NormalArrowsDamage = player.inventory.Arrow.Damage;
-        this.FireArrowsDamage = player.inventory.ArrowFire.Damage;
-        this.SwordObject  = SwordObject;
-        this.BowObject    = BowObject;
-        this.ShieldObject = ShieldObject;
-        this.weapon       = this.SwordObject;
-        this.offsetX = 0;
-        this.offsetY = 0;
-        this.scene   = scene;
+        this.FireArrowsDamage   = player.inventory.ArrowFire.Damage;
+        this.GrenadeDamage      = player.inventory.Grenade.Damage;
+        this.SwordObject        = SwordObject;
+        this.BowObject          = BowObject;
+        this.ShieldObject       = ShieldObject;
+        this.weapon             = this.SwordObject;                 //el arma por defecto es la espada
+        this.offsetX            = 0;
+        this.offsetY            = 0;
+        this.scene              = scene;
         this.weaponGroup = weaponGroup;
         this.weaponGroup.add(this.SwordObject);
         this.weaponGroup.add(this.BowObject);
@@ -198,9 +201,20 @@ export default class weaponManager
         }
     }
 
-    throwProjectiles()
+    throwProjectiles(typeOfProjectile)
     {
-        let bomb= new Bomb (this.scene, this.player.x,this.player.y, 0)
+        if(typeOfProjectile == "radar" && this.Radars > 0) 
+        {
+            let rad;
+            rad = new Radar(this.scene, this.player.x, this.player.y);
+        }
+        else if(typeOfProjectile == "grenade" && this.Grenades > 0) 
+        {
+            let bomb;
+            bomb = new Grenade (this.scene, this.player.x, this.player.y);
+        }
+
+        else console.log ("No existe ese proyectil");
     }
 }
 
@@ -232,14 +246,8 @@ canAttack() //Este método se llama desde attack con un delay. Es para tener un 
         super(scene, x, y, sprite);
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        scene.physics.add.overlap(this, scene.enemies.enemies ,()=> 
-        {
-            this.die()
-        });
-        scene.physics.add.collider(this, scene.tileMap.Walls,()=> 
-        {
-            this.die();
-        });
+        scene.physics.add.overlap(this, scene.enemies.enemies ,()=> this.die());
+        scene.physics.add.collider(this, scene.tileMap.Walls,()=> this.die());
         dir-=90;
         switch(dir)
         {
@@ -289,24 +297,42 @@ class Arrow extends Projectile
     }
     
 }
-class Bomb extends Projectile
+class Radar extends Projectile
 {
-    constructor ( scene, x, y, dir)
+    constructor ( scene, x, y, dir=0)
     {
         let speed = 0;
         let sprite = "pink2";
         super(scene,x, y, sprite, dir, speed); 
-        this.scene = scene;
         
         scene.time.delayedCall(1000, () => this.die());
         
     }
-    effect()
+    effect(scene)
     {
-        this.zone = this.scene.add.zone (this.x, this.y, this.scene.game.tileSize * 2, this.scene.game.tileSize*2);
-        this.scene.physics.add.existing(this.zone);
+        this.zone = scene.add.zone (this.x, this.y, scene.game.tileSize * 2, scene.game.tileSize*2);
+        scene.physics.add.existing(this.zone);
         this.zone.parent = this;
-        this.scene.physics.add.overlap(this.scene.traps.traps, this.zone, (trap)=> {trap.Deactivate();});
-        this.scene.time.delayedCall(1000, ()=>this.zone.destroy());
+        scene.physics.add.overlap(scene.traps.traps, this.zone, (trap)=> {trap.Deactivate();});
+        scene.time.delayedCall(1000, ()=>this.zone.destroy());
+    }
+}
+class Grenade extends Projectile
+{
+    constructor (scene, x, y, dir=0)
+    {
+        let speed = 0;
+        let sprite = "green2";
+        super(scene, x, y, sprite, dir, speed);
+
+        scene.time.delayedCall(1000, ()=> this.die());
+    }
+    effect(scene)
+    {
+        this.zone = scene.add.zone (this.x, this.y, scene.game.tileSize * 2, scene.game.tileSize*2);
+        scene.physics.add.existing(this.zone);
+        this.zone.parent = this;
+        scene.physics.add.overlap(scene.enemies.enemies, this.zone, (enemy)=> {enemy.damage(scene.hero.weaponManager.GrenadeDamage);});
+        scene.time.delayedCall(1000, ()=>this.zone.destroy());
     }
 }

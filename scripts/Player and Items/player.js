@@ -83,17 +83,22 @@ export class player extends livingEntity
         let keys = scene.add.group();
 
         // Lectura de input y ejecución de la animación ----> TODO: Clase teclado o input que se encargue de hacer esto más bonito
-        this.key_D     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D       );
-        this.key_A     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A       );
-        this.key_S     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S       );
-        this.key_W     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W       );
-        this.key_UP    = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP      );
-        this.key_RIGHT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT   );
-        this.key_DOWN  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN    );
-        this.key_LEFT  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT    );
-        this.key_TAB   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB     );    
-        this.key_SPACE = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        this.key_ONE   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE)
+        this.key_D     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D           );
+        this.key_A     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A           );
+        this.key_S     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S           );
+        this.key_W     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W           );
+        this.key_UP    = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP          );
+        this.key_RIGHT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT       );
+        this.key_DOWN  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN        );
+        this.key_LEFT  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT        );
+        this.key_TAB   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB         );    
+        this.key_SPACE = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE       );
+        this.key_ONE   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE         );
+        this.key_TWO   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO         );
+        this.key_THREE = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE       );
+        this.key_1     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_ONE  );
+        this.key_2     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_TWO  );
+        this.key_3     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_THREE);
 
         this.play(anim);
         
@@ -167,9 +172,15 @@ export class player extends livingEntity
             {
                 this.weaponManager.changeArrows();
             }
-            if(Phaser.Input.Keyboard.JustDown(this.key_ONE))
+
+            //Teclas para usar los consumibles: Granadas, radares de trampas y pociones de salud
+            if(Phaser.Input.Keyboard.JustDown(this.key_ONE) || Phaser.Input.Keyboard.JustDown(this.key_1))
             {
-                this.weaponManager.throwProjectiles();
+                this.weaponManager.throwProjectiles("radar");
+            }
+            if(Phaser.Input.Keyboard.JustDown(this.key_TWO) || Phaser.Input.Keyboard.JustDown(this.key_2))
+            {
+                this.weaponManager.throwProjectiles("grenade");
             }
         }
 

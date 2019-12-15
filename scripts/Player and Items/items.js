@@ -160,7 +160,7 @@ class item
         }
         else if(!this.Consumible && this.Effect.Target === "other" && this.Effect.Data.Attribute === "distance")
         {
-            console.error("soy un arco");
+            console.log("soy un arco");
             console.log(this.Effect.Data.Quantity)
             this.Quantity = this.Effect.Data.Quantity;
         }
