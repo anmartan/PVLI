@@ -93,7 +93,7 @@ export const itemAtlas =
         Images:
         {
             Sprite:"",
-            Icon:"",
+            Icon:"Sword_3",
         }
     },
     Bow2:
@@ -131,7 +131,7 @@ export const itemAtlas =
         Level:0,
         Images:
         {
-            Sprite:"",
+            Sprite:"Sword_0",
             Icon:"",
         }
     },
@@ -144,7 +144,7 @@ export const itemAtlas =
         Level:1,
         Images:
         {
-            Sprite:"",
+            Sprite:"Sword_1",
             Icon:"",
         }
     },
@@ -157,7 +157,7 @@ export const itemAtlas =
         Level:2,
         Images:
         {
-            Sprite:"",
+            Sprite:"Sword_2",
             Icon:"",
         }
     },
@@ -170,7 +170,7 @@ export const itemAtlas =
         Level:3,
         Images:
         {
-            Sprite:"",
+            Sprite:"Sword_3",
             Icon:"",
         }
     },

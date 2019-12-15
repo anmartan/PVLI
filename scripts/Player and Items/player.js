@@ -12,8 +12,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite
         
         /* Sistema de vida */
         this.vulnerable =  true;
-        //this.health    = health.maxHealth;
-        this.health = 1;
+        this.health    = health.maxHealth;
         this.maxHealth = health.maxHealth;
         this.scene     = scene;
 

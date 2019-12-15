@@ -14,24 +14,23 @@ export default class weaponManager
         this.Grenades     = player.inventory.Grenade.Units;     //amount of grenades
         this.Radars       = player.inventory.Radar.Units;       //amount of radars
         
-        let SwordObject = scene.add.sprite(0,0,Sword.Sprite.ID);
-        SwordObject.scale = Sword.Sprite.Scale;
+        let SwordObject = scene.add.sprite(0,0,Sword.Images.Sprite);
         scene.add.existing(SwordObject);
         scene.physics.add.existing(SwordObject);
         SwordObject.body.setEnable(true);
         SwordObject.body.setSize(1,1);
         SwordObject.setVisible(false);
-        SwordObject.Damage=Sword.Damage;
-        
-        let BowObject = scene.add.sprite(0,0,Bow.Sprite.ID);
-        BowObject.scale = Bow.Sprite.Scale;
+        Object.assign(SwordObject,Sword);
+
+        let BowObject = scene.add.sprite(0,0,Bow.Images.Sprite);
         scene.add.existing(BowObject);
         scene.physics.add.existing(BowObject);
         BowObject.body.setEnable(true);
         BowObject.body.setSize(1,1);
         BowObject.setVisible(false);
-        BowObject.Damage=Bow.Damage;
         BowObject.Quantity=Bow.Quantity;
+        Object.assign(BowObject,Bow);
+
 
         //Si solo hay flechas de fuego, se seleccionan esas
         //Si hay flechas normales, o no hay de ningunas, son las seleccionadas por defecto.
@@ -39,14 +38,13 @@ export default class weaponManager
         else this.arrowSelected = this.NormalArrows;
         
         
-        let ShieldObject = scene.add.sprite(0,0,Shield.Sprite.ID);
-        ShieldObject.scale = Shield.Sprite.Scale;
+        let ShieldObject = scene.add.sprite(0,0,Shield.Images.Sprite);
         scene.add.existing(ShieldObject);
         scene.physics.add.existing(ShieldObject);
         ShieldObject.body.setEnable(true);
         ShieldObject.body.setSize(1,1);
         ShieldObject.setVisible(false);
-        ShieldObject.Damage=Shield.Damage;
+        Object.assign(ShieldObject,Shield);
 
         
         

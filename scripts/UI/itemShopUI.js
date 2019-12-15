@@ -36,72 +36,68 @@ export class shopUiManager
         let vsize =24;
 
 
-        scene.buy = function(itemName, lvls, arrowLevel)
+        scene.buy = function(itemName, button,  upgrade=true, units=1,level=1)
         {
-            
+            console.clear();
             let toBuyItemLevel;
             let price;
-            let buyResult;
-            switch(lvls)
+           console.log("Estás comprando: "+itemName);
+
+            if(upgrade && scene.inventory[itemName].Level<3 )
             {
-                case 3:
-                    //let maybe = (scene.inventory[itemName].Units > 0) ? 1 : 0; //esto solo aplica para la espada porque empiezas con una pero de lvl 0
-                    let maybe = 1;
-                    if(scene.inventory[itemName].Units === 0) maybe=0;
-                    console.log(maybe);
-                    toBuyItemLevel = scene.inventory[itemName].Level + maybe;
-                    console.log(toBuyItemLevel);
-                    price = itemAtlas[itemName+"_"+toBuyItemLevel].Price;
-                    buyResult = scene.inventory.substractGold(price);
-                    if(buyResult!==-1)
+                //Si tienes 0 unidades, el nivel es el actual, si tienes 1 unidad el nivel es actual +1
+                toBuyItemLevel = scene.inventory[itemName].Level + scene.inventory[itemName].Units;
+                let name = itemName+toBuyItemLevel;
+                price = itemAtlas[name].Price;
+                console.log("Vas a pagar: "+price);
+                if(scene.inventory[itemName].Units===0 && price < scene.inventory.gold)
+                {
+                    scene.inventory[itemName].addUnits(1);
+                    scene.inventory.substractGold(price);
+
+                    if(toBuyItemLevel<3)
                     {
-                        if(maybe===1)scene.inventory.upgradeItem(itemName);
-                        else scene.inventory[itemName].Units+=1;
-                        toBuyItemLevel+=1;
-                        let newItemLevelPrice = 0;
-                        if(toBuyItemLevel<4) newItemLevelPrice= itemAtlas[itemName+"_"+toBuyItemLevel].Price;
-                        text.text = scene.inventory.gold;
-                        scene[itemName+"_Button"].text.text ="x"+newItemLevelPrice;
-                        console.log(itemName+"_"+scene.inventory[itemName].Level) 
+                        let nextLvl=scene.inventory[itemName].Level+1;
+                        button.changeText(itemAtlas[itemName+nextLvl].Price);
                     }
-                    else(console.log("No te dan los monedos"));
-                    return scene.inventory[itemName].Level;
-                case 2:
-                    toBuyItemLevel = arrowLevel;
-                    price = itemAtlas[itemName+"_"+arrowLevel].Price;
-                    buyResult = scene.inventory.substractGold(price*10);
-                    if(buyResult!=-1)
+                    else button.changeText(0);
+                }
+                else if(price < scene.inventory.gold)
+                {
+                    scene.inventory.substractGold(price);
+                    scene.inventory.upgradeItem(itemName);
+                    if(toBuyItemLevel<3)
                     {
-                        scene.inventory.gold = buyResult;
-                        scene.inventory.addConsumible(itemName,10);        
-                        text.text = scene.inventory.gold;
-                        console.log(itemName+"_"+scene.inventory[itemName].Level + " - "+scene.inventory[itemName].Units) 
+                        let nextLvl=scene.inventory[itemName].Level+1;
+                        button.changeText(itemAtlas[itemName+nextLvl].Price);
                     }
-                    else(console.log("No te dan los monedos"));
-                    break;
-                case 1:
-                    toBuyItemLevel = scene.inventory[itemName].Level;
-                    price = itemAtlas[itemName].Price;
-                    buyResult = scene.inventory.substractGold(price);
-                    if(buyResult!=-1)
-                    {
-                        scene.inventory.gold = buyResult;
-                        scene.inventory.addConsumible(itemName,1);        
-                        text.text = scene.inventory.gold;
-                        console.log(itemName+"_"+scene.inventory[itemName].Level + " - "+scene.inventory[itemName].Units) 
-                    }
-                    else(console.log("No te dan los monedos"));
-                    break;
+                    else button.changeText(0);
+                }
             }
+            else if(!upgrade)
+            {
+                toBuyItemLevel = level;
+                let name="";
+                (itemName==="Arrow")?name=itemName+level:name==itemName;
+                console.log(name);
+                price = itemAtlas[name].Price;
+                if(price<scene.inventory.gold)
+                {
+                    scene.inventory.substractGold(price);
+                    scene.inventory[itemName].addUnits(units);
+                }
+            }
+            text.text=scene.inventory.gold;
+            console.log(scene.inventory);
         }
 
-        scene.Sword_Button = new itemButton3lvl(scene, hsize, y + 0 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Sword",itemAtlas.Sword_1.Price);
+        scene.Sword_Button = new itemButton3lvl(scene, hsize, y + 0 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Sword",itemAtlas.Sword1.Price);
         scene.Potion_Button = new itemButton1lvl(scene, 88 + hsize, y + 0 * vsize, "bg_1lvl", "border_1lvl","Potion",itemAtlas.Potion.Price);
-        scene.Armor_Button = new itemButton3lvl(scene, hsize, y + 1 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Armor",itemAtlas.Armor_1.Price);
+        scene.Armor_Button = new itemButton3lvl(scene, hsize, y + 1 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Armor",itemAtlas.Armor1.Price);
         scene.Grenade_Button = new itemButton1lvl(scene, 88 + hsize, y + 1 * vsize, "bg_1lvl","border_1lvl", "Grenade",itemAtlas.Grenade.Price);
-        scene.Bow_Button = new itemButton3lvl(scene, hsize, y + 2 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Bow",itemAtlas.Bow_1.Price);
-        scene.Arrow_Button = new itemButton2lvl(scene, 88 + hsize, y + 2 * vsize, "border_2lvls","leftbg_2lvls","rightbg_2lvls", "Arrow",itemAtlas.Arrow_1.Price*10);
-        scene.Shield_Button = new itemButton3lvl(scene, hsize, y + 3 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Shield",itemAtlas.Shield_1.Price);
+        scene.Bow_Button = new itemButton3lvl(scene, hsize, y + 2 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Bow",itemAtlas.Bow1.Price);
+        scene.Arrow_Button = new itemButton2lvl(scene, 88 + hsize, y + 2 * vsize, "border_2lvls","leftbg_2lvls","rightbg_2lvls", "Arrow",itemAtlas.Arrow1.Price*10);
+        scene.Shield_Button = new itemButton3lvl(scene, hsize, y + 3 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Shield",itemAtlas.Shield1.Price);
         scene.Radar_Button = new itemButton1lvl(scene, 88 + hsize, y + 3 * vsize, "bg_1lvl","border_1lvl", "Radar",itemAtlas.Radar.Price);
 
 
@@ -167,9 +163,12 @@ export class itemButton1lvl
         bg.on("pointerdown", () =>
         {
             bg.setTintFill("0x3f0d59");
-            scene.buy(this.itemID, 1);
-
+            scene.buy(this.itemID, this,false);
         })
+    }
+    changeText(newText)
+    {
+        this.text.text="x"+newText;
     }
 }
 
@@ -198,7 +197,7 @@ export class itemButton2lvl
         lbg.on("pointerdown", () =>
         {
             lbg.setTintFill("0x3f0d59");
-            scene.buy(this.itemID,2,1);
+            scene.buy(this.itemID,this,false,10,1);
         })
 
         rbg.setInteractive({pixelPerfect: true, alphaTolerance:1});
@@ -207,8 +206,12 @@ export class itemButton2lvl
         rbg.on("pointerdown", () =>
         {
             rbg.setTintFill("0x3f0d59");
-            scene.buy(this.itemID,2,2);
+            scene.buy(this.itemID,this,false,10,2);
         })
+    }
+    changeText(newText)
+    {
+        this.text.text="x"+newText;
     }
 }
 export class itemButton3lvl 
@@ -234,9 +237,6 @@ export class itemButton3lvl
             this.expositor.angle=90;
             container.add(this.expositor);
         }
-
-
-
         let style = {fontFamily:"m5x7", fontSize:"16px", color:"#00"};
 
         this.text = scene.add.text(bg.width/2+4, - bg.height/2+4, "x"+price, style);
@@ -250,12 +250,12 @@ export class itemButton3lvl
         bg.on("pointerdown", () =>
         {
             bg.setTintFill("0x3f0d59");
-            let index = scene.buy(this.itemID, 3) - 1;
+            let index = scene.buy(this.itemID, this, true) - 1;
             if(index >= 0)
             {
                 this["button"+index].setTintFill("0x3f0d59");
             }
-            if(itemID === "Sword" || itemID === "Bow")
+            /*if(itemID === "Sword" || itemID === "Bow")
             {
                 container.remove(this.expositor, true);
                 this.stringMalHecha = scene.inventory[itemID].Level+1;
@@ -265,8 +265,12 @@ export class itemButton3lvl
                     this.expositor.angle=90;
                     container.add(this.expositor);
                 }
-            }
+            }*/
 
         })
+    }
+    changeText(newText)
+    {
+        this.text.text="x"+newText;
     }
 }
