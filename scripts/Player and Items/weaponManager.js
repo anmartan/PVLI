@@ -197,6 +197,11 @@ export default class weaponManager
             }
         }
     }
+
+    throwProjectiles()
+    {
+        let bomb= new Bomb (this.scene, this.player.x,this.player.y, 0)
+    }
 }
 
 /*
@@ -220,15 +225,21 @@ canAttack() //Este método se llama desde attack con un delay. Es para tener un 
     } 
     */
    
-   class Proyectil extends Phaser.GameObjects.Sprite
+   class Projectile extends Phaser.GameObjects.Sprite
    {
     constructor(scene, x, y, sprite, dir, speed)
     {
         super(scene, x, y, sprite);
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        scene.physics.add.overlap(this, scene.enemies.enemies ,()=> {this.die()});
-        scene.physics.add.collider(this, scene.tileMap.Walls,()=> {this.die()});
+        scene.physics.add.overlap(this, scene.enemies.enemies ,()=> 
+        {
+            this.die()
+        });
+        scene.physics.add.collider(this, scene.tileMap.Walls,()=> 
+        {
+            this.die();
+        });
         dir-=90;
         switch(dir)
         {
@@ -256,21 +267,46 @@ canAttack() //Este método se llama desde attack con un delay. Es para tener un 
     //Las flechas se destruyen después de un tiempo o cuando colisionan con un enemigo o las paredes
     die()
     {
+        if(this.effect!== undefined) this.effect(this.scene);
         this.destroy();
     }
 }
-class Arrow extends Proyectil
+class Arrow extends Projectile
 {
     constructor(scene,x,y,dir, typeOfArrow)
     {
         let speed = 100;
+        let sprite;
         if(typeOfArrow === "normal")
-            super(scene,x,y,"pink2", dir, speed)
+            sprite = "pink2";
         else 
-            super(scene, x, y,"green2", dir, speed);
+            sprite = "green2";
+        
+        super(scene, x, y, sprite, dir, speed);
 
         //Hay que acceder al inventario, buscar el nivel del arco, su effect, y multiplicar el tiempo por el data.quantity
         scene.time.delayedCall(250 * scene.hero.weaponManager.BowObject.Quantity,()=> this.die());
     }
     
+}
+class Bomb extends Projectile
+{
+    constructor ( scene, x, y, dir)
+    {
+        let speed = 50;
+        let sprite = "pink2";
+        super(scene,x, y, sprite, dir, speed); 
+        this.scene = scene;
+        
+        scene.time.delayedCall(1000,()=> this.die());
+        
+    }
+    effect(scene)
+    {
+        this.zone = scene.add.zone (this.x, this.y, scene.game.tileSize * 2, scene.game.tileSize*2);
+        scene.physics.add.existing(this.zone);
+        this.zone.parent = this;
+        scene.physics.add.overlap(this.zone, scene.traps.traps, (trap)=> {trap.Deactivate();});
+
+    }
 }

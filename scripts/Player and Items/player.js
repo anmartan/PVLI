@@ -93,6 +93,7 @@ export class player extends livingEntity
         this.key_LEFT  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT    );
         this.key_TAB   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB     );    
         this.key_SPACE = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.key_ONE   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE)
 
         this.play(anim);
         
@@ -165,6 +166,10 @@ export class player extends livingEntity
             if(Phaser.Input.Keyboard.JustDown(this.key_SPACE))
             {
                 this.weaponManager.changeArrows();
+            }
+            if(Phaser.Input.Keyboard.JustDown(this.key_ONE))
+            {
+                this.weaponManager.throwProjectiles();
             }
         }
 
