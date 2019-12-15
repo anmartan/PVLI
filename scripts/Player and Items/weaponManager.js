@@ -293,20 +293,19 @@ class Bomb extends Projectile
 {
     constructor ( scene, x, y, dir)
     {
-        let speed = 50;
+        let speed = 0;
         let sprite = "pink2";
         super(scene,x, y, sprite, dir, speed); 
         this.scene = scene;
         
-        scene.time.delayedCall(1000,()=> this.die());
+        scene.time.delayedCall(1000, () => this.die());
         
     }
-    effect(scene)
+    effect()
     {
-        this.zone = scene.add.zone (this.x, this.y, scene.game.tileSize * 2, scene.game.tileSize*2);
-        scene.physics.add.existing(this.zone);
+        this.zone = this.scene.add.zone (this.x, this.y, this.scene.game.tileSize * 2, this.scene.game.tileSize*2);
+        this.scene.physics.add.existing(this.zone);
         this.zone.parent = this;
-        scene.physics.add.overlap(this.zone, scene.traps.traps, (trap)=> {trap.Deactivate();});
-
+        this.scene.physics.add.overlap(this.zone, this.scene.traps.traps, (zone, trap)=> {trap.Deactivate();});
     }
 }
