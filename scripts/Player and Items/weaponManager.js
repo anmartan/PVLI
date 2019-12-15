@@ -1,48 +1,3 @@
-class Arrow extends Phaser.GameObjects.Sprite
-{
-    constructor(scene,x,y,dir)
-    {
-        super(scene,x,y,"pink2")
-        scene.add.existing(this);
-        scene.physics.add.existing(this);
-        this.body.setCollideWorldBounds(true);
-        let speed=100;
-        //scene.physics.add.collider(this, scene.enemies, (enemy)=>{enemy.damage(1); this.kill();});                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
-        dir-=90;
-        switch(dir)
-        {
-            case(0):
-            this.body.velocity.x=speed;
-            this.body.velocity.y=0;
-            break;
-
-            case(90):
-            this.body.velocity.x=0;
-            this.body.velocity.y=speed;
-            break;
-
-            case(-90):
-            this.body.velocity.x=0;
-            this.body.velocity.y=-speed;
-            break;
-            case(180):
-            this.body.velocity.x=-speed;
-            this.body.velocity.y=0;
-            break;
-
-        }
-        //Hay que acceder al inventario, buscar el nivel del arco, su effect, y multiplicar el tiempo por el data.quantity
-        //scene.time.addEvent({delay: 500 * scene.hero.weaponManager.BowObject.Quantity, callback: this.die() });
-        scene.time.delayedCall(100 * scene.hero.weaponManager.BowObject.Quantity,()=> this.die());
-    }
-    //Las flechas se desturyen después de 150ms en el campo.
-    die()
-    {
-        console.log("Existo, luego pienso");
-        this.body.destroy();
-        this.destroy();
-    }
-}
 
 
 
@@ -56,7 +11,7 @@ export default class weaponManager
         let Shield       = player.inventory.Shield;
         this.NormalArrows = player.inventory.Arrow.Units;    //number of normal arrows
         this.FireArrows   = player.inventory.ArrowFire.Units;//number of fire arrows
-
+        
         let SwordObject = scene.add.sprite(0,0,Sword.Sprite.ID);
         SwordObject.scale = Sword.Sprite.Scale;
         scene.add.existing(SwordObject);
@@ -65,7 +20,7 @@ export default class weaponManager
         SwordObject.body.setSize(1,1);
         SwordObject.setVisible(false);
         SwordObject.Damage=Sword.Damage;
-
+        
         let BowObject = scene.add.sprite(0,0,Bow.Sprite.ID);
         BowObject.scale = Bow.Sprite.Scale;
         scene.add.existing(BowObject);
@@ -75,8 +30,8 @@ export default class weaponManager
         BowObject.setVisible(false);
         BowObject.Damage=Bow.Damage;
         BowObject.Quantity=Bow.Quantity;
-
-
+        
+        
         let ShieldObject = scene.add.sprite(0,0,Shield.Sprite.ID);
         ShieldObject.scale = Shield.Sprite.Scale;
         scene.add.existing(ShieldObject);
@@ -86,12 +41,12 @@ export default class weaponManager
         ShieldObject.setVisible(false);
         ShieldObject.Damage=Shield.Damage;
 
+        
+        
+        let weaponGroup = scene.add.group();
+        let projectileGroup = scene.add.group();
 
         
-        //meto aquí las flechas???
-        //La idea es que cuando se compren, se metan en este grupo y se saquen cuando se destruyan
-        let weaponGroup = scene.add.group();
-       
         this.NormalArrowsDamage = player.inventory.Arrow.Damage;
         this.FireArrowsDamage = player.inventory.ArrowFire.Damage;
         this.SwordObject  = SwordObject;
@@ -142,14 +97,14 @@ export default class weaponManager
                     y: 14, 
                     }
                     delay = 1000;
-                break;
+                    break;
 
-                case this.BowObject:
-                    vsize = hsize={x:10,y:10};       //Hay que calcularlo dependiendo del sprite que metamos
-                    delay=250;
-                break;
-            }
-        switch (dir) 
+                    case this.BowObject:
+                        vsize = hsize={x:10,y:10};       //Hay que calcularlo dependiendo del sprite que metamos
+                        delay=250;
+                        break;
+                    }
+                    switch (dir) 
             {
                 case "up":
                     this.offsetX=-2;
@@ -157,10 +112,10 @@ export default class weaponManager
                     size = vsize;
                     angle=0;
                     break;
-                case "down":
-                    this.offsetX=-2;
+                    case "down":
+                        this.offsetX=-2;
                     this.offsetY= 12;
-
+                    
                     size = vsize;
                     angle = 180;
                     break;
@@ -172,18 +127,18 @@ export default class weaponManager
                     size = hsize;
                     angle=90; 
                     break;
-                case "left":
-                    this.offsetX=-14;
-                    this.offsetY=2;
-                    this.weapon.setFlipX(true);
+                    case "left":
+                        this.offsetX=-14;
+                        this.offsetY=2;
+                        this.weapon.setFlipX(true);
                     
-                    size = hsize;
-                    angle=270; 
-                    break;
+                        size = hsize;
+                        angle=270; 
+                        break;
             }
             this.weapon.body.setSize(size.x,size.y);
             this.weapon.setAngle(angle); 
-
+            
             this.showWeapon(true);
             if(this.weapon === this.BowObject)
             {
@@ -201,7 +156,7 @@ export default class weaponManager
         this.weapon.setVisible(bool);
     }
     changeWeapon(){
-
+        
         if(!this.attacking)
         {
             if(this.weapon==this.SwordObject) this.weapon=this.BowObject;
@@ -209,13 +164,13 @@ export default class weaponManager
         }
     }
 
-
+    
     shootArrow(offsetX, offsetY, angle)
     {
         if(this.NormalArrows>0)
         {
             let arrow = new Arrow(this.scene,this.player.x, this.player.y, angle);
-            arrow.Damage=this.NormalArrowsDamage;
+            arrow.Damage = this.NormalArrowsDamage;
             this.weaponGroup.add(arrow);     //Esto hace que no se dispare dos veces la misma flecha
             this.NormalArrows--;
         }
@@ -223,11 +178,11 @@ export default class weaponManager
 }
 
 /*
-    canAttack() //Este método se llama desde attack con un delay. Es para tener un cooldown en el ataque
+canAttack() //Este método se llama desde attack con un delay. Es para tener un cooldown en el ataque
     {
         this.attacking = false;  
     }
-
+    
     haveAttacked() //Durante el tiempo de recarga del ataque, mientras el jugador no puede atacar y ya a atacado se esconde la espada y se reduce su collision box.
     {
         this.weapon.offsetX=0;        
@@ -235,10 +190,62 @@ export default class weaponManager
         this.weapon.body.setSize(1,1);
         this.weapon.setVisible(false);
     }
-
+    
     attack(dir)
     {
-
-
+        
+        
     } 
-*/
+    */
+   
+   class Proyectil extends Phaser.GameObjects.Sprite
+   {
+    constructor(scene, x, y, sprite, dir, speed)
+    {
+        super(scene, x, y, sprite);
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+        scene.physics.add.overlap(this, scene.enemies.enemies ,()=> {this.die()});
+        scene.physics.add.collider(this, scene.tileMap.Walls,()=> {this.die()});
+        dir-=90;
+        switch(dir)
+        {
+            case(0):
+            this.body.velocity.x=speed;
+            this.body.velocity.y=0;
+            break;
+            
+            case(90):
+            this.body.velocity.x=0;
+            this.body.velocity.y=speed;
+            break;
+            
+            case(-90):
+            this.body.velocity.x=0;
+            this.body.velocity.y=-speed;
+            break;
+            case(180):
+            this.body.velocity.x=-speed;
+            this.body.velocity.y=0;
+            break;
+            
+        }
+    }
+    //Las flechas se destruyen después de un tiempo o cuando colisionan con un enemigo o las paredes
+    die()
+    {
+        this.destroy();
+    }
+}
+class Arrow extends Proyectil
+{
+    constructor(scene,x,y,dir)
+    {
+        let speed = 100;
+        super(scene,x,y,"pink2", dir, speed)
+        
+        //Hay que acceder al inventario, buscar el nivel del arco, su effect, y multiplicar el tiempo por el data.quantity
+        scene.time.delayedCall(250 * scene.hero.weaponManager.BowObject.Quantity,()=> this.die());
+    }
+    
+}
