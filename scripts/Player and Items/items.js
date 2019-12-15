@@ -72,8 +72,8 @@ export class inventory
         /*  --Consumibles-- */
         this.Potion    = new item (Potion);
         this.Radar      = new item(Radar);
-        this.Arrow     = new item(Arrow);
-        this.ArrowFire     = new item(ArrowFire);
+        this.Arrow1     = new item(Arrow);
+        this.Arrow2     = new item(ArrowFire);
         this.Grenade   = new item(Grenade);
 
         /*  --Estaticos--   */

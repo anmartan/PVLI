@@ -9,8 +9,8 @@ export default class weaponManager
         let Sword         = player.inventory.Sword;
         let Bow           = player.inventory.Bow;
         let Shield        = player.inventory.Shield;
-        this.NormalArrows = player.inventory.Arrow.Units;       //number of normal arrows
-        this.FireArrows   = player.inventory.ArrowFire.Units;   //number of fire arrows
+        this.NormalArrows = player.inventory.Arrow1.Units;       //number of normal arrows
+        this.FireArrows   = player.inventory.Arrow2.Units;   //number of fire arrows
         this.Grenades     = player.inventory.Grenade.Units;     //amount of grenades
         this.Radars       = player.inventory.Radar.Units;       //amount of radars
         
@@ -51,8 +51,8 @@ export default class weaponManager
         let weaponGroup = scene.add.group();
 
         
-        this.NormalArrowsDamage = player.inventory.Arrow.Damage;
-        this.FireArrowsDamage   = player.inventory.ArrowFire.Damage;
+        this.NormalArrowsDamage = player.inventory.Arrow1.Damage;
+        this.FireArrowsDamage   = player.inventory.Arrow2.Damage;
         this.GrenadeDamage      = player.inventory.Grenade.Damage;
         this.SwordObject        = SwordObject;
         this.BowObject          = BowObject;

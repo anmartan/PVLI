@@ -84,7 +84,7 @@ export class shopUiManager
                 if(price<scene.inventory.gold)
                 {
                     scene.inventory.substractGold(price);
-                    scene.inventory[itemName].addUnits(units);
+                    scene.inventory[name].addUnits(units);
                 }
             }
             text.text=scene.inventory.gold;
@@ -206,7 +206,7 @@ export class itemButton2lvl
         rbg.on("pointerdown", () =>
         {
             rbg.setTintFill("0x3f0d59");
-            scene.buy(this.itemID,this,false,10,2);
+            scene.buy(this.itemID,this,false,3,2);
         })
     }
     changeText(newText)
