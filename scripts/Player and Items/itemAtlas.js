@@ -26,9 +26,9 @@ export const itemAtlas =
     Armor1:
     {
         Type: "Armor",
-        ExtraMaxHealth:0,
-        Price:0,
-        Level:"",
+        ExtraMaxHealth:2,
+        Price:20,
+        Level: 1,
         Images:
         {
             Sprite:"",
@@ -38,9 +38,9 @@ export const itemAtlas =
     Armor2:
     {
         Type: "Armor",
-        ExtraMaxHealth:0,
-        Price:0,
-        Level:"",
+        ExtraMaxHealth:4,
+        Price:40,
+        Level: 2,
         Images:
         {
             Sprite:"",
@@ -50,9 +50,9 @@ export const itemAtlas =
     Armor3:
     {
         Type: "Armor",
-        ExtraMaxHealth:0,
-        Price:0,
-        Level:"",
+        ExtraMaxHealth:6,
+        Price:80,
+        Level:3,
         Images:
         {
             Sprite:"",
@@ -62,9 +62,9 @@ export const itemAtlas =
     Arrow1:
     {
         Type: "Proyectile",
-        Damage:0,
-        Price:0,
-        Level:"",
+        Damage:1,
+        Price:10,
+        Level:1,
         Images:
         {
             Sprite:"",
@@ -74,9 +74,9 @@ export const itemAtlas =
     Arrow2:
     {
         Type: "Proyectile",
-        Damage:0,
-        Price:0,
-        Level:"",
+        Damage:2,
+        Price:3,
+        Level:2,
         Images:
         {
             Sprite:"",
@@ -86,10 +86,10 @@ export const itemAtlas =
     Bow1:
     {
         Type: "Weapon",
-        Damage:0,
-        Cooldown:0,
-        Price:0,
-        Level:"",
+        Damage:4,
+        Cooldown:2000,
+        Price:15,
+        Level:1,
         Images:
         {
             Sprite:"",
@@ -99,10 +99,10 @@ export const itemAtlas =
     Bow2:
     {
         Type: "Weapon",
-        Damage:0,
-        Cooldown:0,
-        Price:0,
-        Level:"",
+        Damage:6,
+        Cooldown:1500,
+        Price:30,
+        Level:2,
         Images:
         {
             Sprite:"",
@@ -112,10 +112,10 @@ export const itemAtlas =
     Bow3:
     {
         Type: "Weapon",
-        Damage:0,
-        Cooldown:0,
-        Price:0,
-        Level:"",
+        Damage:8,
+        Cooldown:1000,
+        Price:60,
+        Level:3,
         Images:
         {
             Sprite:"",
@@ -125,10 +125,10 @@ export const itemAtlas =
     Sword0:
     {
         Type: "Weapon",
-        Damage:0,
-        Cooldown:0,
+        Damage:1,
+        Cooldown:1000,
         Price:0,
-        Level:"",
+        Level:0,
         Images:
         {
             Sprite:"",
@@ -138,10 +138,10 @@ export const itemAtlas =
     Sword1:
     {
         Type: "Weapon",
-        Damage:0,
-        Cooldown:0,
-        Price:0,
-        Level:"",
+        Damage:1,
+        Cooldown:1000,
+        Price:15,
+        Level:1,
         Images:
         {
             Sprite:"",
@@ -151,10 +151,10 @@ export const itemAtlas =
     Sword2:
     {
         Type: "Weapon",
-        Damage:0,
-        Cooldown:0,
-        Price:0,
-        Level:"",
+        Damage:2,
+        Cooldown:1000,
+        Price:30,
+        Level:2,
         Images:
         {
             Sprite:"",
@@ -164,10 +164,10 @@ export const itemAtlas =
     Sword3:
     {
         Type: "Weapon",
-        Damage:0,
-        Cooldown:0,
-        Price:0,
-        Level:"",
+        Damage:4,
+        Cooldown:1000,
+        Price:60,
+        Level:3,
         Images:
         {
             Sprite:"",
@@ -177,9 +177,9 @@ export const itemAtlas =
     Shield1:
     {
         Type: "Shield",
-        MaxHits:0,
-        Price:0,
-        Level:"",
+        MaxHits:2,
+        Price:20,
+        Level:1,
         Images:
         {
             Sprite:"",
@@ -189,9 +189,9 @@ export const itemAtlas =
     Shield2:
     {
         Type: "Shield",
-        MaxHits:0,
-        Price:0,
-        Level:"",
+        MaxHits:4,
+        Price:40,
+        Level:2,
         Images:
         {
             Sprite:"",
@@ -201,9 +201,9 @@ export const itemAtlas =
     Shield3:
     {
         Type: "Shield",
-        MaxHits:0,
-        Price:0,
-        Level:"",
+        MaxHits:6,
+        Price:80,
+        Level:3,
         Images:
         {
             Sprite:"",
@@ -213,8 +213,8 @@ export const itemAtlas =
     Potion :
     {
         Type: "Potion",
-        Health:  0,
-        Price:0,
+        Health: 3,
+        Price:15,
         Level:1,
         Images:
         {
@@ -226,8 +226,8 @@ export const itemAtlas =
     Radar :
     {
         Type: "Radar",
-        Area:  0,
-        Price:0,
+        Area:  1,
+        Price:30,
         Level:1,
         Images:
         {
@@ -238,8 +238,8 @@ export const itemAtlas =
     Grenade :
     {
         Type: "Proyectile",
-        Damage:  0,
-        Price:0,
+        Damage:  3,
+        Price:20,
         Level:1,
         Images:
         {
@@ -251,8 +251,8 @@ export const itemAtlas =
     Boots :
     {
         Type: "Boots",
-        Speed:0,
-        Price:0,
+        Speed:1.5,
+        Price:50,
         Level:1,
         Images:
         {
