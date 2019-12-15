@@ -37,7 +37,8 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     makeVulnerable(){this.vulnerable = true, this.alpha=1;};
     heal(points)
     {
-        if(this.health+=points > this.maxHealth)
+        this.health+=points;
+        if( this.health> this.maxHealth)
             this.health=this.maxHealth;
 
         console.log(this.health);
