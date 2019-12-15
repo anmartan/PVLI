@@ -306,6 +306,7 @@ class Bomb extends Projectile
         this.zone = this.scene.add.zone (this.x, this.y, this.scene.game.tileSize * 2, this.scene.game.tileSize*2);
         this.scene.physics.add.existing(this.zone);
         this.zone.parent = this;
-        this.scene.physics.add.overlap(this.zone, this.scene.traps.traps, (zone, trap)=> {trap.Deactivate();});
+        this.scene.physics.add.overlap(this.scene.traps.traps, this.zone, (trap)=> {trap.Deactivate();});
+        this.scene.time.delayedCall(1000, ()=>this.zone.destroy());
     }
 }
