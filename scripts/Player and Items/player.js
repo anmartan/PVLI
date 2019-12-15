@@ -83,15 +83,16 @@ export class player extends livingEntity
         let keys = scene.add.group();
 
         // Lectura de input y ejecución de la animación ----> TODO: Clase teclado o input que se encargue de hacer esto más bonito
-        this.key_D     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D    );
-        this.key_A     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A    );
-        this.key_S     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S    );
-        this.key_W     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W    );
-        this.key_UP    = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP   );
-        this.key_RIGHT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        this.key_DOWN  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN );
-        this.key_LEFT  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT );
-        this.key_TAB   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB  );    
+        this.key_D     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D       );
+        this.key_A     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A       );
+        this.key_S     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S       );
+        this.key_W     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W       );
+        this.key_UP    = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP      );
+        this.key_RIGHT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT   );
+        this.key_DOWN  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN    );
+        this.key_LEFT  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT    );
+        this.key_TAB   = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB     );    
+        this.key_SPACE = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.play(anim);
         
@@ -160,6 +161,10 @@ export class player extends livingEntity
             if(Phaser.Input.Keyboard.JustDown(this.key_TAB))
             {
                 this.weaponManager.changeWeapon();
+            }
+            if(Phaser.Input.Keyboard.JustDown(this.key_SPACE))
+            {
+                this.weaponManager.changeArrows();
             }
         }
 

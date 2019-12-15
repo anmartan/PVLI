@@ -30,6 +30,11 @@ export default class weaponManager
         BowObject.setVisible(false);
         BowObject.Damage=Bow.Damage;
         BowObject.Quantity=Bow.Quantity;
+
+        //Si solo hay flechas de fuego, se seleccionan esas
+        //Si hay flechas normales, o no hay de ningunas, son las seleccionadas por defecto.
+        if(this.NormalArrows === 0 && this.FireArrows > 0) this.arrowSelected= this.FireArrows;
+        else this.arrowSelected = this.NormalArrows;
         
         
         let ShieldObject = scene.add.sprite(0,0,Shield.Sprite.ID);
@@ -44,7 +49,6 @@ export default class weaponManager
         
         
         let weaponGroup = scene.add.group();
-        let projectileGroup = scene.add.group();
 
         
         this.NormalArrowsDamage = player.inventory.Arrow.Damage;
@@ -163,16 +167,34 @@ export default class weaponManager
             else this.weapon=this.SwordObject;
         }
     }
-
-    
+    changeArrows()
+    {
+        if(this.arrowSelected === this.FireArrows) this.arrowSelected = this.NormalArrows;
+        else this.arrowSelected = this.FireArrows;
+    }
     shootArrow(offsetX, offsetY, angle)
     {
         if(this.NormalArrows>0)
         {
-            let arrow = new Arrow(this.scene,this.player.x, this.player.y, angle);
-            arrow.Damage = this.NormalArrowsDamage;
-            this.weaponGroup.add(arrow);     //Esto hace que no se dispare dos veces la misma flecha
-            this.NormalArrows--;
+            let arrow;
+            
+            if (this.arrowSelected === this.FireArrows && this.FireArrows > 0)
+            {
+                arrow = new Arrow (this.scene, this.player.x, this.player.y, angle, "fire");
+                arrow.Damage = this.FireArrowsDamage;
+                this.FireArrows--; 
+                this.arrowSelected--;  
+                this.weaponGroup.add(arrow);     //Esto hace que no se dispare dos veces la misma flecha
+            }
+
+            else if(this.arrowSelected == this.NormalArrows && this.NormalArrows > 0)
+            { 
+                arrow = new Arrow (this.scene, this.player.x, this.player.y, angle, "normal");
+                arrow.Damage = this.NormalArrowsDamage;
+                this.NormalArrows--;
+                this.arrowSelected--;
+                this.weaponGroup.add(arrow);     //Esto hace que no se dispare dos veces la misma flecha
+            }
         }
     }
 }
@@ -239,11 +261,14 @@ canAttack() //Este método se llama desde attack con un delay. Es para tener un 
 }
 class Arrow extends Proyectil
 {
-    constructor(scene,x,y,dir)
+    constructor(scene,x,y,dir, typeOfArrow)
     {
         let speed = 100;
-        super(scene,x,y,"pink2", dir, speed)
-        
+        if(typeOfArrow === "normal")
+            super(scene,x,y,"pink2", dir, speed)
+        else 
+            super(scene, x, y,"green2", dir, speed);
+
         //Hay que acceder al inventario, buscar el nivel del arco, su effect, y multiplicar el tiempo por el data.quantity
         scene.time.delayedCall(250 * scene.hero.weaponManager.BowObject.Quantity,()=> this.die());
     }
