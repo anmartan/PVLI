@@ -169,6 +169,10 @@ class item
             this.Damage=this.Effect.Data.damage;
             console.log("Daño"+this.Damage)
         }
+        else if(this.Consumible && itemParams.Effect.Target === "self")
+        {
+            this.Quantity = this.Effect.Data;
+        }
 
     }
     use()

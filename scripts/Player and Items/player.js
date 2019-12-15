@@ -12,7 +12,8 @@ export class livingEntity extends Phaser.GameObjects.Sprite
         
         /* Sistema de vida */
         this.vulnerable =  true;
-        this.health    = health.maxHealth;
+        //this.health    = health.maxHealth;
+        this.health = 1;
         this.maxHealth = health.maxHealth;
         this.scene     = scene;
 
@@ -105,6 +106,12 @@ export class player extends livingEntity
         //Intento de meter el inventario
         this.inventory = this.scene.game.inventory;
         this.weaponManager = new weaponManager(this);
+        console.log( "Salud al principio de la partida: " + this.health);
+    }
+    useHealthPotion()
+    {
+        this.heal(this.inventory.Potion.Quantity);
+        console.log ("Te curas: " + this.health);
     }
     handleLogic()
     {
@@ -181,6 +188,10 @@ export class player extends livingEntity
             if(Phaser.Input.Keyboard.JustDown(this.key_TWO) || Phaser.Input.Keyboard.JustDown(this.key_2))
             {
                 this.weaponManager.throwProjectiles("grenade");
+            }
+            if(Phaser.Input.Keyboard.JustDown(this.key_THREE) || Phaser.Input.Keyboard.JustDown(this.key_3))
+            {
+                this.useHealthPotion();
             }
         }
 
