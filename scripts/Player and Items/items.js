@@ -67,7 +67,8 @@ export class inventory
         let Armor  = itemAtlas["Armor1" ];              
         let Sword  = itemAtlas["Sword0" ];             
         let Shield = itemAtlas["Shield1"];       
-        let Bow    = itemAtlas["Bow1"];          
+        let Bow    = itemAtlas["Bow1"];  
+        let Boots  = itemAtlas["Boots"];      
 
         /*  --Consumibles-- */
         this.Potion    = new item (Potion);
@@ -81,6 +82,7 @@ export class inventory
         this.Sword  = new item(Sword, 1);
         this.Shield = new item(Shield);
         this.Bow    = new item(Bow);
+        this.Boots  = new item(Boots);
     }
     addConsumible(type, cuantity)
     {

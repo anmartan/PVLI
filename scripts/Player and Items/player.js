@@ -120,13 +120,15 @@ export class player extends livingEntity
         
     }
 
-    //Ajusta los valores de la armadura y el escudo
+    //Ajusta los valores de la armadura, el escudo y las botas
     equip()
     {
         if(this.inventory.Armor.Level > 0)
             this.augmentMaxHealth(this.inventory.Armor.ExtraMaxHealth)
         if(this.inventory.Shield.Level > 0)
             this.shield = this.inventory.Shield.MaxHits;
+        if(this.inventory.Boots.Units > 0)
+            this.speed *= this.inventory.Boots.Speed;
             
     }
     handleLogic()
