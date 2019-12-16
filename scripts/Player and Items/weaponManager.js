@@ -41,8 +41,8 @@ export default class weaponManager
         let ShieldObject = scene.add.sprite(0,0,Shield.Images.Sprite);
         scene.add.existing(ShieldObject);
         scene.physics.add.existing(ShieldObject);
-        ShieldObject.body.setEnable(true);
-        ShieldObject.body.setSize(1,1);
+        ShieldObject.body.setEnable(false);
+        ShieldObject.body.setSize(player.body.width + 5, player.body.height + 5);
         ShieldObject.setVisible(false);
         Object.assign(ShieldObject,Shield);
 
@@ -104,12 +104,13 @@ export default class weaponManager
                     delay = 1000;
                     break;
 
-                    case this.BowObject:
-                        vsize = hsize={x:10,y:10};       //Hay que calcularlo dependiendo del sprite que metamos
-                        delay=250;
-                        break;
-                    }
-                    switch (dir) 
+                case this.BowObject:
+                    vsize = hsize={x:10,y:10};       //Hay que calcularlo dependiendo del sprite que metamos
+                    delay=250;
+                    break;
+            }
+            
+            switch (dir) 
             {
                 case "up":
                     this.offsetX=-2;
@@ -196,6 +197,24 @@ export default class weaponManager
                 this.arrowSelected--;
                 this.weaponGroup.add(arrow);     //Esto hace que no se dispare dos veces la misma flecha
             }
+        }
+    }
+
+    useShield()
+    {
+        if(!this.attacking && this.player.shield > 0)
+        {
+            this.attacking = true;
+            let weaponBeingUsed = this.weapon;
+            this.weapon = this.ShieldObject;
+            this.showWeapon(true);
+            this.scene.physics.add.collider(this.scene.enemies.enemies, this.ShieldObject, ()=> {this.player.shield --;});
+            this.scene.time.delayedCall (500, ()=>
+            {
+                this.attacking = false;
+                this.showWeapon(false);
+                this.weapon = weaponBeingUsed;
+            });
         }
     }
 

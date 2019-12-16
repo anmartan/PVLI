@@ -20,11 +20,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     }
     damage(points)
     {
-        if(this.shield !== undefined && this.shield > 0) 
-            {this.shield--;
-            console.log(this.shield);}
-
-        else if(this.vulnerable && this.body !== undefined && points>0)
+        if(this.vulnerable && this.body !== undefined && points>0)
         {
             this.vulnerable = false;
             this.alpha = 0.75;
@@ -92,6 +88,7 @@ export class player extends livingEntity
         this.key_A     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A           );
         this.key_S     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S           );
         this.key_W     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W           );
+        this.key_Q     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q           );
         this.key_UP    = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP          );
         this.key_RIGHT = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT       );
         this.key_DOWN  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN        );
@@ -211,6 +208,8 @@ export class player extends livingEntity
             {
                 this.useHealthPotion();
             }
+            if(this.key_Q.isDown)
+                this.weaponManager.useShield();
         }
 
     }

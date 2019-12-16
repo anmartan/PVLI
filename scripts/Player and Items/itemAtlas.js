@@ -206,7 +206,7 @@ export const itemAtlas =
         Level:3,
         Images:
         {
-            Sprite:"",
+            Sprite:"pink2",
             Icon:"",
         }
     },
