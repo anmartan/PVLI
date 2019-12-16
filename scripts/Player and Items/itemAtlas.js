@@ -63,7 +63,7 @@ export const itemAtlas =
     {
         Type: "Proyectile",
         Damage:1,
-        Price:10,
+        Price:1,
         Level:1,
         Images:
         {

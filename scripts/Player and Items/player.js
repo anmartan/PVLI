@@ -27,7 +27,6 @@ export class livingEntity extends Phaser.GameObjects.Sprite
             this.scene.time.delayedCall(950, this.makeVulnerable, [], this)
             if (this!== this.scene.hero)    this.knockback();
             this.health -= points;
-            console.log(this.health);
             if(this.health<=0){ this.kill()};
         }
         else return "No se puede dañar al enemigo, es invulnerable"
@@ -40,7 +39,6 @@ export class livingEntity extends Phaser.GameObjects.Sprite
         if( this.health> this.maxHealth)
             this.health=this.maxHealth;
 
-        console.log(this.health);
         return this.health;
     }
     augmentMaxHealth(points)
@@ -106,12 +104,12 @@ export class player extends livingEntity
         //Intento de meter el inventario
         this.inventory = this.scene.game.inventory;
         this.weaponManager = new weaponManager(this);
-        console.log( "Salud al principio de la partida: " + this.health);
     }
     useHealthPotion()
     {
-        this.heal(this.inventory.Potion.Quantity);
-        console.log ("Te curas: " + this.health);
+        if(this.inventory.Potion.Units >0)
+        this.heal(this.inventory.Potion.Health);
+        
     }
     handleLogic()
     {
