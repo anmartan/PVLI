@@ -20,7 +20,11 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     }
     damage(points)
     {
-        if(this.vulnerable && this.body !== undefined && points>0)
+        if(this.shield !== undefined && this.shield > 0) 
+            {this.shield--;
+            console.log(this.shield);}
+
+        else if(this.vulnerable && this.body !== undefined && points>0)
         {
             this.vulnerable = false;
             this.alpha = 0.75;
@@ -32,6 +36,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite
         else return "No se puede dañar al enemigo, es invulnerable"
 
     }
+    //makeInvulnerable(){this.vulnerable = false; this.scene.time.delayedCall(950, this.makeVulnerable(), [], this);}
     makeVulnerable(){this.vulnerable = true, this.alpha=1;};
     heal(points)
     {
@@ -43,8 +48,9 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     }
     augmentMaxHealth(points)
     {
+        this.maxHealth += points;
         this.health+= points;
-        return this.maxHealth+=points;
+        return this.maxHealth;
     }
 
     move()
@@ -104,12 +110,24 @@ export class player extends livingEntity
         //Intento de meter el inventario
         this.inventory = this.scene.game.inventory;
         this.weaponManager = new weaponManager(this);
+        this.equip();
+        console.log(this.maxHealth);
     }
     useHealthPotion()
     {
         if(this.inventory.Potion.Units >0)
         this.heal(this.inventory.Potion.Health);
         
+    }
+
+    //Ajusta los valores de la armadura y el escudo
+    equip()
+    {
+        if(this.inventory.Armor.Level > 0)
+            this.augmentMaxHealth(this.inventory.Armor.ExtraMaxHealth)
+        if(this.inventory.Shield.Level > 0)
+            this.shield = this.inventory.Shield.MaxHits;
+            
     }
     handleLogic()
     {
