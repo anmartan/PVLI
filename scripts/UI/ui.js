@@ -430,18 +430,34 @@ class dungeonGrid
         this.currentType = type;
         this.currentSubtype = subtype;
     }
-    setCell(x,y)                                                    //Este método para guarda los tipos actuales en la celda [x] [y].
+    setCell(x,y, type=this.currentType, subtype=this.currentSubtype)                                                    //Este método para guarda los tipos actuales en la celda [x] [y].
     {
-        this.cells[x][y].setType(this.currentType);
-        this.cells[x][y].setSubtype(this.currentSubtype);
+        this.cells[x][y].setType(type);
+        this.cells[x][y].setSubtype(subtype);
+        this.blockCells(x,y);
     }
-    
+    blockCells(x,y)
+    {
+        this.cells[x-1][y].block();
+        this.cells[x+1][y].block();
+        this.cells[x][y+1].block();
+        this.cells[x][y-1].block();
+    }
+    unblockCells(x,y)
+    {
+        this.cells[x-1][y].unblock();
+        this.cells[x+1][y].unblock();
+        this.cells[x][y+1].unblock();
+        this.cells[x][y-1].unblock();
+    }
     //Al pulsar una celda se llamará este método
     cellClicked(cell)
     {
         //console.clear();
         cell.actual = this.scene.actual;        //Necesitamos guardar "actual" que hace referencia al número de la habitación de la celda
-        this.setCell(cell.i, cell.j);
+        if(cell.type==="")this.setCell(cell.i, cell.j);
+        else this.unblockCells(cell.i,cell.j);
+
     }
 
     //Este método guarda en la dungeon dada la información de las celdas
@@ -504,14 +520,13 @@ class cell extends Button
         super(scene,x,y,sprite);
         this.grid = grid;
         this.actual = -1;
-        this.type = "";
-        this.subtype = "";
+        this.unblock();
         this.i=i;
         this.j=j;
     }
     setType(type)
     {
-        if(this.type==="")
+        if(this.type==="" || type==="")
         {
             this.type=type;
             console.log("type: " + this.type);
@@ -523,7 +538,7 @@ class cell extends Button
     }
     setSubtype(subtype)
     {
-        if(this.subtype==="")
+        if(this.subtype===""|| subtype==="")
         {
             this.subtype=subtype;
             console.log("subtype: "+this.subtype);
@@ -533,8 +548,23 @@ class cell extends Button
             console.log("cant place -> " + subtype + " because there is -> " + this.subtype)
         }
     }
+    block()
+    {
+        this.type="bloqued";
+        this.subtype="bloqued";
+        this.setVisible(false);
+    }
+    unblock()
+    {
+        this.type="";
+        this.subtype="";
+        this.setVisible(true);
+    }
     click()
     {
-        this.on("pointerdown",()=>this.grid.cellClicked(this));
+        this.on("pointerdown",()=>{
+            if(this.subtype==="")this.grid.cellClicked(this);
+            else{this.unblock();}
+    })
     }
 }
