@@ -487,7 +487,8 @@ class dungeonGrid
             else console.error("No se puede crear un enemigo de tipo "+ cell.subtype);
             if(enemyConfig!==undefined) actualRoom.enemies.addEnemyInfo(enemyConfig); //Si se ha encontrado un enemigo posible en el switch se añade la configuración a la lista cprres`pmoemte
         }
-        //Ahora también guardamos trampas
+
+
         else if(cell.type === "trap")
         {
             let actualRoom = dungeon.rooms[cell.actual];
@@ -500,8 +501,8 @@ class dungeonGrid
                     type: cell.subtype,
                     pos : 
                     {
-                        x: (cell.i +offset),    //Ajustar el valor
-                        y: (cell.j + offset)   //Ajustar el valor
+                        x: (cell.i +offset),
+                        y: (cell.j + offset)   
                     }
                 }
             }
@@ -540,6 +541,19 @@ class cell extends Button
     {
         if(this.subtype===""|| subtype==="")
         {
+            //buscamos el precio de la trampa o enemigo en concreto para restarlo del dinero total
+            if(this.type === "enemy")
+            {
+                let price;
+                price = this.scene.rooms[this.scene.actual].enemies.getPrice(subtype)
+                this.scene.money -=  price;
+            }
+            else if (this.type === "trap") 
+            {                
+                let price;
+                price = this.scene.rooms[this.scene.actual].traps.getPrice(subtype)
+                this.scene.money -=  price;
+            }
             this.subtype=subtype;
             console.log("subtype: "+this.subtype);
         }

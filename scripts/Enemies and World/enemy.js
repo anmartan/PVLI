@@ -417,4 +417,21 @@ export class enemyManager
         console.error("No se puede crear un enemigo de tipo " + enemy.subtype);
         return 0;
     }
+
+    getPrice(subtypeOfEnemy)
+    {
+        switch(subtypeOfEnemy)
+        {
+            case "zombie":
+                return 3;
+            case "bee":
+                return 5;
+            case "spider":
+                return 20;
+            case "wizard":
+                return 15;
+            case "beetle":
+                return 10;
+        }
+    }
 }

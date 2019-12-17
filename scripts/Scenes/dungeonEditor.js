@@ -22,8 +22,10 @@ const  scene =
         let loop =this.sound.add("loopAntiHero") 
         loop.setLoop(true);
         music.once("complete", ()=> {loop.play()})
+
+        this.money = 100;
         this.rooms = Array();
-        this.rooms = [ new room(5,new trapManager(),new enemyManager(this),this),new room(7,new trapManager(),new enemyManager(this),this), new room(9,new trapManager(),new enemyManager(this),this) ];
+        this.rooms = [ new room(5,new trapManager(this),new enemyManager(this),this),new room(7,new trapManager(),new enemyManager(this),this), new room(9,new trapManager(),new enemyManager(this),this) ];
         this.dungeon = new dungeon(this.rooms);
         this.actual = 0;
         this.game.dungeon = new dungeon(this.rooms);
@@ -42,7 +44,6 @@ const  scene =
             style : {fontFamily:"m5x7", fontSize:"16px"},
         }
         let continuar = new textButton(config,110,160,"Continuar");
-        let scene;
         continuar.on("pointerdown", () =>
         {
             this.game.scene.stop("DungeonEditor");
