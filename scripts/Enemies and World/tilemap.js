@@ -16,7 +16,7 @@ export class tilemap
 
 
         this.tileIDs = {
-            TopWall:34,
+            /*TopWall:34,
             RightWall:43,
             LeftWall:41,
             BottomWall:50,
@@ -25,6 +25,18 @@ export class tilemap
             TopRightCorner:35,
             BottomRightCorner:51,
             BottomLeftCorner:49,
+
+            Ground:42,
+            Background:46*/
+            TopWall:2,
+            RightWall:11,
+            LeftWall:9,
+            BottomWall:18,
+
+            TopLeftCorner:1,
+            TopRightCorner:3,
+            BottomRightCorner:19,
+            BottomLeftCorner:17,
 
             Ground:42,
             Background:46
@@ -51,8 +63,8 @@ export class tilemap
             
             for(let j =offset; j<size+offset;j++)
             {
-                this.Walls.removeTileAt(i, j);               //     Elimina las paredes que queden en la parte jugable de la habitación (offset -> size+offset)
-                this.Ground.putTileAt(this.tileIDs.Ground, i, j);              //     Coloca suelo en las mismas casillas
+                this.Walls.removeTileAt(i, j);                      //     Elimina las paredes que queden en la parte jugable de la habitación (offset -> size+offset)
+                this.Ground.putTileAt(this.tileIDs.Ground, i, j);   //     Coloca suelo en las mismas casillas
             }
         }
         this.removeLoops(leftOffset-1);                      //     Elimina un loop desde el centro hasta la coordenada dada -> sirve para pasar de una habitación grande a una pequeña
@@ -63,6 +75,7 @@ export class tilemap
     putWall(tileIndex, x, y)
     {
         this.Walls.putTileAt(tileIndex,x,y);
+        this.Ground.removeTileAt(x,y);
         this.tileMap.getTileAt(x,y,this.Walls).properties.collides = "true"; //Importante, porque si no lo haces no va
     }
     removeLoops(offset)
@@ -80,7 +93,9 @@ export class tilemap
         {
             x = offset;
             this.removeTile(x,y);
+            this.removeTile(x-1,y);
             x = 10-offset;
+            this.removeTile(x+1,y);  
             this.removeTile(x,y);  
         }
         if(offset == 1)                                      //     Para que limpie el loop mediano y el grande en el caso de llamar al pequeño desde el grande
@@ -93,20 +108,27 @@ export class tilemap
     {
         this.Walls.removeTileAt(x,y);
         this.Ground.removeTileAt(x,y);
-        this.Background.putTileAt(46,x,y);
+        this.Background.putTileAt(this.tileIDs.Background,x,y);
     }
     putCorners(l,r)
     {
         this.Walls.putTileAt(this.tileIDs.TopLeftCorner,l,l);
+        this.Ground.removeTileAt(l,l);
+
         this.Walls.putTileAt(this.tileIDs.TopRightCorner,r,l);
+        this.Ground.removeTileAt(r,l);
+
         this.Walls.putTileAt(this.tileIDs.BottomRightCorner,r,r);
+        this.Ground.removeTileAt(r,r);
+
         this.Walls.putTileAt(this.tileIDs.BottomLeftCorner,l,r);
+        this.Ground.removeTileAt(l,r);
     }
     putEntrance(x,y)
     {
         this.Walls.removeTileAt( x, 5 );
         this.Walls.removeTileAt( y, 5);
-        this.Ground.putTileAt(this.tileIDs.Ground,x,5);
-        this.Ground.putTileAt(this.tileIDs.Ground,y,5);
+        //this.Ground.putTileAt(this.tileIDs.Ground,x,5);
+        //this.Ground.putTileAt(this.tileIDs.Ground,y,5);
     }
 }

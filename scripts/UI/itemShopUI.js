@@ -22,18 +22,18 @@ export class shopUiManager
             clickedColor : "#FF00FF",
             cursorOverColor : "#00FF00",
             basicColor : "#00",
-            style : {fontFamily:"m5x7", fontSize:"16px", color:"#00"},
+            style : {fontFamily:"m5x7", fontSize:"32px", color:"#00"},
         }
         //Texto del dinero actual
-        let text = scene.add.text(136,2,scene.inventory.gold, config.style);
+        let text = scene.add.text(136*2,2*2,scene.inventory.gold, config.style);
         
 
 
         //Botones de compra de items
-        let x = 0;
-        let hsize =30;
-        let y = 44;
-        let vsize =24;
+        let x = 125;
+        let hsize =105;
+        let y = 50;
+        let vsize =62;
 
 
         scene.buy = function(itemName, button,  upgrade=true, units=1,level=1)
@@ -41,6 +41,7 @@ export class shopUiManager
             console.clear();
             let toBuyItemLevel;
             let price;
+            let nextLvl;
            console.log("Estás comprando: "+itemName);
 
             if(upgrade && scene.inventory[itemName].Level<3 )
@@ -57,7 +58,7 @@ export class shopUiManager
 
                     if(toBuyItemLevel<3)
                     {
-                        let nextLvl=scene.inventory[itemName].Level+1;
+                        nextLvl=scene.inventory[itemName].Level+1;
                         button.changeText(itemAtlas[itemName+nextLvl].Price);
                     }
                     else button.changeText(0);
@@ -68,7 +69,7 @@ export class shopUiManager
                     scene.inventory.upgradeItem(itemName);
                     if(toBuyItemLevel<3)
                     {
-                        let nextLvl=scene.inventory[itemName].Level+1;
+                        nextLvl=scene.inventory[itemName].Level+1;
                         button.changeText(itemAtlas[itemName+nextLvl].Price);
                     }
                     else button.changeText(0);
@@ -89,23 +90,24 @@ export class shopUiManager
             }
             text.text=scene.inventory.gold;
             console.log(scene.inventory);
+            return nextLvl;
         }
 
         scene.Sword_Button = new itemButton3lvl(scene, hsize, y + 0 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Sword",itemAtlas.Sword1.Price);
-        scene.Potion_Button = new itemButton1lvl(scene, 88 + hsize, y + 0 * vsize, "bg_1lvl", "border_1lvl","Potion",itemAtlas.Potion.Price);
+        scene.Potion_Button = new itemButton1lvl(scene, x + hsize, y + 0 * vsize, "bg_1lvl", "border_1lvl","Potion",itemAtlas.Potion.Price);
         scene.Armor_Button = new itemButton3lvl(scene, hsize, y + 1 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Armor",itemAtlas.Armor1.Price);
-        scene.Grenade_Button = new itemButton1lvl(scene, 88 + hsize, y + 1 * vsize, "bg_1lvl","border_1lvl", "Grenade",itemAtlas.Grenade.Price);
+        scene.Grenade_Button = new itemButton1lvl(scene, x + hsize, y + 1 * vsize, "bg_1lvl","border_1lvl", "Grenade",itemAtlas.Grenade.Price);
         scene.Bow_Button = new itemButton3lvl(scene, hsize, y + 2 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Bow",itemAtlas.Bow1.Price);
-        scene.Arrow_Button = new itemButton2lvl(scene, 88 + hsize, y + 2 * vsize, "border_2lvls","leftbg_2lvls","rightbg_2lvls", "Arrow",itemAtlas.Arrow1.Price*10);
+        scene.Arrow_Button = new itemButton2lvl(scene, x + hsize, y + 2 * vsize, "border_2lvls","leftbg_2lvls","rightbg_2lvls", "Arrow",itemAtlas.Arrow1.Price*10);
         scene.Shield_Button = new itemButton3lvl(scene, hsize, y + 3 * vsize, "bg_3lvls","border_3lvls","lvlButton","number_3lvls", "Shield",itemAtlas.Shield1.Price);
-        scene.Radar_Button = new itemButton1lvl(scene, 88 + hsize, y + 3 * vsize, "bg_1lvl","border_1lvl", "Radar",itemAtlas.Radar.Price);
+        scene.Radar_Button = new itemButton1lvl(scene, x + hsize, y + 3 * vsize, "bg_1lvl","border_1lvl", "Radar",itemAtlas.Radar.Price);
 
 
 
         //Botón de continuar
         {
 
-        let continuar = new textButton(config,106,152,"Continuar");
+        let continuar = new textButton(config,106*2,152*2,"Continuar");
         continuar.on("pointerdown", () =>
         {
             scene.game.scene.stop("ItemShop");
@@ -148,17 +150,20 @@ export class itemButton1lvl
     {
         let container = scene.add.container(x,y);
         let bg = scene.add.image(0,0,background);
+        bg.scale=2;
         container.add(bg)
-        container.add(scene.add.image(0,0,border));
 
-        let style = {fontFamily:"m5x7", fontSize:"16px", color:"#00"};
-
+        
+        this.expositor = scene.add.image(0,-3,scene.inventory[itemID].Images.Sprite);
+        container.add(this.expositor);
+        
+        let style = {fontFamily:"m5x7", fontSize:"32px", color:"#00"};
         this.text = scene.add.text(bg.width/2+4, - bg.height/2+4, "x"+price, style);
         container.add(this.text);
         this.itemID = itemID;
 
         bg.setInteractive();
-        bg.on("pointerover", ()=>bg.setTintFill("0xc67aed"));
+        //bg.on("pointerover", ()=>bg.setTintFill("0xc67aed"));
         bg.on("pointerout", ()=>bg.clearTint());
         bg.on("pointerdown", () =>
         {
@@ -183,8 +188,14 @@ export class itemButton2lvl
         container.add(rbg);
         container.add(scene.add.image(0,0,border));
 
-        let style = {fontFamily:"m5x7", fontSize:"16px", color:"#00"};
-
+        this.expositor = scene.add.image(-5,-3,scene.inventory[itemID+"1"].Images.Sprite);
+        this.expositor.angle=60;
+        container.add(this.expositor);
+        this.expositor = scene.add.image(5,1,scene.inventory[itemID+"2"].Images.Sprite);
+        this.expositor.angle=60;
+        container.add(this.expositor);
+        
+        let style = {fontFamily:"m5x7", fontSize:"32px", color:"#00"};
         this.text = scene.add.text(rbg.width/2+4, - rbg.height/2+4, "x"+price, style);
         container.add(this.text);
         this.itemID = itemID;
@@ -220,24 +231,23 @@ export class itemButton3lvl
     {
         let container = scene.add.container(x,y);
         let bg = scene.add.image(0,0,background);
+        bg.scale=2;
         container.add(bg)
-        let width = -13;
-        for(let i =0;i<3;i++)
-        {
-            this["button"+i]=scene.add.image(width+13*i,7,button);
-            container.add(this["button"+i]);
-        }   
-        container.add(scene.add.image(0,0,number).setTintFill("0xc3c3c3"));
-        container.add(scene.add.image(0,0,border));
+        console.log(itemID)
 
-        if(itemID === "Sword" || itemID === "Bow")
+        if(itemID!=="Armor")
         {
-            let stringMalHecha = scene.inventory[itemID].Level+1;
-            this.expositor = scene.add.image(0,-3,itemID+"_"+stringMalHecha);
-            this.expositor.angle=90;
-            container.add(this.expositor);
+            if(itemID==="Sword")
+            {
+                this.expositor = scene.add.image(0,4,itemAtlas[itemID+"1"].Images.Sprite);
+                this.expositor.angle=90;
+            }
+            else 
+                this.expositor = scene.add.image(0,4,scene.inventory[itemID].Images.Sprite);
+        container.add(this.expositor);
         }
-        let style = {fontFamily:"m5x7", fontSize:"16px", color:"#00"};
+
+        let style = {fontFamily:"m5x7", fontSize:"32px", color:"#00"};
 
         this.text = scene.add.text(bg.width/2+4, - bg.height/2+4, "x"+price, style);
         container.add(this.text);
@@ -245,27 +255,16 @@ export class itemButton3lvl
 
         
         bg.setInteractive();
-        bg.on("pointerover", ()=>bg.setTintFill("0xc67aed"));
+        //bg.on("pointerover", ()=>bg.setTintFill("0xc67aed"));
         bg.on("pointerout", ()=>bg.clearTint());
         bg.on("pointerdown", () =>
         {
-            bg.setTintFill("0x3f0d59");
-            let index = scene.buy(this.itemID, this, true) - 1;
-            if(index >= 0)
-            {
-                this["button"+index].setTintFill("0x3f0d59");
-            }
-            /*if(itemID === "Sword" || itemID === "Bow")
-            {
-                container.remove(this.expositor, true);
-                this.stringMalHecha = scene.inventory[itemID].Level+1;
-                if(this.stringMalHecha<4)
-                {
-                    this.expositor = scene.add.image(0,-3, itemID+"_"+this.stringMalHecha );
-                    this.expositor.angle=90;
-                    container.add(this.expositor);
-                }
-            }*/
+            let toBuyItemLvl=scene.buy(this.itemID, this, true);
+            let name=itemID+toBuyItemLvl;
+            if(itemID!=="Armor")
+            {this.expositor = scene.add.image(0,4,itemAtlas[name].Images.Sprite);
+            if(itemID==="Sword")this.expositor.angle=90;
+            container.add(this.expositor);}
 
         })
     }

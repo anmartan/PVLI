@@ -67,7 +67,7 @@ export const itemAtlas =
         Level:1,
         Images:
         {
-            Sprite:"",
+            Sprite:"Arrow",
             Icon:"",
         }
     },
@@ -79,7 +79,7 @@ export const itemAtlas =
         Level:2,
         Images:
         {
-            Sprite:"",
+            Sprite:"Arrow",
             Icon:"",
         }
     },
@@ -92,8 +92,8 @@ export const itemAtlas =
         Level:1,
         Images:
         {
-            Sprite:"",
-            Icon:"Sword_3",
+            Sprite:"Bow",
+            Icon:"",
         }
     },
     Bow2:
@@ -105,7 +105,7 @@ export const itemAtlas =
         Level:2,
         Images:
         {
-            Sprite:"",
+            Sprite:"Bow",
             Icon:"",
         }
     },
@@ -118,7 +118,7 @@ export const itemAtlas =
         Level:3,
         Images:
         {
-            Sprite:"",
+            Sprite:"Bow",
             Icon:"",
         }
     },
@@ -131,7 +131,7 @@ export const itemAtlas =
         Level:0,
         Images:
         {
-            Sprite:"Sword_0",
+            Sprite:"Sword0",
             Icon:"",
         }
     },
@@ -144,7 +144,7 @@ export const itemAtlas =
         Level:1,
         Images:
         {
-            Sprite:"Sword_1",
+            Sprite:"Sword1",
             Icon:"",
         }
     },
@@ -157,7 +157,7 @@ export const itemAtlas =
         Level:2,
         Images:
         {
-            Sprite:"Sword_2",
+            Sprite:"Sword2",
             Icon:"",
         }
     },
@@ -170,7 +170,7 @@ export const itemAtlas =
         Level:3,
         Images:
         {
-            Sprite:"Sword_3",
+            Sprite:"Sword3",
             Icon:"",
         }
     },
@@ -182,7 +182,7 @@ export const itemAtlas =
         Level:1,
         Images:
         {
-            Sprite:"",
+            Sprite:"Shield1",
             Icon:"",
         }
     },
@@ -194,7 +194,7 @@ export const itemAtlas =
         Level:2,
         Images:
         {
-            Sprite:"",
+            Sprite:"Shield2",
             Icon:"",
         }
     },
@@ -206,7 +206,7 @@ export const itemAtlas =
         Level:3,
         Images:
         {
-            Sprite:"pink2",
+            Sprite:"Shield3",
             Icon:"",
         }
     },
@@ -218,7 +218,7 @@ export const itemAtlas =
         Level:1,
         Images:
         {
-            Sprite:"",
+            Sprite:"Potion",
             Icon:"",
         }
     
@@ -231,7 +231,7 @@ export const itemAtlas =
         Level:1,
         Images:
         {
-            Sprite:"",
+            Sprite:"Radar",
             Icon:"",
         }
     },
@@ -243,7 +243,7 @@ export const itemAtlas =
         Level:1,
         Images:
         {
-            Sprite:"",
+            Sprite:"Bomb",
             Icon:"",
         }
     
