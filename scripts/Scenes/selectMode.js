@@ -19,6 +19,25 @@ const SelectGameMode=
         this.load.image("green2","../assets/debug/green2.png");
 
 
+        /*Objetos nuevos*/
+        this.load.image("Sword0", "../assets/objects/sword0.png")
+        this.load.image("Sword1", "../assets/objects/sword1.png")
+        this.load.image("Sword2", "../assets/objects/sword2.png")
+        this.load.image("Sword3", "../assets/objects/sword3.png")
+
+        this.load.image("Potion", "../assets/objects/potion.png")
+        this.load.image("Bow", "../assets/objects/bow.png")
+        this.load.image("Bomb", "../assets/objects/bomb.png")
+        this.load.image("Radar", "../assets/objects/radar.png")
+        this.load.image("Arrow", "../assets/objects/arrow.png")
+
+
+        this.load.image("Shield1", "../assets/objects/shield1.png")
+        this.load.image("Shield2", "../assets/objects/shield2.png")
+        this.load.image("Shield3", "../assets/objects/shield3.png")
+        /*----------*/
+
+
         this.load.image("Sword_0", "../assets/player/sword_0.png")
         this.load.image("Sword_1", "../assets/player/sword_1.png")
         this.load.image("Sword_2", "../assets/player/sword_2.png")

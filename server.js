@@ -5,12 +5,86 @@ const io = require('socket.io')(http); // Importamos `socket.io`
 const port = 420; // El puerto
 var clients = [];
 let players = [false,false]
+
+let heroQueue=[];
+let antiHeroQueue=[];
+let games=[];
+
+let checkGame = function checkGame() 
+{
+    //Si ambas colas tienen al menos un jugador en ellas
+    if(heroQueue[0]!==undefined && antiHeroQueue[0]!==undefined)
+    {
+        //Creamos una nueva partida con ambos y los quitamos de sus colas
+        let game=new partida(heroQueue[0],antiHeroQueue[0]);
+        games.push(game);
+        game.start();
+        heroQueue.shift();
+        antiHeroQueue.shift();
+    }
+}
+
 let serverDungeon;
 let serverInventory;
 
+class partida
+{
+    constructor(hero,antiHero)
+    {
+        this.hero=hero;
+        this.antiHero=antiHero;
+        makeSockets(this.hero,this.antiHero);
+    }
+    setDungeon(dungeon)
+    {
+        this.dungeon=dungeon;
+    }
+    setInventory(inventory)
+    {
+        this.inventory=inventory;
+    }
+    start()
+    {
+        this.hero.emit('startMatch', {});;
+        this.antiHero.emit('startMatch', {});;
+    }
+}
 
+let makeSockets=function (hero, antiHero)
+{
+    hero.on("playerMove", data=>
+    {
+        antiHero.emit("playerMove", data);
+    });
+    hero.on("enemyMove", data=>
+    {
+        antiHero.emit("enemyMove", data);
+    });
+    hero.on("playerAttack", data =>
+    {
+        antiHero.emit("playerAttack", data);
+    });
+    hero.on("playerHaveAttacked", () =>
+    {
+        antiHero.emit("playerHaveAttacked");
+    });
+    hero.on("enemyDead", id =>
+    {
+        antiHero.emit("enemyDead", id);
+    });
+    hero.on("changeRoom", data =>
+    {
+        antiHero.emit("changeRoom", data);
+    });
+    hero.on("trapDeactivated", id=> {
+        antiHero.emit("trapDeactivated", id);
+    });
 
-
+    hero.on("enemySpawned", enemy =>
+    {
+        antiHero.emit("enemySpawned", enemy);
+    });
+}
 
 
 app.get('/', function(req, res){
@@ -31,27 +105,19 @@ io.on('connection', socket => {
     });
 
     socket.on("start", player =>{
-         if(player==="Hero")
-         {
-            players[0] = true;
-            socket.emit("Role", {role: "Heroe"})
+        if(player==="Hero")
+        {
+            //players[0] = true;
+             heroQueue.push(socket);
+             socket.emit("Role", {role: "Heroe"})
         }
-         else 
+        else 
          {
-             players[1] = true;
+             //players[1] = true;
+             antiHeroQueue.push(socket);
              socket.emit("Role", {role: "AntiHeroe"})
          }
-
-         if(players[0]===true && players[1]===true)
-         {
-            players[0] =false;
-            players[1] =false;
-
-            clients.forEach( (client) => 
-            {
-                client.emit('startMatch', {});
-            })
-        }
+         checkGame();
     });
 
     socket.on("finished", data =>
@@ -78,37 +144,7 @@ io.on('connection', socket => {
         }
 
     });
-    socket.on("playerMove", data=>
-    {
-        clients.forEach( client => {client.emit("playerMove", data)});
-    });
-    socket.on("enemyMove", data=>
-    {
-        clients.forEach( client => {client.emit("enemyMove", data)});
-    });
-    socket.on("playerAttack", data =>
-    {
-        clients.forEach( client => {client.emit("playerAttack", data)});
-    });
-    socket.on("playerHaveAttacked", () =>
-    {
-        clients.forEach( client => {client.emit("playerHaveAttacked")});
-    });
-    socket.on("enemyDead", id =>
-    {
-        clients.forEach(client => {console.log("enemydead");client.emit("enemyDead",id)});
-    });
-    socket.on("changeRoom", data =>
-    {
-        clients.forEach(client => {client.emit("changeRoom",data)});
-    });
-    socket.on("trapDeactivated", id=> {console.log("trampamuerta");
-    clients.forEach(client =>{client.emit("trapDeactivated",id)})});
 
-    socket.on("enemySpawned", enemy =>
-    {
-        clients.forEach(client => {console.log ("Enemy Spawned : "+ enemy); client.emit("enemySpawned", enemy);});
-    });
     
 });
 
@@ -117,11 +153,4 @@ io.on('connection', socket => {
 http.listen(port,() => {
     console.log('Servidor escuchando en el puerto', port);
 });
-let initHSocket = function (socket, serverDungeon) 
-{
 
-}
-
-let initAHSocket = function (socket,serverDungeon) {
-
-}
