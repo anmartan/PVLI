@@ -36,12 +36,21 @@ export class Life
             heart = this.scene.add.sprite(32 + 32*i, 32, "full_Heart");
             let id= this.hearts.push(heart);
         }
-        for(let i=0; i< this.player.health; i++)
-        this.scene.time.delayedCall(1000 *i, ()=>{console.log("Se va a destruir un corazón."); this.loseHeart();})
     }
-    loseHeart()
+    loseHeart(points)
     {
-        this.hearts[this.lastHeartAlive].setVisible(false);
-        this.lastHeartAlive --;
+        for (let i = 0; i< points; i++)
+        {
+            this.hearts[this.lastHeartAlive].setVisible(false);
+            this.lastHeartAlive --;
+        }
+    }
+    gainHeart(points)
+    {
+        for(let i= 0; i< points; i++)
+        {
+            this.hearts[this.lastHeartAlive +1].setVisible(true);
+            this.lastHeartAlive ++;
+        }
     }
 }
