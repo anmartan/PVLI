@@ -32,12 +32,13 @@ export class Life
 
         for(let i=0; i< this.player.health; i++)
         {
+            this.scene.add.sprite(16 + 16*i, 32, "empty_Heart")
             let heart;
-            heart = this.scene.add.sprite(32 + 32*i, 32, "full_Heart");
+            heart = this.scene.add.sprite(16 + 16*i, 32, "full_Heart");
             let id= this.hearts.push(heart);
         }
     }
-    loseHeart(points)
+    loseHearts(points)
     {
         for (let i = 0; i< points; i++)
         {
@@ -45,7 +46,7 @@ export class Life
             this.lastHeartAlive --;
         }
     }
-    gainHeart(points)
+    gainHearts(points)
     {
         for(let i= 0; i< points; i++)
         {
