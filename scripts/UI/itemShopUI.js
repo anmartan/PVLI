@@ -30,9 +30,9 @@ export class shopUiManager
 
 
         //Botones de compra de items
-        let x = 166;
-        let hsize =80;
-        let y = 88;
+        let x = 125;
+        let hsize =105;
+        let y = 50;
         let vsize =62;
 
 

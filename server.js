@@ -107,13 +107,11 @@ io.on('connection', socket => {
     socket.on("start", player =>{
         if(player==="Hero")
         {
-            //players[0] = true;
              heroQueue.push(socket);
              socket.emit("Role", {role: "Heroe"})
         }
         else 
          {
-             //players[1] = true;
              antiHeroQueue.push(socket);
              socket.emit("Role", {role: "AntiHeroe"})
          }
