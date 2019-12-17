@@ -303,9 +303,9 @@ class Arrow extends Projectile
         let speed = 100;
         let sprite;
         if(typeOfArrow === "normal")
-            sprite = "pink2";
+            sprite = "Arrow";
         else 
-            sprite = "green2";
+            sprite = "Arrow";
         
         super(scene, x, y, sprite, dir, speed);
 
