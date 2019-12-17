@@ -114,6 +114,9 @@ export class enemy extends livingEntity
             this.scene.time.delayedCall(this.coolDown, ()=>{this.attacking = false;});
         }
     }
+
+    getPos()
+    {return {x: this.x, y: this.y}}
 } 
 
 
@@ -167,16 +170,13 @@ export class spider extends enemy
        //redefinición para añadir el spawneo de arañas
        for(let i=0; i<5; i++)                                   //i < número de arañas que queramos spawnear. Se puede cambiar más adelante
        {
-            let x = this.x;
-            let y = this.y;
-            let pos={x:this.x,y:this.y}
-            this.scene.game.fromPixelToTile(pos);
-            x=pos.x;y=pos.y;
-            console.log("x: "+x+" y: "+y);
-            let spidy =new enemyInfo(x + Phaser.Math.RND.between(-1, +1),y + Phaser.Math.RND.between(-1, +1),"littleSpider") 
-            let idEnemy= this.scene.enemies.getLastID()+1;
-            this.scene.enemies.addEnemy(this.scene.enemies.summon(spidy, this.scene, idEnemy));
-            socket.emit("enemySpawned", {enemy: spidy, id: idEnemy});
+           let pos= this.getPos();
+           this.scene.game.fromPixelToTile(pos);
+           let x=pos.x; let y=pos.y;
+           let spidy =new enemyInfo(x + Phaser.Math.RND.between(-0.25, +0.25),y + Phaser.Math.RND.between(-0.25, +0.25),"littleSpider") 
+           let idEnemy= this.scene.enemies.getLastID()+1;
+           this.scene.enemies.addEnemy(this.scene.enemies.summon(spidy, this.scene, idEnemy));
+           socket.emit("enemySpawned", {enemy: spidy, id: idEnemy});
         }
 
         //kill de todos los enemigos
@@ -201,6 +201,9 @@ export class littleSpider extends enemy
         this.price = 0;                                 // las arañitas no se pueden crear desde el editor de mazmorras. Solo aparecen cuando muere una araña
         this.ATTKPoints= 1;
         this.coolDown = 1500;
+
+        this.vulnerable = false;
+        this.scene.time.delayedCall(1000, this.makeVulnerable());
    }
 }
 

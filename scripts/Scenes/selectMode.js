@@ -7,16 +7,16 @@ const SelectGameMode=
         this.load.image("button2","../assets/debug/pink.png");
 
 
-        this.load.image("default","../assets/debug/default.png");
-        this.load.image("default2","../assets/debug/default2.png");
-        this.load.image("white","../assets/debug/white.png");
-        this.load.image("white2","../assets/debug/white2.png");
-        this.load.image("yellow","../assets/debug/yellow.png");
-        this.load.image("yellow2","../assets/debug/yellow2.png");
-        this.load.image("pink","../assets/debug/pink.png");
-        this.load.image("pink2","../assets/debug/pink2.png");
-        this.load.image("green","../assets/debug/green.png");
-        this.load.image("green2","../assets/debug/green2.png");
+        this.load.image("default",  "../assets/debug/default.png");
+        this.load.image("default2", "../assets/debug/default2.png");
+        this.load.image("white",    "../assets/ui/dungeonEditor/traps.png");
+        this.load.image("white2",   "../assets/ui/dungeonEditor/traps.png");
+        this.load.image("yellow",   "../assets/ui/dungeonEditor/size.png");
+        this.load.image("yellow2",  "../assets/ui/dungeonEditor/size.png");
+        this.load.image("pink",     "../assets/ui/dungeonEditor/enemies.png");
+        this.load.image("pink2",    "../assets/ui/dungeonEditor/enemies.png");
+        this.load.image("green",    "../assets/debug/green.png");
+        this.load.image("green2",   "../assets/debug/green2.png");
 
 
         this.load.image("Sword_0", "../assets/player/sword_0.png")
