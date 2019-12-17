@@ -12,23 +12,34 @@
     <script type="module" src = "/scripts/game.js"></script>
     <link rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Press+Start+2P">
+    
+      <style>
+      #game {
+        width: 900px;
+        height: 600px;
+      }
+      body{
+        background: url('docs/BackGround.png') no-repeat center center fixed; 
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+      }
+      </style>
 
 </head>
 <body>
+    <!-- Con el width al 100% hacemos que la imagen se ajuste al tamaño de la ventana-->
+    <img src="/assets/page/Cabecera3.png" alt="" width="100%"> 
+    <p>
+        Error 420: chachi game not found
+    </p>
     <script src="/socket.io/socket.io.js"></script>
     <script>
             const direccion = '192.168.1.106';
             const puerto = 420;
             const socket = io('http://' + direccion + ':' + puerto);
     </script>
-    <!-- Con el width al 100% hacemos que la imagen se ajuste al tamaño de la ventana-->
-    <img src="/assets/page/Cabecera.png" alt="" width="100%"> 
-    <p>
-        Error 420: chachi game not found
-    </p>
-    
-
-
     <footer>
         Derechos de Chachigames reservados. Los izquierdos están libres. <br>
         Esto debería estar en el pie de la página?? Por qué va antes del juego???
