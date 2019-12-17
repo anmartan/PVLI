@@ -77,6 +77,9 @@ const SelectGameMode=
         this.load.image("spider_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
         this.load.image("spider_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
 
+        this.load.image("full_Heart",   "../assets/player/fullHeart.png")
+        this.load.image("empty_Heart",  "../assets/player/emptyHeart.png")
+
         this.load.image("DungeonTiles","../assets/ground/DungeonStarter.png");
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
 

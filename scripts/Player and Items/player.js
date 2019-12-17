@@ -1,4 +1,5 @@
 import weaponManager from './weaponManager.js';
+import { Life } from '../Scenes/utils.js';
 export class livingEntity extends Phaser.GameObjects.Sprite
 {
     
@@ -80,9 +81,9 @@ export class player extends livingEntity
         this.body.offset.y=14;
         this.body.setCollideWorldBounds(true);
         this.stunned = false;
-
+        
         let keys = scene.add.group();
-
+        
         // Lectura de input y ejecución de la animación ----> TODO: Clase teclado o input que se encargue de hacer esto más bonito
         this.key_D     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D           );
         this.key_A     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A           );
@@ -101,14 +102,19 @@ export class player extends livingEntity
         this.key_1     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_ONE  );
         this.key_2     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_TWO  );
         this.key_3     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_THREE);
-
+        
         this.play(anim);
         
         //Intento de meter el inventario
         this.inventory = this.scene.game.inventory;
         this.weaponManager = new weaponManager(this);
+        console.log(this);
         this.equip();
-        console.log(this.maxHealth);
+        console.log(this);
+
+
+        //después de equiparse todo, porque la armadura aumenta la salud
+        this.hearts = new Life(this.scene, this);
     }
     useHealthPotion()
     {
