@@ -5,7 +5,10 @@ const SelectGameMode=
     {
         this.load.image("button","../assets/debug/white.png");
         this.load.image("button2","../assets/debug/pink.png");
-
+        this.load.audio("introAntiHero", "../assets/audio/music/DM_Intro.mp3");
+        this.load.audio("loopAntiHero", "../assets/audio/music/DM_Loop_x3.mp3");
+        this.load.audio("introHero", "../assets/audio/music/Knight_Intro.mp3");
+        this.load.audio("loopHero", "../assets/audio/music/Knight_Loop_x3.mp3");
 
         this.load.image("default",  "../assets/debug/default.png");
         this.load.image("default2", "../assets/debug/default2.png");
@@ -89,7 +92,6 @@ const SelectGameMode=
 
     },
     create:function () {
-
         let playerIdle = this.anims.create({     //animación del jugador
             key: 'idle',
             frames:

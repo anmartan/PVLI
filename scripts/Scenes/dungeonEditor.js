@@ -17,6 +17,11 @@ const  scene =
     },
     create : function()
     {
+        let music = this.sound.add("introAntiHero");
+        music.play();
+        let loop =this.sound.add("loopAntiHero") 
+        loop.setLoop(true);
+        music.once("complete", ()=> {loop.play()})
         this.rooms = Array();
         this.rooms = [ new room(5,new trapManager(),new enemyManager(this),this),new room(7,new trapManager(),new enemyManager(this),this), new room(9,new trapManager(),new enemyManager(this),this) ];
         this.dungeon = new dungeon(this.rooms);
