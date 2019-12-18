@@ -71,7 +71,6 @@ export class Time
     tick()
     {
         this.timeInSeconds--;
-        console.log(this.timeInSeconds);
         let minutes = Math.floor (this.timeInSeconds/ 60);
         let seconds  =this.timeInSeconds % 60;
         this.timeText.text = this.zero(minutes) + " : " + this.zero(seconds);

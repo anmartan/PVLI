@@ -169,7 +169,7 @@ io.on('connection', socket => {
 
     socket.on("timeUp", ()=>
     {
-        this.stopTimer();
+        //this.stopTimer();
     })
 });
 

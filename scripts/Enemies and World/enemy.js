@@ -138,7 +138,7 @@ export class bee extends enemy
 {
     constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleZ";
+        let anim = "idleBee";
         let speed = 50;
         let sprite = "bee_idle0";
         super(scene, x,  y, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
@@ -155,9 +155,9 @@ export class spider extends enemy
 {
     constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleZ";
+        let anim = "idleSpider";
         let speed = 15;
-        let sprite = "spider_idle0";
+        let sprite = "spider";
         super(scene, x,y, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
         this.price = 20; 
         this.ATTKPoints= 2;
@@ -211,9 +211,9 @@ export class wizard extends enemy
 {
     constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleZ";
+        let anim = "idleWizard";
         let speed = 15;
-        let sprite = "spider_idle0";
+        let sprite = "wizard";
         super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
         this.price = 15; 
         this.ATTKPoints= 1;
@@ -236,9 +236,9 @@ export class beetle extends enemy
 {
     constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleZ";
+        let anim = "idleBeetle";
         let speed = 30;
-        let sprite = "spider_idle0";
+        let sprite = "beetle";
         super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 6 }, id);
         this.price = 10; 
         this.ATTKPoints= 2;

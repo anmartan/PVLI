@@ -17,7 +17,7 @@ export class shopUiManager
         console.log(scene.inventory.gold);
         
         this.timer = new Time(scene, 32, 4, 10);
-        socket.on("second", ()=> this.timer.tick());
+        socket.on("second", ()=> {try{this.timer.tick()}catch{}});
         
 
         let config =
