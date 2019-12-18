@@ -32,11 +32,11 @@ export class textButton extends Phaser.GameObjects.Text{
 }
 class indexButtons
 {
-    constructor(scene, config)
+    constructor(scene, config, menu)
     {
-        this.button1      = new indexButton(config,  55,  240,  '1',      0).setFill(config.clickedColor); //y es la primera de la dungeon
-        this.button2      = new indexButton(config,  85,  240,  '2',      1); 
-        this.button3      = new indexButton(config,  110, 240,  '3',      2);
+        this.button1      = new indexButton(config,  55,  240,  '1',      0,menu).setFill(config.clickedColor); //y es la primera de la dungeon
+        this.button2      = new indexButton(config,  85,  240,  '2',      1,menu); 
+        this.button3      = new indexButton(config,  110, 240,  '3',      2,menu);
 
         this.indexButtons = scene.add.group();
         this.indexButtons.addMultiple([this.button1,this.button2,this.button3]);
@@ -47,10 +47,11 @@ class indexButtons
 
 class indexButton extends textButton //este botón servirá en la parte de edición de mazmorras para seleccionar la habitación actual que se está editando
 {
-    constructor(config, x, y, text,pos)
+    constructor(config, x, y, text,pos, menu)
     {
         super(config, x, y, text,pos)
         this.buttonPos = pos; //posición relativa del botón de izquierda a derecha (si están en horizontal) o de arriba a bajo (si están en vertical) empezando desde 0
+        this.menu=menu;
     }
     click(indexButtonChildren)
     {
@@ -63,6 +64,9 @@ class indexButton extends textButton //este botón servirá en la parte de edici
         {
             if(this.scene.actual!==i)indexButtonChildren[i].setFill(indexButtonChildren[i].basicColor); //pone en basic color los botones de índice no presionados
         }
+        this.menu.actualRoom=this.buttonPos;
+        this.menu.grid=this.menu.grids[this.menu.actualRoom];
+        console.log(this.menu);
     }   
     );
     }
@@ -75,9 +79,13 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
 {
     constructor(scene, Hoffset, Voffset, tileSize)
     {
+        this.scene=scene;
         this.actualState = "";
-        this.grid = new dungeonGrid(scene, Hoffset, Voffset, tileSize);
-        this.scene = scene;
+        this.actualRoom=0;
+        this.grids = new Array();
+        for(let i =0;i<3;i++)this.grids[i]=new dungeonGrid(scene, Hoffset, Voffset, tileSize,i);
+        this.grid=this.grids[0];
+        console.log(this);
 
         let statesX = 10 ;  //Posición horizontal de los botones de estado
         let statesY = 60 ;  //Posición vertical inicial de los botones de estado
@@ -85,7 +93,7 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         let optionsY = 68;  //Posición vertical inicial de los botones de opciones
 
 
-        this.moneyText = this.scene.add.text(240, 32, this.scene.money, {font:"32px m5x7", fill:"#FFFFFF"});
+        this.scene.moneyText = this.scene.add.text(240, 32, this.scene.money, {font:"32px m5x7", fill:"#FFFFFF"});
         this.scene.add.sprite(210, 48, "coins");
 
         
@@ -105,18 +113,18 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
 
         //Opciones de states[1] monstruos:
         //--Zombie, araña, abeja, mago y escarabajo--
-        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY,          ["pink2","green2"], this.grid,"enemy","zombie")); //
-        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 32,     ["pink2","green2"], this.grid,"enemy","spider" )); // En un mundo ideal habría varios tipos más
-        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 64 ,    ["pink2","green2"], this.grid,"enemy","bee" )); //
-        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 96,     ["pink2","green2"], this.grid,"enemy","beetle" )); //
-        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 128,    ["pink2","green2"], this.grid,"enemy","wizard" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY,          ["pink2","green2"], this,"enemy","zombie")); //
+        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 32,     ["pink2","green2"], this,"enemy","spider" )); // En un mundo ideal habría varios tipos más
+        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 64 ,    ["pink2","green2"], this,"enemy","bee" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 96,     ["pink2","green2"], this,"enemy","beetle" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 128,    ["pink2","green2"], this,"enemy","wizard" )); //
         
         //Opciones de states[2] trampas:
         //--Daño, veneno, stuneo y spawn--
-        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY,      ["white2","green2"], this.grid,"trap", "spikes"));  // 
-        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 32, ["white2","green2"], this.grid,"trap", "poison"));  // En un mundo ideal habría varios tipos más
-        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 64, ["white2","green2"], this.grid,"trap", "stun"));    //
-        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 96, ["white2","green2"], this.grid,"trap", "spawn"));   //
+        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY,      ["white2","green2"], this,"trap", "spikes"));  // 
+        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 32, ["white2","green2"], this,"trap", "poison"));  // En un mundo ideal habría varios tipos más
+        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 64, ["white2","green2"], this,"trap", "stun"));    //
+        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 96, ["white2","green2"], this,"trap", "spawn"));   //
         //this.states[2].add(new gridOptionButton(scene,optionsX,optionsY + 128, ["white2","green2"], this.grid,"trap", "teleportation"));   // esta no funciona todavía
         
         this.states[0].emit("pointerdown")                                                                                 //Empezamos por defecto con el estado "Size"
@@ -130,7 +138,7 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
             basicColor : "#FFFFFF",
             style : {fontFamily:'m5x7', fontSize:"16px"},
         }
-        new indexButtons(scene,config);
+        new indexButtons(scene,config,this);
     }
     changeState(st)
     {   
@@ -165,7 +173,8 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
     }
     save(dungeon)
     {
-        this.grid.saveEnemies(dungeon);
+        
+        for(let i =0;i<3;i++)this.grids[i].saveEnemies(dungeon);
         //this.grid.saveTraps(dungeon);
     }
 }
@@ -340,10 +349,10 @@ class sizeOptionButton extends Button //Botón de tipo de size (Modificará el t
 
 class gridOptionButton extends Button //Botón que modifica el grid (botones de Trampas o Enemigos)
 {
-    constructor(scene, x, y, sprite, grid, Type, optionType)
+    constructor(scene, x, y, sprite, menu, Type, optionType)
     {
         super(scene, x,y,sprite);
-        this.grid = grid;
+        this.menu = menu;
         this.optionType = optionType;
         this.type = Type;
         this.setVisible(false);     //Los botones de opciones se inicializan invisibles
@@ -354,18 +363,18 @@ class gridOptionButton extends Button //Botón que modifica el grid (botones de 
         {
             //console.clear();
             this.hideGrid()                                             //Ocultamos el grid para mostrar solo las celdas que toque mostrar
-            this.grid.show(this.scene.rooms[this.scene.actual].size);   //Se muestran las celdas en función del tamaño de la mazmorra
-            this.grid.setCurrentType(this.type, this.optionType);       
+            this.menu.grid.show(this.scene.rooms[this.scene.actual].size);   //Se muestran las celdas en función del tamaño de la mazmorra
+            this.menu.grid.setCurrentType(this.type, this.optionType);       
             this.stateButton.optionClicked(this);                                     
             console.log(this.type+" type: "+this.optionType);
         });
     }
-    hideGrid(){this.grid.hide();}
+    hideGrid(){this.menu.grid.hide();}
 }
 
 class dungeonGrid
 {
-    constructor( scene, Hoffset, Voffset, tileSize)
+    constructor( scene, Hoffset, Voffset, tileSize,actualRoom,roomSize=5)
     {
         this.cells = new Array(9);                  // || Salagadoola mechicka boola; Bibbidi-bobbidi-boo!       || //
         for (let i = 0; i < this.cells.length; i++) // || A bidimensional array in Javascript you want to do?    || //
@@ -377,8 +386,8 @@ class dungeonGrid
         this.Hoffset = Hoffset + screenCenter;      // Sumamos los offsets dados en el constructor con el centro previamente calculado
         this.Voffset = Voffset + screenCenter;      // para guardar los offsets con referencia  al  0,0 de la escena (Que es como los utiliza Sprite)
         this.scene = scene;                        
-        
-          
+        this.roomSize=roomSize;
+        this.actual=actualRoom;
         //Creamos nueve celdas, pues la mayor habitación posible es de 9x9    
         for(let i= 0;i<9;i++)
            for(let j=0;j<9;j++) 
@@ -414,7 +423,7 @@ class dungeonGrid
         {
             for(let j = 0; j<length;j++)
             {
-                this.cells[i][j].setVisible(true);                  //Solo hace visibles las celdas que se encuentren en el tilemap de la habitación actual (lengthxlenght)
+                if(this.cells[i][j].type!=="bloqued")this.cells[i][j].setVisible(true);                  //Solo hace visibles las celdas que se encuentren en el tilemap de la habitación actual (lengthxlenght)
             }
         }
     }
@@ -443,26 +452,29 @@ class dungeonGrid
     }
     blockCells(x,y)
     {
-        this.cells[x-1][y].block();
-        this.cells[x+1][y].block();
-        this.cells[x][y+1].block();
-        this.cells[x][y-1].block();
+        if(x-1>0)this.cells[x-1][y].block();
+        if(x+1<=11)this.cells[x+1][y].block();
+        if(y+1<=11)this.cells[x][y+1].block();
+        if(y-1>0)this.cells[x][y-1].block();
     }
     unblockCells(x,y)
     {
-        this.cells[x-1][y].unblock();
-        this.cells[x+1][y].unblock();
-        this.cells[x][y+1].unblock();
-        this.cells[x][y-1].unblock();
+        if(x-1>0)this.cells[x-1][y].unblock();
+        if(x+1<=9-this.roomSize)this.cells[x+1][y].unblock();
+        if(y+1<=9-this.roomSize)this.cells[x][y+1].unblock();
+        if(y-1>0)this.cells[x][y-1].unblock();
     }
     //Al pulsar una celda se llamará este método
     cellClicked(cell)
     {
-        //console.clear();
-        cell.actual = this.scene.actual;        //Necesitamos guardar "actual" que hace referencia al número de la habitación de la celda
+        //cell.actual = this.scene.actual;        //Necesitamos guardar "actual" que hace referencia al número de la habitación de la celda
         if(cell.type==="")this.setCell(cell.i, cell.j);
-        else this.unblockCells(cell.i,cell.j);
-
+        else 
+        {
+            this.cells[cell.i][cell.j].refound();
+            this.setCell(cell.i,cell.j,"","");
+            this.unblockCells(cell.i,cell.j);
+        }
     }
 
     //Este método guarda en la dungeon dada la información de las celdas
@@ -480,7 +492,7 @@ class dungeonGrid
         let cell = grid.cells[i][j];
         if(cell.type==="enemy")
         {
-            let actualRoom = dungeon.rooms[cell.actual];
+            let actualRoom = dungeon.rooms[grid.actual];
             let enemyConfig;                                                        //En esta variable se guardará la información necesaria para crear el enemigo
             let offset = (grid.getOffsetBySize(actualRoom.size))   
             let x = cell.i+offset;
@@ -496,7 +508,7 @@ class dungeonGrid
 
         else if(cell.type === "trap")
         {
-            let actualRoom = dungeon.rooms[cell.actual];
+            let actualRoom = dungeon.rooms[grid.actual];
             let trapConfig;                                                        
             let offset = (grid.getOffsetBySize(actualRoom.size));           
             if (cell.subtype == "spikes" || cell.subtype == "poison" || cell.subtype == "stun" || cell.subtype == "spawn")// || cell.subtype == "teleportation")
@@ -525,7 +537,6 @@ class cell extends Button
     {
         super(scene,x,y,sprite);
         this.grid = grid;
-        this.actual = -1;
         this.unblock();
         this.i=i;
         this.j=j;
@@ -544,29 +555,43 @@ class cell extends Button
     }
     setSubtype(subtype)
     {
+        let price;
+
         if(this.subtype===""|| subtype==="")
         {
-            //buscamos el precio de la trampa o enemigo en concreto para restarlo del dinero total
             if(this.type === "enemy")
             {
-                let price;
                 price = this.scene.rooms[this.scene.actual].enemies.getPrice(subtype)
                 this.scene.money -=  price;
             }
             else if (this.type === "trap") 
             {                
-                let price;
                 price = this.scene.rooms[this.scene.actual].traps.getPrice(subtype)
                 this.scene.money -=  price;
             }
-            //this.moneyText.setText(this.scene.money);
-            //this.subtype=subtype;
+            this.scene.moneyText.text=this.scene.money;
+            this.subtype=subtype;
             console.log("subtype: "+this.subtype);
         }
         else
         {
-            console.log("cant place -> " + subtype + " because there is -> " + this.subtype)
+            console.error("patata");
         }
+    }
+    refound()
+    {
+        let price=0;
+        //buscamos el precio de la trampa o enemigo en concreto para restarlo del dinero total
+        if(this.type === "enemy")
+        {
+            price = this.scene.rooms[this.scene.actual].enemies.getPrice(this.subtype)
+        }
+        else if (this.type === "trap") 
+        {                
+            price = this.scene.rooms[this.scene.actual].traps.getPrice(this.subtype)
+        }
+        this.scene.money +=  price;
+        this.scene.moneyText.text=this.scene.money;
     }
     block()
     {
@@ -583,8 +608,7 @@ class cell extends Button
     click()
     {
         this.on("pointerdown",()=>{
-            if(this.subtype==="")this.grid.cellClicked(this);
-            else{this.unblock();}
-    })
+            this.grid.cellClicked(this);
+        })
     }
 }
