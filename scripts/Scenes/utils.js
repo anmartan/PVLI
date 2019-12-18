@@ -55,18 +55,16 @@ export class Life
         }
     }
 }
-
 export class Time
 {
     constructor(scene, x, y, timeInSec)
     {
         this.scene = scene;
         this.timeInSeconds = timeInSec;
-        this.timeText = this.scene.add.text(x, y, this.scene.money, {font:"32px m5x7", fill:"#FFFFFF"});
+        this.timeText = this.scene.add.text(x, y, this.zero(this.timeInSeconds/60) + " : " + this.zero(this.timeInSeconds%60) , {font:"32px m5x7", fill:"#FFFFFF"});
 
+        socket.on("second", ()=> this.tick());
 
-        //cada segundo actualizamos el timer
-        this.timer = this.scene.time.delayedCall(Phaser.Time.SECOND, this.tick());
     }
 
 
@@ -78,8 +76,8 @@ export class Time
         let seconds  =this.timeInSeconds % 60;
         this.timeText.text = this.zero(minutes) + " : " + this.zero(seconds);
 
-        if(this.timeInSeconds -1 > 0) this.scene.delayedCall(Phaser.Time.SECOND, this.tick());
-        else destroy();
+        if(this.timeInSeconds === 0) destroy();
+
     }
 
     //para que los segundos no se muevan de sitio y se carguen el texto cuando quedan menos de diez segundos de cada minuto
@@ -94,5 +92,6 @@ export class Time
     destroy()
     {
         this.timeText.text = "00 : 00";
+        socket.emit("timeUp");
     }
 }

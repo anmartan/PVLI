@@ -47,6 +47,8 @@ class partida
     {
         this.hero.emit('startMatch', {});;
         this.antiHero.emit('startMatch', {});;
+        //setInterval(socket.emit ("second"), 1000);
+
     }
 }
 
@@ -143,7 +145,13 @@ io.on('connection', socket => {
 
     });
 
-    
+    socket.on ("second", ()=>
+    {
+        clients.forEach((client) =>
+        {
+            client.emit("secondPassed");
+        })
+    })
 });
 
 
