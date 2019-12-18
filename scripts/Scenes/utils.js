@@ -76,7 +76,7 @@ export class Time
         let seconds  =this.timeInSeconds % 60;
         this.timeText.text = this.zero(minutes) + " : " + this.zero(seconds);
 
-        if(this.timeInSeconds === 0) destroy();
+        if(this.timeInSeconds <= 0) this.destroy();
 
     }
 

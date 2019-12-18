@@ -47,7 +47,7 @@ class partida
     {
         this.hero.emit('startMatch', {});;
         this.antiHero.emit('startMatch', {});;
-        let timer =  setInterval(() => this.sendTime(), 1000);
+        this.timer =  setInterval(() => this.sendTime(), 1000);
     }
 
     sendTime()
@@ -55,6 +55,14 @@ class partida
         this.hero.emit ("second");
         this.antiHero.emit("second");
         console.log ("Segundo");
+    }
+
+    stopTimer()
+    {
+        clearInterval(this.timer);
+        this.hero.emit("finished");
+        this.antiHero.emit("finished");
+        console.log("No more Timing");
     }
 }
 
@@ -157,6 +165,11 @@ io.on('connection', socket => {
         {
             client.emit("secondPassed");
         })
+    })
+
+    socket.on("timeUp", ()=>
+    {
+        this.stopTimer();
     })
 });
 
