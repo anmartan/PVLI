@@ -55,3 +55,44 @@ export class Life
         }
     }
 }
+
+export class Time
+{
+    constructor(scene, x, y, timeInSec)
+    {
+        this.scene = scene;
+        this.timeInSeconds = timeInSec;
+        this.timeText = this.scene.add.text(x, y, this.scene.money, {font:"32px m5x7", fill:"#FFFFFF"});
+
+
+        //cada segundo actualizamos el timer
+        this.timer = this.scene.time.delayedCall(Phaser.Time.SECOND, this.tick());
+    }
+
+
+    tick()
+    {
+        this.timeInSeconds--;
+        console.log(this.timeInSeconds);
+        let minutes = Math.floor (this.timeInSeconds/ 60);
+        let seconds  =this.timeInSeconds % 60;
+        this.timeText.text = this.zero(minutes) + " : " + this.zero(seconds);
+
+        if(this.timeInSeconds -1 > 0) this.scene.delayedCall(Phaser.Time.SECOND, this.tick());
+        else destroy();
+    }
+
+    //para que los segundos no se muevan de sitio y se carguen el texto cuando quedan menos de diez segundos de cada minuto
+    //también se hace con los minutos aunque no haga falta
+    zero(sec)
+    {
+        if(sec<10)
+            sec = "0" +sec;
+        return sec;
+    }
+
+    destroy()
+    {
+        this.timeText.text = "00 : 00";
+    }
+}

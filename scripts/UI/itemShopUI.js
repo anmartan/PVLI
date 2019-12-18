@@ -5,6 +5,7 @@ import {textButton} from "./ui.js"
 import {dungeon} from '../Enemies and World/dungeon.js';
 
 import {itemAtlas} from "../Player and Items/itemAtlas.js"; 
+import { Time } from '../Scenes/utils.js';
 
 export class shopUiManager
 {
@@ -14,6 +15,7 @@ export class shopUiManager
         background.setOrigin(0,0);
         scene.inventory = new inventory(1000);
         console.log(scene.inventory.gold);
+        this.timer = new Time(scene, 32, 50, 120);
         
 
         let config =
