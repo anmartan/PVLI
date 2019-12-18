@@ -65,6 +65,9 @@ class indexButton extends textButton //este botón servirá en la parte de edici
             if(this.scene.actual!==i)indexButtonChildren[i].setFill(indexButtonChildren[i].basicColor); //pone en basic color los botones de índice no presionados
         }
         this.menu.actualRoom=this.buttonPos;
+        this.menu.grid.hide();
+        if(this.menu.actualState!=="Size")this.menu.states[0].emit("pointerdown");
+        this.menu.states[0].emit("pointerdown");
         this.menu.grid=this.menu.grids[this.menu.actualRoom];
         console.log(this.menu);
     }   
@@ -170,6 +173,10 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
             this.actualState= '';                   //Resetea el estado
         }
 
+    }
+    hideGrid()
+    {
+        this.states[2].forEach(hideGrid);
     }
     save(dungeon)
     {
