@@ -18,10 +18,10 @@ const  scene =
     create : function()
     {
         let music = this.sound.add("introAntiHero");
-        music.play();
+        music.play({volume:0.1});
         let loop =this.sound.add("loopAntiHero") 
         loop.setLoop(true);
-        music.once("complete", ()=> {loop.play()})
+        music.once("complete", ()=> {loop.play({volume:0.1})})
 
         this.money = 100;
         this.rooms = Array();

@@ -166,14 +166,15 @@ export class itemButton1lvl
         container.add(this.text);
         this.itemID = itemID;
 
-        bg.setInteractive();
-        //bg.on("pointerover", ()=>bg.setTintFill("0xc67aed"));
-        bg.on("pointerout", ()=>bg.clearTint());
-        bg.on("pointerdown", () =>
+        this.expositor.setInteractive();
+        this.expositor.on("pointerover", ()=>this.expositor.setTint("0x888888"));
+        this.expositor.on("pointerout", ()=>this.expositor.clearTint());
+        this.expositor.on("pointerdown", () =>
         {
-            bg.setTintFill("0x3f0d59");
+            this.expositor.setTint("0xAAAAAA");
             scene.buy(this.itemID, this,false);
         })
+        this.expositor.on("pointerup", () =>this.expositor.clearTint());
     }
     changeText(newText)
     {
@@ -264,12 +265,17 @@ export class itemButton3lvl
         bg.on("pointerdown", () =>
         {
             let toBuyItemLvl=scene.buy(this.itemID, this, true);
-            let name=itemID+toBuyItemLvl;
-            if(itemID!=="Armor")
-            {this.expositor = scene.add.image(0,4,itemAtlas[name].Images.Sprite);
-            if(itemID==="Sword")this.expositor.angle=90;
-            container.add(this.expositor);}
-
+            if(toBuyItemLvl<4)
+            {
+                let name=itemID+toBuyItemLvl;
+                if(itemID!=="Armor")
+                {
+                    this.expositor.destroy();
+                    this.expositor = scene.add.image(0,4,itemAtlas[name].Images.Sprite);
+                    if(itemID==="Sword")this.expositor.angle=90;
+                    container.add(this.expositor);
+                }
+            }else this.expositor.destroy();
         })
     }
     changeText(newText)
