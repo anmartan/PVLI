@@ -89,6 +89,8 @@ const SelectGameMode=
         this.load.image("tilesImage","../assets/ground/intento32/tileset_dungeon.png");
         this.load.tilemapTiledJSON("tiles2","../assets/ground/intento32/intento.json");
 
+        this.load.image("coins", "../assets/ui/dungeonEditor/coins.png");
+
 
     },
     create:function () {

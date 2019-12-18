@@ -85,7 +85,8 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         let optionsY = 68;  //Posición vertical inicial de los botones de opciones
 
 
-        this.scene.add.text(64, 64, "Money", {font:"10px m5x7", fill:"#FFFFFF"});
+        this.moneyText = this.scene.add.text(240, 32, this.scene.money, {font:"32px m5x7", fill:"#FFFFFF"});
+        this.scene.add.sprite(210, 48, "coins");
 
         
 
@@ -558,7 +559,8 @@ class cell extends Button
                 price = this.scene.rooms[this.scene.actual].traps.getPrice(subtype)
                 this.scene.money -=  price;
             }
-            this.subtype=subtype;
+            //this.moneyText.setText(this.scene.money);
+            //this.subtype=subtype;
             console.log("subtype: "+this.subtype);
         }
         else
