@@ -35,14 +35,17 @@ const scene = {
         this.hero = new player (this, (this.game.tileSize*4), (this.game.tileSize*5), 30, "caballero_idle0", "idle", {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
         this.enemies = new enemyManager(this,actualRoom.enemies.enemiesInfo);
         this.enemies.summonEnemies(this,this.hero, this.hero.weaponManager.weaponGroup,this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
+        this.enemyGroup = this.enemies.enemies.getChildren();
 
         this.traps = new trapManager(actualRoom.traps.traps);
         this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
 
         this.physics.add.collider(this.hero, this.tileMap.Walls);
+        this.physics.add.collider(this.hero, entranceRec);
 
-        this.physics.add.overlap(this.hero, exitRec, () => 
+        this.physics.add.collider(this.hero, exitRec, () => 
         {
+            if(this.enemyGroup.length===0){
             //Informar al servidor de que ha habido un cambio de habitación
             socket.emit("changeRoom");
 
@@ -66,9 +69,8 @@ const scene = {
             //Creamos las nuevas trampas y enemigos
             this.enemies.summonEnemies(this, this.hero, this.hero.weaponManager.weapon, this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
             this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
+            this.physics.add.collider(this.hero, entranceRec);}
         })
-        this.enemyGroup = this.enemies.enemies.getChildren();
-        ;
     },
     update: function(delta)
     {

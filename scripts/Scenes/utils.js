@@ -1,4 +1,4 @@
-export class rec extends Phaser.GameObjects.Zone
+export class rec extends Phaser.GameObjects.Rectangle
 {
     constructor(scene)
     {
@@ -7,6 +7,7 @@ export class rec extends Phaser.GameObjects.Zone
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.debugBodyColor="0x00ff00";
+        this.body.setImmovable(true)
         this.setOrigin(0,0);
         this.tileSize=scene.game.tileSize;
         this.scene=scene;
