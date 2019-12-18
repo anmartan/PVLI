@@ -189,8 +189,10 @@ export class Traps extends Phaser.GameObjects.Sprite
 
         this.hero=undefined;
         this.trapManager.RemoveTrap(this);
-        this.body.destroy();
-        this.setVisible(false);
+        if(this.zone!==undefined)this.zone.destroy();
+        this.body.setEnable(false);
+        this.setVisible(true);
+        this.scene.time.delayedCall(1000,()=>this.destroy())
     }
 }
 

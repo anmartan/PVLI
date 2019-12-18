@@ -332,7 +332,7 @@ class Radar extends Projectile
         scene.physics.add.existing(this.zone);
         this.zone.parent = this;
         scene.physics.add.overlap(scene.traps.traps, this.zone, (trap)=> {trap.Deactivate();});
-        scene.time.delayedCall(1000, ()=>this.zone.destroy());
+        scene.time.delayedCall(1000, ()=>{this.zone.destroy();this.destroy()});
     }
 }
 class Grenade extends Projectile
