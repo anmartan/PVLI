@@ -460,15 +460,15 @@ class dungeonGrid
     blockCells(x,y)
     {
         if(x-1>0)this.cells[x-1][y].block();
-        if(x+1<=9)this.cells[x+1][y].block();
-        if(y+1<=9)this.cells[x][y+1].block();
+        if(x+1<9)this.cells[x+1][y].block();
+        if(y+1<9)this.cells[x][y+1].block();
         if(y-1>0)this.cells[x][y-1].block();
     }
     unblockCells(x,y)
     {
         if(x-1>0)this.cells[x-1][y].unblock();
-        if(x+1<=9-this.roomSize)this.cells[x+1][y].unblock();
-        if(y+1<=9-this.roomSize)this.cells[x][y+1].unblock();
+        if(x+1<9-this.roomSize)this.cells[x+1][y].unblock();
+        if(y+1<9-this.roomSize)this.cells[x][y+1].unblock();
         if(y-1>0)this.cells[x][y-1].unblock();
     }
     //Al pulsar una celda se llamará este método
