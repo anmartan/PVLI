@@ -64,13 +64,12 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     move()
     {
         this.body.setVelocity(this.dir.x*this.speed,this.dir.y*this.speed)
-        if(this.dir.x <0)
+        if(this.dir.x <= 0)
         {
             this.setFlipX(true);
         }
         else{
             this.setFlipX(false);
-
         }
     }
     attack(other, points)

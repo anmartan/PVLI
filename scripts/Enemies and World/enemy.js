@@ -15,6 +15,27 @@ export class enemy extends livingEntity
         this.scene = scene;
         this.id = id;
         this.attacking = false;             //Para que haya un cooldown y no puedan atacar constantemente
+        socket.on("enemyPossesed",id=>{if(id===this.id)this.possesion();});
+        this.possesed=false;
+    }
+    possesion()
+    {
+        this.possesed=true;
+        this.enemyManager.havePossesed=true;
+        this.dir.x=0;
+        this.dir.y=0;
+        this.player=undefined;
+        this.setTint("0x"+"b0fdd2");
+        if(this.zone!==undefined)this.zone.destroy();
+        socket.on("possesedMoved",(dir) =>
+        {
+            if(this.possesed && this.body!==undefined)
+            {
+                console.log("move");
+                this.dir=dir;
+                this.moveEnemy();
+            }
+        });
     }
     createZone(scene)
     {
@@ -32,6 +53,7 @@ export class enemy extends livingEntity
     }
     findDir()
     {
+        if(this.possesed)return;
         if(this.player !== undefined)
         {
             let dir  =  { x:this.player.x-this.x, y:this.player.y-this.y };
@@ -292,6 +314,7 @@ export class enemyManager
         {
             this.enemiesInfo = new Array();
         }
+        this.havePossesed=false;
     }
     addEnemyInfo(enemyInfo)
     {

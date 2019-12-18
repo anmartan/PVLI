@@ -83,7 +83,7 @@ export class shopUiManager
             {
                 toBuyItemLevel = level;
                 let name="";
-                (itemName==="Arrow")?name=itemName+level:name==itemName;
+                (itemName==="Arrow")? name=itemName+level : name=itemName;
                 console.log(name);
                 price = itemAtlas[name].Price;
                 if(price<scene.inventory.gold)

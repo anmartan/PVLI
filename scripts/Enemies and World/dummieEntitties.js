@@ -44,6 +44,7 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite
         this.enemyManager=enemyManager;
         this.play(anim);
         this.id = id;
+        this.setInteractive();
         socket.on("enemyMove", data =>
         {
             if(data.id===this.id)this.move(data.pos, data.flip);
@@ -52,6 +53,65 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite
         {
             if(id===this.id) this.killDumie();
         })
+        this.on("pointerdown", ()=>
+        {
+            if(!this.enemyManager.havePossesed)this.possesion();
+        })
+    }
+    possesion()
+    {
+        socket.emit("enemyPossesed",this.id);
+        this.enemyManager.havePossesed=true;
+        this.setTint("0x"+"b0fdd2");
+
+        this.key_D     = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        this.key_A     = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.key_S     = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        this.key_W     = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        this.dir={x:0,y:0};
+        //Teclas de movimiento, cambiar la dirección y moverse en esa direción
+        this.key_A.on("down",()=>
+        {
+            this.dir = {x:this.dir.x-1, y:this.dir.y}            
+            socket.emit("possesedMoved", this.dir);
+        });
+        this.key_W.on("down",()=>
+        {
+            this.dir = {x:this.dir.x, y:this.dir.y-1}
+            socket.emit("possesedMoved", this.dir);
+        });
+        this.key_S.on("down", () =>
+        {
+            this.dir = {x:this.dir.x, y:this.dir.y+1}
+            socket.emit("possesedMoved", this.dir);
+        })
+        this.key_D.on("down",()=>
+        {
+            this.dir = {x:this.dir.x+1,  y:this.dir.y}
+            socket.emit("possesedMoved", this.dir);
+
+        });
+        this.key_A.on("up",()=>
+        {
+            this.dir = {x:this.dir.x+1, y:this.dir.y}            
+            socket.emit("possesedMoved", this.dir);
+        });
+        this.key_W.on("up",()=>
+        {
+            this.dir = {x:this.dir.x, y:this.dir.y+1}
+            socket.emit("possesedMoved", this.dir);
+        });
+        this.key_S.on("up", () =>
+        {
+            this.dir = {x:this.dir.x, y:this.dir.y-1}
+            socket.emit("possesedMoved", this.dir);
+        })
+        this.key_D.on("up",()=>
+        {
+            this.dir = {x:this.dir.x-1,  y:this.dir.y}
+            socket.emit("possesedMoved", this.dir);
+
+        });
     }
     move(pos, flip)
     {

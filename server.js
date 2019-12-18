@@ -54,7 +54,7 @@ class partida
     {
         this.hero.emit ("second");
         this.antiHero.emit("second");
-        console.log ("Segundo");
+        //console.log ("Segundo");
     }
 
     stopTimer()
@@ -100,6 +100,8 @@ let makeSockets=function (hero, antiHero)
     {
         antiHero.emit("enemySpawned", enemy);
     });
+    antiHero.on("enemyPossesed",id=>{hero.emit("enemyPossesed",id);});
+    antiHero.on("possesedMoved",dir=>{hero.emit("possesedMoved",dir);console.log("moved")});
 }
 
 

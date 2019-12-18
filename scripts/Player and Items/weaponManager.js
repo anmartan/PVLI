@@ -263,9 +263,10 @@ canAttack() //Este método se llama desde attack con un delay. Es para tener un 
         super(scene, x, y, sprite);
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        scene.physics.add.overlap(this, scene.enemies.enemies ,()=> this.die());
-        scene.physics.add.collider(this, scene.tileMap.Walls,()=> this.die());
+        scene.physics.add.overlap(this, scene.enemies.enemies ,()=> {if(this.effect!==undefined)this.die()});
+        scene.physics.add.collider(this, scene.tileMap.Walls,()=> {if(this.effect!==undefined)this.die()});
         dir-=90;
+        this.scene=scene;
         switch(dir)
         {
             case(0):
@@ -292,8 +293,8 @@ canAttack() //Este método se llama desde attack con un delay. Es para tener un 
     //Las flechas se destruyen después de un tiempo o cuando colisionan con un enemigo o las paredes
     die()
     {
-        if(this.effect!== undefined) this.effect(this.scene);
-        this.destroy();
+        if(this.effect!== undefined){ this.effect(this.scene);this.setVisible(false)}
+        else this.destroy();
     }
 }
 class Arrow extends Projectile
@@ -319,7 +320,7 @@ class Radar extends Projectile
     constructor ( scene, x, y, dir=0)
     {
         let speed = 0;
-        let sprite = "pink2";
+        let sprite = "";
         super(scene,x, y, sprite, dir, speed); 
         
         scene.time.delayedCall(1000, () => this.die());
@@ -339,7 +340,7 @@ class Grenade extends Projectile
     constructor (scene, x, y, dir=0)
     {
         let speed = 0;
-        let sprite = "green2";
+        let sprite = "Bomb";
         super(scene, x, y, sprite, dir, speed);
 
         scene.time.delayedCall(1000, ()=> this.die());
@@ -348,8 +349,7 @@ class Grenade extends Projectile
     {
         this.zone = scene.add.zone (this.x, this.y, scene.game.tileSize * 2, scene.game.tileSize*2);
         scene.physics.add.existing(this.zone);
-        this.zone.parent = this;
         scene.physics.add.overlap(scene.enemies.enemies, this.zone, (enemy)=> {enemy.damage(scene.hero.weaponManager.GrenadeDamage);});
-        scene.time.delayedCall(1000, ()=>this.zone.destroy());
+        scene.time.delayedCall(1000, ()=>{this.zone.destroy();this.destroy();});
     }
 }

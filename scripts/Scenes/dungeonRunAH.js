@@ -15,7 +15,6 @@ const scene = {
         this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
         //--------------------------------------------------------//
         
-        //this.hero = new player (this, (16*4), (16*5), 30, "caballero_idle0", playerIdle, {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
         this.hero = new dummiePlayer(this, (16*4), (16*5), "caballero_idle0", "Sword_0", 0.5 ).play("idle");
         this.enemies = new enemyManager(this,this.game.dungeon.rooms[this.actual].enemies.enemiesInfo);
         this.enemies.summonDummyEnemies(this); //invoca a los enemigos
@@ -30,8 +29,6 @@ const scene = {
             this.enemies = new enemyManager(this,this.game.dungeon.rooms[this.actual].enemies.enemiesInfo);
             //this.traps = new trapManager(this.game.dungeon.rooms[this.actual].traps.traps);
             this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
-            this.hero.x = ((11-(this.game.dungeon.rooms[this.actual].size))/2)*16-8; 
-            this.hero.y = (16*5) + 2; 
             this.enemies.summonDummyEnemies(this); //invoca a los enemigos, y activa las físicas y colisiones
             //this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
         });
