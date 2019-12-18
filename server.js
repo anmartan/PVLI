@@ -10,6 +10,8 @@ let heroQueue=[];
 let antiHeroQueue=[];
 let games=[];
 
+
+
 let checkGame = function checkGame() 
 {
     //Si ambas colas tienen al menos un jugador en ellas
@@ -26,6 +28,7 @@ let checkGame = function checkGame()
 
 let serverDungeon;
 let serverInventory;
+let timer;
 
 class partida
 {
@@ -47,21 +50,13 @@ class partida
     {
         this.hero.emit('startMatch', {});;
         this.antiHero.emit('startMatch', {});;
-        this.timer =  setInterval(() => this.sendTime(), 1000);
+        timer =  setInterval(() => this.sendTime(), 1000);
     }
 
     sendTime()
     {
         this.hero.emit ("second");
         this.antiHero.emit("second");
-    }
-
-    stopTimer()
-    {
-        clearInterval(this.timer);
-        this.hero.emit("finished");
-        this.antiHero.emit("finished");
-        console.log("No more Timing");
     }
 }
 
@@ -170,7 +165,8 @@ io.on('connection', socket => {
 
     socket.on("timeUp", ()=>
     {
-        //this.stopTimer();
+        clearInterval(this.timer);
+        console.log("No more Timing");
     })
 
     socket.on("deadHero", ()=> console.log("Héroe muerto"));
