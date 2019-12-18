@@ -64,8 +64,6 @@ export class Time
         this.timeInSeconds = timeInSec;
         this.timeText = this.scene.add.text(x, y, this.zero(this.timeInSeconds/60) + " : " + this.zero(this.timeInSeconds%60) , {font:"32px m5x7", fill:"#FFFFFF"});
 
-        socket.on("second", ()=> this.tick());
-
     }
 
 

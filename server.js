@@ -47,8 +47,14 @@ class partida
     {
         this.hero.emit('startMatch', {});;
         this.antiHero.emit('startMatch', {});;
-        //setInterval(socket.emit ("second"), 1000);
+        let timer =  setInterval(() => this.sendTime(), 1000);
+    }
 
+    sendTime()
+    {
+        this.hero.emit ("second");
+        this.antiHero.emit("second");
+        console.log ("Segundo");
     }
 }
 

@@ -15,7 +15,9 @@ export class shopUiManager
         background.setOrigin(0,0);
         scene.inventory = new inventory(1000);
         console.log(scene.inventory.gold);
-        this.timer = new Time(scene, 32, 50, 120);
+        
+        this.timer = new Time(scene, 32, 4, 120);
+        socket.on("second", ()=> this.timer.tick());
         
 
         let config =
