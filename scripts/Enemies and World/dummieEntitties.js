@@ -1,3 +1,5 @@
+import { Life } from '../Scenes/utils.js';
+
 export class dummiePlayer extends Phaser.GameObjects.Sprite
 {
 

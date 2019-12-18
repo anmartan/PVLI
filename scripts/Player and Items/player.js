@@ -231,6 +231,7 @@ export class player extends livingEntity
     }
     kill()
     {
+        socket.emit("deadHero");
         console.log("Debería estar muriéndome");
     }
 }

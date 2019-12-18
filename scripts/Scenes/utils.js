@@ -44,7 +44,8 @@ export class Life
     {
         for (let i = 0; i< points; i++)
         {
-            this.hearts[this.lastHeartAlive].setVisible(false);
+            if(this.lastHeartAlive >= 0)
+                this.hearts[this.lastHeartAlive].setVisible(false);
             this.lastHeartAlive --;
         }
     }

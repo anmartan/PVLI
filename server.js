@@ -54,7 +54,6 @@ class partida
     {
         this.hero.emit ("second");
         this.antiHero.emit("second");
-        //console.log ("Segundo");
     }
 
     stopTimer()
@@ -173,6 +172,8 @@ io.on('connection', socket => {
     {
         //this.stopTimer();
     })
+
+    socket.on("deadHero", ()=> console.log("Héroe muerto"));
 });
 
 
