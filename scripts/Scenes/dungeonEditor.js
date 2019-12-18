@@ -25,7 +25,7 @@ const  scene =
 
         this.money = 100;
         this.rooms = Array();
-        this.rooms = [ new room(5,new trapManager(),new enemyManager(this),this),new room(7,new trapManager(),new enemyManager(this),this), new room(9,new trapManager(),new enemyManager(this),this) ];
+        this.rooms = [ new room(5,new trapManager(),new enemyManager(),this),new room(7,new trapManager(),new enemyManager(),this), new room(9,new trapManager(),new enemyManager(),this) ];
         this.dungeon = new dungeon(this.rooms);
         this.actual = 0;
         this.game.dungeon = new dungeon(this.rooms);
