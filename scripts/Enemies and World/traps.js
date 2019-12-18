@@ -4,12 +4,11 @@ import { zombie } from "./enemy.js";
 //Se encarga de transformar la información en el editor de mazmorras en trampas dentro de la habitación
 export class trapManager
 {
-    constructor(scene, traps = undefined)
+    constructor(traps = undefined)
     {
         if(traps===undefined)this.traps = new Array();
         else this.traps=traps;
         this.created = false;
-        this.scene = scene;
     }
 
     //Para añadir una nueva trampa
