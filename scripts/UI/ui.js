@@ -460,8 +460,8 @@ class dungeonGrid
     blockCells(x,y)
     {
         if(x-1>0)this.cells[x-1][y].block();
-        if(x+1<=11)this.cells[x+1][y].block();
-        if(y+1<=11)this.cells[x][y+1].block();
+        if(x+1<=9)this.cells[x+1][y].block();
+        if(y+1<=9)this.cells[x][y+1].block();
         if(y-1>0)this.cells[x][y-1].block();
     }
     unblockCells(x,y)
