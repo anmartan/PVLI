@@ -41,43 +41,25 @@ const SelectGameMode=
         this.load.image("Shield2", "../assets/objects/shield2.png")
         this.load.image("Shield3", "../assets/objects/shield3.png")
         /*----------*/
-
-
-        this.load.image("Sword_0", "../assets/player/sword_0.png")
-        this.load.image("Sword_1", "../assets/player/sword_1.png")
-        this.load.image("Sword_2", "../assets/player/sword_2.png")
-        this.load.image("Sword_3", "../assets/player/sword_3.png")
-
-        this.load.image("Bow_0", "../assets/player/sword_0.png")
-        this.load.image("Bow_1", "../assets/player/sword_1.png")
-        this.load.image("Bow_2", "../assets/player/sword_2.png")
-        this.load.image("Bow_3", "../assets/player/sword_3.png")
         
+        this.load.spritesheet("trap", "../assets/traps/spike_animation.png",{ frameWidth: 22, frameHeight: 19})
+
 
         this.load.image("caballero_idle0", "../assets/player/knight_m_idle_anim_f0.png")
         this.load.image("caballero_idle1", "../assets/player/knight_m_idle_anim_f1.png")
         this.load.image("caballero_idle2", "../assets/player/knight_m_idle_anim_f2.png")
         this.load.image("caballero_idle3", "../assets/player/knight_m_idle_anim_f3.png")
 
-        this.load.image("zombie_idle0", "../assets/enemies/zombie1.png")
+        this.load.image("zombie", "../assets/enemies/zombie1.png")
         this.load.image("zombie_idle1", "../assets/enemies/zombie2.png")
         this.load.image("zombie_idle2", "../assets/enemies/zombie3.png")
         this.load.image("zombie_idle3", "../assets/enemies/zombie4.png")
 
-        this.load.image("bee_idle0", "../assets/enemies/bee1.png")
+        this.load.image("bee", "../assets/enemies/bee1.png")
         this.load.image("bee_idle1", "../assets/enemies/bee2.png")
         this.load.image("bee_idle2", "../assets/enemies/bee3.png")
         this.load.image("bee_idle3", "../assets/enemies/bee4.png")
 
-        this.load.image("beetle_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
-        this.load.image("beetle_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
-        this.load.image("beetle_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
-        this.load.image("beetle_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
-
-        this.load.image("wizard_idle0", "../assets/enemies/zombie_idle_anim_f0.png")
-        this.load.image("wizard_idle1", "../assets/enemies/zombie_idle_anim_f1.png")
-        this.load.image("wizard_idle2", "../assets/enemies/zombie_idle_anim_f2.png")
-        this.load.image("wizard_idle3", "../assets/enemies/zombie_idle_anim_f3.png")
 
         this.load.spritesheet("spider", "../assets/enemies/spider.png",{ frameWidth: 32, frameHeight: 32 })
         this.load.spritesheet("wizard", "../assets/enemies/wizard.png",{ frameWidth: 32, frameHeight: 32 })
@@ -88,7 +70,6 @@ const SelectGameMode=
 
         this.load.image("DungeonTiles","../assets/ground/DungeonStarter.png");
         this.load.tilemapTiledJSON("tiles","../assets/ground/tiles.json");
-
         this.load.image("tilesImage","../assets/ground/intento32/tileset_dungeon.png");
         this.load.tilemapTiledJSON("tiles2","../assets/ground/intento32/intento.json");
 
@@ -110,10 +91,10 @@ const SelectGameMode=
             repeat: -1,
         });
         let zombieIdle = this.anims.create({    //animación del zombie
-            key: 'idleZ',
+            key: 'idleZombie',
             frames:
             [
-                {key: "zombie_idle0"},
+                {key: "zombie"},
                 {key: "zombie_idle1"},
                 {key: "zombie_idle2"},
                 {key: "zombie_idle3"},
@@ -125,7 +106,7 @@ const SelectGameMode=
             key: 'idleBee',
             frames:
             [
-                {key: "bee_idle0"},
+                {key: "bee"},
                 {key: "bee_idle1"},
                 {key: "bee_idle2"},
                 {key: "bee_idle3"},
@@ -145,7 +126,7 @@ const SelectGameMode=
 
         this.anims.create({
             key: 'idleWizard',
-            frames: this.anims.generateFrameNumbers('wizard', { start: 0, end: 11 }),
+            frames: this.anims.generateFrameNumbers('wizard', { start: 0, end: 10 }),
             frameRate: 7,
             repeat: -1
         });
@@ -154,6 +135,13 @@ const SelectGameMode=
             frames: this.anims.generateFrameNumbers('beetle', { start: 0, end: 6 }),
             frameRate: 4,
             repeat: -1
+        });
+
+        this.anims.create({
+            key: 'trapAnim',
+            frames: this.anims.generateFrameNumbers('trap', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: 0
         });
 
         let left = this.add.sprite(10,88,"button");

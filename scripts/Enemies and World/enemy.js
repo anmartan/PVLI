@@ -124,9 +124,9 @@ export class zombie extends enemy
 {
     constructor (scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleZ";
+        let anim = "idleZombie"
         let speed = 10;
-        let sprite = "zombie_idle0";
+        let sprite = "zombie";
         super(scene, x, y, speed,sprite,anim, enemyManager, { maxHealth : 3 }, id);
         this.price = 3; 
         this.ATTKPoints= 1;
@@ -140,7 +140,7 @@ export class bee extends enemy
     {
         let anim = "idleBee";
         let speed = 50;
-        let sprite = "bee_idle0";
+        let sprite = "bee";
         super(scene, x,  y, speed,sprite,anim, enemyManager, { maxHealth : 2 }, id);
         this.price = 6; 
         this.ATTKPoints= 1;
@@ -411,7 +411,9 @@ export class enemyManager
         {
             console.log(enemy.type + " " +enemy.pos.x +" "+enemy.pos.y)
             let dummie;
-            dummie = new dummieEnemy(scene, enemy.pos.x, enemy.pos.y,"zombie_idle0","idleZ",this,i);
+            let name=enemy.type;
+            name = name[0].toUpperCase()+name.slice(1);
+            dummie = new dummieEnemy(scene, enemy.pos.x, enemy.pos.y,enemy.type,"idle"+name,this,i);
             return dummie;   
         }
         console.error("No se puede crear un enemigo de tipo " + enemy.subtype);

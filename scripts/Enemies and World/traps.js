@@ -133,16 +133,17 @@ export class trapManager
 export class Traps extends Phaser.GameObjects.Sprite
 {
     //Una trampa es un sprite con una zona (para activarse) y un efecto
-    constructor(scene, x, y, spriteID, trapManager, id, enemyType="")//, hero)
+    constructor(scene, x, y, spriteID, trapManager, id, anim="trapAnim",enemyType="")//, hero)
     {
-        super(scene, (x+1.5)*scene.game.tileSize,(y+1.5)*scene.game.tileSize, spriteID)
+        super(scene, (x+1.5)*scene.game.tileSize,(y+1.5)*scene.game.tileSize, "trap")
         scene.add.existing(this);
         scene.physics.add.existing(this);
-
+        this.setVisible(false);
         this.trapManager = trapManager;
         this.zone=this.createZone(scene)
         this.id=id;
         this.scene = scene;
+        this.anim=anim;
     }
     
     createZone(scene)
@@ -175,18 +176,21 @@ export class Traps extends Phaser.GameObjects.Sprite
     Activate()
     {
         this.effect(this.scene.hero);
-        this.Deactivate();
+        this.zone.destroy();
+        this.setVisible(true);
+        this.play(this.anim);
+        this.once("animationcomplete-trapAnim",()=>this.Deactivate());
     }
 
     //Desactiva la trampa: tanto si se ha activado ya su efecto como si se ha detectado con un radar
     Deactivate()
     {
         socket.emit("trapDeactivated", this.id);
-        this.zone.destroy();
+
         this.hero=undefined;
         this.trapManager.RemoveTrap(this);
         this.body.destroy();
-        this.destroy();
+        this.setVisible(false);
     }
 }
 

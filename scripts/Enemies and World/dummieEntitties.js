@@ -69,14 +69,18 @@ export class dummieTrap extends Phaser.GameObjects.Sprite
 {
     constructor(scene, x, y, sprite, trapManager, id)
     {
-        super(scene, (x+1.5)*scene.game.tileSize, (y+1.5)*scene.game.tileSize, sprite);
+        super(scene, (x+1.5)*scene.game.tileSize, (y+1.5)*scene.game.tileSize, "trap");
         scene.add.existing(this);
         this.trapManager=trapManager;
         this.id=id;
         this.alpha=0.5;
         socket.on("trapDeactivated", id =>
         {
-            if(id===this.id)this.destroyTrap();
+            if(id===this.id)
+            {
+                this.play("trapAnim");
+                this.once("animationcomplete-trapAnim",()=>this.destroyTrap());
+            }
         })
     }
 
