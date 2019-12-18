@@ -63,7 +63,7 @@ const  scene =
             this.game.scene.start("DungeonRunAH");
         })
     },
-    update : function(delta)
+    update : function(time,delta)
     {
 
     }
