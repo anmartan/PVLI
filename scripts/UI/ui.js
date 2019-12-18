@@ -85,6 +85,10 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         let optionsY = 68;  //Posición vertical inicial de los botones de opciones
 
 
+        this.scene.add.text(64, 64, "Money", {font:"10px m5x7", fill:"#FFFFFF"});
+
+        
+
         //Por ahora tendremos tres botones de estados:
         //Edición del tamaño de la habitación, colocación de enemigos y colocación de trampas
         this.states   = new Array(3);
@@ -114,9 +118,9 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 96, ["white2","green2"], this.grid,"trap", "spawn"));   //
         //this.states[2].add(new gridOptionButton(scene,optionsX,optionsY + 128, ["white2","green2"], this.grid,"trap", "teleportation"));   // esta no funciona todavía
         
-        this.states[0].emit("pointerdown")                                                                            //Empezamos por defecto con el estado "Size"
+        this.states[0].emit("pointerdown")                                                                                 //Empezamos por defecto con el estado "Size"
         this.states[0].stateOptions[0].emit("pointerdown")                                                                 //Empezamos por defecto con el Size pequeño
-        //Esto es un traslado de la anterior implementación. Funciona por ahora, pero hay que arreglarlo.
+
         let config =
         {
             scene : scene,
