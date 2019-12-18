@@ -425,12 +425,21 @@ class dungeonGrid
 
     show(length)
     {
+        let size=this.scene.rooms[this.scene.actual].size;
+        let loff=(9-size)/2;
+        let roff=10-loff;
+        console.log(loff)
+        console.log(roff)
         this.setPosition();                                         //Recalcula la posición primero, por si el tamaño de la habitación ha cambiado
         for(let i = 0; i<length; i++)
         {
             for(let j = 0; j<length;j++)
             {
-                if(this.cells[i][j].type!=="bloqued")this.cells[i][j].setVisible(true);                  //Solo hace visibles las celdas que se encuentren en el tilemap de la habitación actual (lengthxlenght)
+                if(this.cells[i][j].type!=="bloqued")
+                {
+                    if(j+1 !== Math.round(size/2) || (i!==0 && i!==size-1))
+                    this.cells[i][j].setVisible(true);                  //Solo hace visibles las celdas que se encuentren en el tilemap de la habitación actual (lengthxlenght)
+                }
             }
         }
     }
@@ -610,6 +619,7 @@ class cell extends Button
     {
         this.type="";
         this.subtype="";
+        if(this.j+1 !== Math.round(this.scene.rooms[this.scene.actual].size/2) || (this.i!==0 && this.i!==this.scene.rooms[this.scene.actual].size-1))
         this.setVisible(true);
     }
     click()

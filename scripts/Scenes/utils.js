@@ -6,7 +6,6 @@ export class rec extends Phaser.GameObjects.Rectangle
         super(scene,0, yPosInPixels, scene.game.tileSize, scene.game.tileSize)
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.body.debugBodyColor="0x00ff00";
         this.body.setImmovable(true)
         this.setOrigin(0,0);
         this.tileSize=scene.game.tileSize;
@@ -15,7 +14,9 @@ export class rec extends Phaser.GameObjects.Rectangle
     setRecPos(size, exit)
     {
         let positionInTiles=(9-size)/2;
-        if(exit)positionInTiles=10-positionInTiles;
+        if(exit){positionInTiles=10-positionInTiles;
+        this.body.debugBodyColor="0x00ff00";}
+
         this.x = (positionInTiles)*this.tileSize;
     }
 
