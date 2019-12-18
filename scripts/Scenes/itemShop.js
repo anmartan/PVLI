@@ -27,10 +27,10 @@ const ItemShop =
     create: function()
     {
         let music = this.sound.add("introHero");
-        music.play();
+        music.play({volume:0.1});
         let loop =this.sound.add("loopHero") 
         loop.setLoop(true);
-        music.once("complete", ()=> {loop.play()})
+        music.once("complete", ()=> {loop.play({volume:0.1})})
         let manager = new shopUiManager(this);
     },
     update: function(delta)
