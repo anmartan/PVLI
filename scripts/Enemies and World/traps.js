@@ -49,7 +49,9 @@ export class trapManager
     {
         switch(subtypeOfTrap)
         {
-            case "spikes", "poison":
+            case "spikes":
+                return 15;
+            case "poison":
                 return 15;
             case "stun": 
                 return 20;

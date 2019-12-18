@@ -12,14 +12,16 @@ const SelectGameMode=
 
         this.load.image("default",  "../assets/debug/default.png");
         this.load.image("default2", "../assets/debug/default2.png");
-        this.load.image("white",    "../assets/ui/dungeonEditor/traps.png");
-        this.load.image("white2",   "../assets/ui/dungeonEditor/traps.png");
-        this.load.image("yellow",   "../assets/ui/dungeonEditor/size.png");
-        this.load.image("yellow2",  "../assets/ui/dungeonEditor/size.png");
-        this.load.image("pink",     "../assets/ui/dungeonEditor/enemies.png");
-        this.load.image("pink2",    "../assets/ui/dungeonEditor/enemies.png");
         this.load.image("green",    "../assets/debug/green.png");
         this.load.image("green2",   "../assets/debug/green2.png");
+
+        this.load.image("trapSymbol",    "../assets/ui/dungeonEditor/traps.png");
+        this.load.image("trapSymbol2",   "../assets/ui/dungeonEditor/traps2.png");
+        this.load.image("sizeSymbol",   "../assets/ui/dungeonEditor/size.png");
+        this.load.image("sizeSymbol2",  "../assets/ui/dungeonEditor/size2.png");
+        this.load.image("enemiesSymbol",     "../assets/ui/dungeonEditor/enemies.png");
+        this.load.image("enemiesSymbol2",     "../assets/ui/dungeonEditor/enemies2.png");
+        this.load.image("clicked",    "../assets/ui/dungeonEditor/clicked.png");
 
 
         /*Objetos nuevos*/
