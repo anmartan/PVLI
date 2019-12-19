@@ -95,24 +95,23 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite
         });
         this.key_A.on("up",()=>
         {
-            this.dir = {x:this.dir.x+1, y:this.dir.y}            
+            (this.dir.x<0)?this.dir.x+=1:0;
             socket.emit("possesedMoved", this.dir);
         });
         this.key_W.on("up",()=>
         {
-            this.dir = {x:this.dir.x, y:this.dir.y+1}
+            (this.dir.y<0)?this.dir.y+=1:0;
             socket.emit("possesedMoved", this.dir);
         });
         this.key_S.on("up", () =>
         {
-            this.dir = {x:this.dir.x, y:this.dir.y-1}
+            (this.dir.y>0)?this.dir.y-=1:0;
             socket.emit("possesedMoved", this.dir);
         })
         this.key_D.on("up",()=>
         {
-            this.dir = {x:this.dir.x-1,  y:this.dir.y}
+            (this.dir.x>0)?this.dir.x-=1:0;
             socket.emit("possesedMoved", this.dir);
-
         });
     }
     move(pos, flip)

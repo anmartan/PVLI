@@ -58,9 +58,9 @@ const  scene =
             scene.editorMenu.save(scene.game.dungeon);
             return scene.game.dungeon;
         }
-        socket.on("startDung", (dungeon, inventory) =>
+        socket.on("startDung", (data) =>
         {
-            this.game.inventory = inventory;
+            this.game.inventory = data.inventory;
             this.game.scene.start("DungeonRunAH");
         })
 

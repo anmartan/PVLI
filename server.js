@@ -60,15 +60,18 @@ class partida
     {
         this.hero=hero;
         this.antiHero=antiHero;
-        makeSockets(this.hero,this.antiHero);
+
+        makeSockets(this.hero,this.antiHero,this);
     }
     setDungeon(dungeon)
     {
         this.dungeon=dungeon;
+        this.checkDungeonRun();
     }
     setInventory(inventory)
     {
         this.inventory=inventory;
+        this.checkDungeonRun();
     }
     toBoth(event, time)
     {
@@ -84,18 +87,26 @@ class partida
         //Mira a ver si encuentras tú el fallo 
         //this.timer = new Timer (120, "second", "timeUp", this)
     }
-
     sendTime()
     {
         this.hero.emit ("second");
         this.antiHero.emit("second");
+    }
+    checkDungeonRun()
+    {
+        if(this.inventory!==undefined && this.dungeon!=undefined)
+        {
+            this.toBoth("startDung",{dungeon:this.dungeon,inventory:this.inventory});
+            clearInterval(timer);
+            timer = 0;
+        }
     }
 
     
     
 }
 
-let makeSockets=function (hero, antiHero)
+let makeSockets=function (hero, antiHero,partida)
 {
     hero.on("playerMove", data=>
     {
@@ -133,14 +144,26 @@ let makeSockets=function (hero, antiHero)
     hero.on("deadHero",()=>{antiHero.emit("deadHero");console.log("HERODEAD")});
     hero.on("timeUp", ()=>
     {
-        clearInterval(timer);
-        timer = 0;
-        antiHero.emit("changeScene");
-        hero.emit("changeScene");
+        hero.timeUp=true;
+        if(antiHero.timeUp)partida.toBoth("changeScene");
     })
-    
+    antiHero.on("timeUp", ()=>
+    {
+        antiHero.timeUp=true;
+        if(hero.timeUp)partida.toBoth("changeScene");
+    })
     antiHero.on("enemyPossesed",id=>{hero.emit("enemyPossesed",id);});
     antiHero.on("possesedMoved",dir=>{hero.emit("possesedMoved",dir);console.log("moved")});
+
+    hero.on("finished",    (inventory)   =>{
+        hero.finished=true;
+        partida.setInventory(inventory);
+    });
+    antiHero.on("finished",(dungeon)=>{
+        antiHero.finished=true;
+        partida.setDungeon(dungeon);
+    });
+
 }
 
 
@@ -175,7 +198,7 @@ io.on('connection', socket => {
          checkGame();
     });
 
-    socket.on("finished", data =>
+    /*socket.on("finished", data =>
     {
         if(data.rooms === undefined)
         {
@@ -198,7 +221,7 @@ io.on('connection', socket => {
             })
         }
 
-    });
+    });*/
 
     socket.on ("second", ()=>
     {

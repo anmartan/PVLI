@@ -118,11 +118,9 @@ export class shopUiManager
             scene.game.scene.stop("ItemShop");
             scene.game.inventory = scene.inventory;
             socket.emit("finished",  scene.inventory);
-            console.log(socket);
-            socket.on("startDung", (dung, inventory) =>
+            socket.on("startDung", (data) =>
             {
-                scene.game.dungeon = dung;
-                console.log(scene.game.dungeon);
+                scene.game.dungeon = data.dungeon;
                 scene.game.scene.start("DungeonRun");
             })
         })
