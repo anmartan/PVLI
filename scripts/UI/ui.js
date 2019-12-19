@@ -488,7 +488,11 @@ class dungeonGrid
     cellClicked(cell)
     {
         //cell.actual = this.scene.actual;        //Necesitamos guardar "actual" que hace referencia al número de la habitación de la celda
-        if(cell.type==="")this.setCell(cell.i, cell.j);
+        if(cell.type==="")
+        {
+            if(this.scene.money-this.scene.rooms[this.scene.actual].enemies.getPrice(this.currentSubtype)>=0)
+            this.setCell(cell.i, cell.j);
+        }
         else 
         {
             this.cells[cell.i][cell.j].refound();

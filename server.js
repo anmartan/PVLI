@@ -37,7 +37,6 @@ class Timer
     }
     tick()
     {
-        console.log("second")
         this.partida.toBoth(this.updateEvent, this.time)//un metodo que mande el mismo mensaje para ambos
         this.time--;//resta un segundo al contador
         if(this.time<0)
@@ -78,7 +77,7 @@ class partida
     {
         this.hero.emit('startMatch', {});;
         this.antiHero.emit('startMatch', {});;
-        this.timer = new Timer (3, "second", "continuar", this)
+        this.timer = new Timer (120, "second", "continuar", this)
     }
     checkDungeonRun()
     {
