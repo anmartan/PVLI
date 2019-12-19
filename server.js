@@ -78,14 +78,13 @@ class partida
     {
         this.hero.emit('startMatch', {});;
         this.antiHero.emit('startMatch', {});;
-        /*aquí es cuando puedes crear uno de clase timer creo*/
-        //Mira a ver si encuentras tú el fallo 
-        this.timer = new Timer (10, "second", "timeUp", this)
+        this.timer = new Timer (3, "second", "continuar", this)
     }
     checkDungeonRun()
     {
         if(this.inventory!==undefined && this.dungeon!=undefined)
         {
+            clearInterval(this.timer.interval);
             this.toBoth("startDung",{dungeon:this.dungeon,inventory:this.inventory});
         }
     }
@@ -129,25 +128,22 @@ let makeSockets=function (hero, antiHero,partida)
         antiHero.emit("enemySpawned", enemy);
     });
 
-    hero.on("deadHero",()=>{antiHero.emit("deadHero");console.log("HERODEAD")});
-    hero.on("timeUp", ()=>
+    hero.on("deadHero",()=>{antiHero.emit("deadHero")});
+    /*let timeUp=(socketA,socketB,partida)=>
     {
-        hero.timeUp=true;
-        if(antiHero.timeUp)
+        socketA.on("timeUp", ()=>
         {
-            clearInterval(partida.timer.interval)
-            partida.toBoth("changeScene");
-        }
-    })
-    antiHero.on("timeUp", ()=>
-    {
-        antiHero.timeUp=true;
-        if(hero.timeUp)
-        {
-            clearInterval(partida.timer.interval)
-            partida.toBoth("changeScene");
-        }
-    })
+            socketA.timeUp=true;
+            if(socketB.timeUp)
+            {
+                clearInterval(partida.timer.interval)
+                partida.toBoth("continuar");
+            }
+        })
+    }
+    timeUp(hero,antiHero,partida);
+    timeUp(antiHero,hero,partida);*/
+
     antiHero.on("enemyPossesed",id=>{hero.emit("enemyPossesed",id);});
     antiHero.on("possesedMoved",dir=>{hero.emit("possesedMoved",dir);console.log("moved")});
 
@@ -193,32 +189,6 @@ io.on('connection', socket => {
          }
          checkGame();
     });
-
-    /*socket.on("finished", data =>
-    {
-        if(data.rooms === undefined)
-        {
-            players[1] = true;
-            serverInventory = data;
-        }
-        else 
-        {
-            serverDungeon = data;
-            players[0]=true;
-        }
-        if(players[0]==true && players[1]==true)
-        {
-            players[0] =false;
-            players[1] =false;
-
-            clients.forEach( (client) => 
-            {
-                client.emit('startDung', serverDungeon, serverInventory);
-            })
-        }
-
-    });*/
-    //socket.on("deadHero", ()=> console.log("Héroe muerto"));
 });
 
 

@@ -65,25 +65,18 @@ export class Life
 }
 export class Time
 {
-    constructor(scene, x, y, minutes, seconds)
+    constructor(scene, x, y)
     {
         this.scene = scene;
-        //this.mins = Math.floor(seconds/60);
-        //this.secs = Math.ceil(seconds% 60);
-
-        //this.mins = minutes;
-        //this.secs = seconds;
         this.timeText = this.scene.add.text(x, y, "--:-- " , {font:"32px m5x7", fill:"#FFFFFF"});
-
+        socket.on("second", (time)=>this.tick(time));
     }
 
 
     tick(time)
     {
-        //this.secs --;
-        console.log(time);
-        if(time <= 0) this.destroy();
-        else if (time > 0)
+        if(time < 0) this.destroy();
+        else if (time >= 0)
         {
             this.mins = Math.floor(time/60);
             this.secs = time-(this.mins*60);
@@ -107,12 +100,9 @@ export class Time
         this.mins = 0;
         this.secs = 0;
         this.timeText.text = "00 : 00";
+        socket.off("second")
     }
-    destroy()
-    {
-        this.setTimeToZero();
-        socket.emit("timeUp");
-    }
+
 }
 
 export class loadingBar

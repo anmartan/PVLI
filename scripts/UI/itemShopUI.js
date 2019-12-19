@@ -16,9 +16,7 @@ export class shopUiManager
         scene.inventory = new inventory(1000);
         console.log(scene.inventory.gold);
         
-        this.timer = new Time(scene, 32, 4, 2, 0);
-        socket.on("second", (time)=>this.timer.tick(time));
-        
+        this.timer = new Time(scene, 32, 4, 2, 0);        
 
         let config =
         {
@@ -125,7 +123,7 @@ export class shopUiManager
             })
         })
         }
-        socket.on("changeScene", ()=>  this.continuar.emit("pointerdown"));   
+        socket.on("continuar", ()=>  this.continuar.emit("pointerdown"));   
     }
 
 

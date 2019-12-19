@@ -53,7 +53,7 @@ const scene = {
             {
                 socket.emit("changeRoom");
                 exitRec.destroy();
-                this.finish()
+                this.finish(true)
             }
             else {
             //Informar al servidor de que ha habido un cambio de habitación
@@ -83,9 +83,8 @@ const scene = {
         this.finish=(bool)=>
         {
             socket.emit("DungeonFinished");
-            bool ? this.game.endMessage="Haz ganado":this.game.endMessage="Has perdido";
+            bool ? this.game.endMessage="Has ganado":this.game.endMessage="Has perdido";
             this.game.player="Ffo";
-            //this.game.scene.stop("DungeonRun");
             this.game.scene.start("EndGame");
         }
     },

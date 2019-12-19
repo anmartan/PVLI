@@ -214,11 +214,11 @@ export class player extends livingEntity
             //Teclas para usar los consumibles: Granadas, radares de trampas y pociones de salud
             if(Phaser.Input.Keyboard.JustDown(this.key_ONE) || Phaser.Input.Keyboard.JustDown(this.key_1))
             {
-                this.weaponManager.throwProjectiles("radar");
+                this.weaponManager.throwProjectiles("Radar");
             }
             if(Phaser.Input.Keyboard.JustDown(this.key_TWO) || Phaser.Input.Keyboard.JustDown(this.key_2))
             {
-                this.weaponManager.throwProjectiles("grenade");
+                this.weaponManager.throwProjectiles("Grenade");
             }
             if(Phaser.Input.Keyboard.JustDown(this.key_THREE) || Phaser.Input.Keyboard.JustDown(this.key_3))
             {

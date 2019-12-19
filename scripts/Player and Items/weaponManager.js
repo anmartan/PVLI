@@ -1,6 +1,3 @@
-
-
-
 export default class weaponManager
 {
     constructor(player)
@@ -10,7 +7,7 @@ export default class weaponManager
         let Bow           = player.inventory.Bow;
         let Shield        = player.inventory.Shield;
         this.NormalArrows = player.inventory.Arrow1.Units;       //number of normal arrows
-        this.FireArrows   = player.inventory.Arrow2.Units;   //number of fire arrows
+        this.FireArrows   = player.inventory.Arrow2.Units;      //number of fire arrows
         this.Grenades     = player.inventory.Grenade.Units;     //amount of grenades
         this.Radars       = player.inventory.Radar.Units;       //amount of radars
         
@@ -67,9 +64,10 @@ export default class weaponManager
         this.player = player;
         this.showWeapon(false);
     }
-    selectWeapon(itemName)
+    selectWeapon(itemObject)
     {
-        this.weapon = this[itemName+"Object"];
+        this.showWeapon(false);
+        this.weapon = itemObject;
     }
     haveAttacked()
     {
@@ -165,8 +163,8 @@ export default class weaponManager
         
         if(!this.attacking)
         {
-            if(this.weapon==this.SwordObject) this.weapon=this.BowObject;
-            else this.weapon=this.SwordObject;
+            if(this.weapon===this.SwordObject && this.BowObject.Units>0) this.selectWeapon(this.BowObject);
+            else this.selectWeapon(this.SwordObject);
         }
     }
     changeArrows()
@@ -220,41 +218,13 @@ export default class weaponManager
 
     throwProjectiles(typeOfProjectile)
     {
-        if(typeOfProjectile == "radar" && this.Radars > 0) 
-        {
-            let rad;
-            rad = new Radar(this.scene, this.player.x, this.player.y);
-        }
-        else if(typeOfProjectile == "grenade" && this.Grenades > 0) 
-        {
-            let bomb;
-            bomb = new Grenade (this.scene, this.player.x, this.player.y);
-        }
 
-        else console.log ("No existe ese proyectil");
+        if(this[typeOfProjectile+"s"] > 0){
+            new (typeOfProjectile==="Grenade" ? Grenade : Radar)(this.scene, this.player.x, this.player.y);
+            this[typeOfProjectile+"s"]--;
+        }
     }
 }
-
-/*
-canAttack() //Este método se llama desde attack con un delay. Es para tener un cooldown en el ataque
-    {
-        this.attacking = false;  
-    }
-    
-    haveAttacked() //Durante el tiempo de recarga del ataque, mientras el jugador no puede atacar y ya a atacado se esconde la espada y se reduce su collision box.
-    {
-        this.weapon.offsetX=0;        
-        this.weapon.offsetY=5;  
-        this.weapon.body.setSize(1,1);
-        this.weapon.setVisible(false);
-    }
-    
-    attack(dir)
-    {
-        
-        
-    } 
-    */
    
    class Projectile extends Phaser.GameObjects.Sprite
    {
@@ -263,8 +233,9 @@ canAttack() //Este método se llama desde attack con un delay. Es para tener un 
         super(scene, x, y, sprite);
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        scene.physics.add.overlap(this, scene.enemies.enemies ,()=> {if(this.effect!==undefined)this.die()});
-        scene.physics.add.collider(this, scene.tileMap.Walls,()=> {if(this.effect!==undefined)this.die()});
+        scene.physics.add.overlap(this, scene.enemies.enemies ,()=> {if(this.effect===undefined)this.die()});
+        scene.physics.add.collider(this, scene.tileMap.Walls,()=> {if(this.effect===undefined)this.die()});
+        this.setAngle(dir);
         dir-=90;
         this.scene=scene;
         switch(dir)

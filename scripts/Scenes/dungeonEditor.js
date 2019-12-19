@@ -64,7 +64,7 @@ const  scene =
             this.game.scene.start("DungeonRunAH");
         })
 
-        socket.on("changeScene", ()=>  this.continuar.emit("pointerdown"));   
+        socket.on("continuar", ()=>  this.continuar.emit("pointerdown"));   
     },
     update : function(time,delta)
     {
