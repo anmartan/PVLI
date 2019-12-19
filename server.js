@@ -32,23 +32,23 @@ let serverInventory;
 
 class Timer
 {
-    constructor(freq,duration,updateEvent,finishEvent, partida)
+    constructor(duration,updateEvent,finishEvent, partida, freq = 1000)
     {
-        this.freq=freq
-        this.time=duration;
-        this.updateEvent=updateEvent;
-        this.finishEvent=finishEvent;
-        this.partida=partida;
-        this.setInterval(this.tick,this.freq)
+        this.freq = freq;
+        this.time = duration;
+        this.updateEvent = updateEvent;
+        this.finishEvent = finishEvent;
+        this.partida = partida;
+        this.interval = setInterval(this.tick,this.freq)
     }
     tick()
     {
         this.partida.toBoth(this.updateEvent,this.time)//un metodo que mande el mismo mensaje para ambos
-        this.time--;//resta un freq (segundo) al contador
-        if(this.time>=0)
+        this.time--;//resta un segundo al contador
+        if(this.time<=0)
         {
-            this.clearInterval();
-            this.partida.toBoth(this.finishEvent);
+            this.clearInterval(this.interval);
+            this.partida.toBoth(this.finishEvent, this.time);
         }
     }
 }
@@ -70,12 +70,19 @@ class partida
     {
         this.inventory=inventory;
     }
+    toBoth(event, time)
+    {
+        this.hero.emit (event, time);
+        this.antiHero.emit(event, time);
+    }
     start()
     {
         this.hero.emit('startMatch', {});;
         this.antiHero.emit('startMatch', {});;
         timer =  setInterval(() => this.sendTime(), 1000);
         /*aquí es cuando puedes crear uno de clase timer creo*/
+        //Mira a ver si encuentras tú el fallo 
+        //this.timer = new Timer (120, "second", "timeUp", this)
     }
 
     sendTime()
@@ -83,11 +90,8 @@ class partida
         this.hero.emit ("second");
         this.antiHero.emit("second");
     }
-    toBoth(event)
-    {
-        this.hero.emit (event);
-        this.antiHero.emit(event);
-    }
+
+    
     
 }
 
