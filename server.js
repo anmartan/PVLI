@@ -30,6 +30,30 @@ let checkGame = function checkGame()
 let serverDungeon;
 let serverInventory;
 
+class Timer
+{
+    constructor(freq,duration,updateEvent,finishEvent, partida)
+    {
+        this.freq=freq
+        this.time=duration;
+        this.updateEvent=updateEvent;
+        this.finishEvent=finishEvent;
+        this.partida=partida;
+        this.setInterval(this.tick,this.freq)
+    }
+    tick()
+    {
+        this.partida.toBoth(this.updateEvent,this.time)//un metodo que mande el mismo mensaje para ambos
+        this.time--;//resta un freq (segundo) al contador
+        if(this.time>=0)
+        {
+            this.clearInterval();
+            this.partida.toBoth(this.finishEvent);
+        }
+    }
+}
+
+
 class partida
 {
     constructor(hero,antiHero)
@@ -51,12 +75,18 @@ class partida
         this.hero.emit('startMatch', {});;
         this.antiHero.emit('startMatch', {});;
         timer =  setInterval(() => this.sendTime(), 1000);
+        /*aquí es cuando puedes crear uno de clase timer creo*/
     }
 
     sendTime()
     {
         this.hero.emit ("second");
         this.antiHero.emit("second");
+    }
+    toBoth(event)
+    {
+        this.hero.emit (event);
+        this.antiHero.emit(event);
     }
     
 }
