@@ -114,6 +114,7 @@ export class shopUiManager
         this.continuar = new textButton(config,106*2,152*2,"Continuar");
         this.continuar.on("pointerdown", () =>
         {
+            this.timer.setTimeToZero();
             scene.game.scene.stop("ItemShop");
             scene.game.inventory = scene.inventory;
             socket.emit("finished",  scene.inventory);

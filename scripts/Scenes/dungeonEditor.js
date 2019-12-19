@@ -46,6 +46,7 @@ const  scene =
         this.continuar = new textButton(config,110 *2 ,160 * 2,"Continuar");
         this.continuar.on("pointerdown", () =>
         {
+            this.editorMenu.timer.setTimeToZero();
             this.game.scene.stop("DungeonEditor");
             let dungeon = update(this);
             socket.emit("finished", dungeon);

@@ -103,10 +103,16 @@ export class Time
             time = "0" + time;
         return time;
     }
+    setTimeToZero()
+    {
+        this.mins = 0;
+        this.secs = 0;
+        this.timeText.text = "00 : 00";
 
+    }
     destroy()
     {
-        this.timeText.text = "00 : 00";
+        this.setTimeToZero();
         socket.emit("timeUp");
     }
 }
