@@ -1,8 +1,12 @@
+import {loadingBar} from "../Scenes/utils.js"
+
 const SelectGameMode=
 {
     key: "selectGameMode",
     preload : function() 
     {
+        new loadingBar(this);
+
         this.load.image("Ffo","../assets/Ffo.png");
         this.load.image("Off","../assets/Off.png");
         this.load.image("Half-Ffo","../assets/Half-Ffo.png");
@@ -150,7 +154,6 @@ const SelectGameMode=
             repeat: 0
         });
 
-        this.add.image(0,0,"Foo&Off").setOrigin(0,0);
         this.left = this.add.image(0,0,"Half-Off").setOrigin(0,0);
         this.right = this.add.image(0,0,"Half-Ffo").setOrigin(0,0);
         //let left = this.add.sprite(10*2,88*2,"button");
