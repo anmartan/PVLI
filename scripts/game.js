@@ -3,8 +3,9 @@ import DungeonRun from './Scenes/dungeonRun.js'
 import DungeonRunAH from  './Scenes/dungeonRunAH.js'
 import SelectGameMode from './Scenes/selectMode.js'
 import ItemShop from "./Scenes/itemShop.js"
+import EndGame from "./Scenes/endScene.js"
 let tileSize = 32;
-let scenes = [SelectGameMode, ItemShop, DungeonEditor, DungeonRun,DungeonRunAH]
+let scenes = [SelectGameMode, ItemShop, DungeonEditor, DungeonRun,DungeonRunAH, EndGame]
 let config = {
     pixelArt: true,
     type: Phaser.AUTO,

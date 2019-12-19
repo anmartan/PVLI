@@ -3,6 +3,10 @@ const SelectGameMode=
     key: "selectGameMode",
     preload : function() 
     {
+        this.load.image("Ffo","../assets/Ffo.png");
+        this.load.image("Off","../assets/Off.png");
+        this.load.image("Foo&Off","../assets/Foo&Off.png");
+
         this.load.image("button","../assets/debug/white.png");
         this.load.image("button2","../assets/debug/pink.png");
         this.load.audio("introAntiHero", "../assets/audio/music/DM_Intro.mp3");
@@ -144,8 +148,9 @@ const SelectGameMode=
             repeat: 0
         });
 
-        let left = this.add.sprite(10,88,"button");
-        let right = this.add.sprite(166,88,"button2");
+        this.add.image(0,0,"Foo&Off").setOrigin(0,0);
+        let left = this.add.sprite(10*2,88*2,"button");
+        let right = this.add.sprite(166*2,88*2,"button2");
 
         left.setInteractive();
         right.setInteractive();

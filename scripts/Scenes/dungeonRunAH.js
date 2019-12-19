@@ -25,12 +25,16 @@ const scene = {
         socket.on("changeRoom", ()=>
         {
             this.enemies.hideAllAlive();
-            this.actual = (this.actual+1)%3;
-            this.enemies = new enemyManager(this,this.game.dungeon.rooms[this.actual].enemies.enemiesInfo);
-            //this.traps = new trapManager(this.game.dungeon.rooms[this.actual].traps.traps);
-            this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
-            this.enemies.summonDummyEnemies(this); //invoca a los enemigos, y activa las físicas y colisiones
-            //this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
+            this.actual = (this.actual+1);
+            if(this.actual>=3){this.finish(true);}
+            else
+            {
+                this.enemies = new enemyManager(this,this.game.dungeon.rooms[this.actual].enemies.enemiesInfo);
+                //this.traps = new trapManager(this.game.dungeon.rooms[this.actual].traps.traps);
+                this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
+                this.enemies.summonDummyEnemies(this); //invoca a los enemigos, y activa las físicas y colisiones
+                //this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
+            }
         });
 
         socket.on("enemySpawned", (enemy)=>
@@ -39,7 +43,20 @@ const scene = {
             //new dummieEnemy(this,5,5,"zombie_idle0",zombieIdle,this.enemies,0);
             this.enemies.addEnemy(this.enemies.summonDummy(enemy.enemy,this,enemy.id));
         })
+
+        socket.on("deadHero",()=>{        
+            console.log("ha muerto el hero")
+            this.finish(false);
+        })
+        this.finish= function (bool) {
+            socket.emit("DungeonFinished");
+            bool ? this.game.endMessage="Haz perdido":this.game.endMessage="Haz ganado";
+            this.game.player="Off";
+            this.game.scene.stop("DungeonRunAH");
+            this.game.scene.start("EndGame");
+        }
    },
+
     update: function(delta)
    {
 

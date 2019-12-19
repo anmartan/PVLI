@@ -47,16 +47,22 @@ const scene = {
         this.physics.add.collider(this.hero, entranceRec);
 
         this.physics.add.collider(this.hero, exitRec, () => 
-        {
-            if(this.enemyGroup.length===0){
+        {      
+            if(this.enemyGroup.length===0)  this.actual +=1;        
+            if(this.actual>=3)
+            {
+                socket.emit("changeRoom");
+                exitRec.destroy();
+                this.finish()
+            }
+            else {
             //Informar al servidor de que ha habido un cambio de habitación
             socket.emit("changeRoom");
-
+                
             //En caso de que quede algún enemigo vivo, lo ocultamos de la pantalla
             this.enemies.hideAllAlive();
 
             //Actualizamos la habitación a la siguiente
-            this.actual = (this.actual+1)%3;
             let actualRoom=this.game.dungeon.rooms[this.actual];
             this.enemies = new enemyManager(this,actualRoom.enemies.enemiesInfo);
             this.traps = new trapManager(actualRoom.traps.traps);
@@ -74,6 +80,14 @@ const scene = {
             this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
             this.physics.add.collider(this.hero, entranceRec);}
         })
+        this.finish=(bool)=>
+        {
+            socket.emit("DungeonFinished");
+            bool ? this.game.endMessage="Haz ganado":this.game.endMessage="Haz perdido";
+            this.game.player="Ffo";
+            //this.game.scene.stop("DungeonRun");
+            this.game.scene.start("EndGame");
+        }
     },
     update: function(delta)
     {

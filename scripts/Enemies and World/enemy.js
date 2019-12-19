@@ -110,12 +110,11 @@ export class enemy extends livingEntity {
     update() {
         socket.emit("enemyMove", { pos: { x: this.x, y: this.y }, flip: this.flipX, id: this.id });
     }
-    attack() {
+    attack(hero) {
         if (!this.attacking) {
             this.attacking = true;
-            this.scene.hero.damage(this.ATTKPoints);
-            console.log("Vida del héroe después del ataque: " + this.scene.hero.health);
-            if (this.specialAttack !== undefined) this.specialAttack();
+            hero.damage(this.ATTKPoints);
+            if (this.specialAttack !== undefined) this.specialAttack(hero);
             this.scene.time.delayedCall(this.coolDown, () => { this.attacking = false; });
         }
     }
@@ -219,7 +218,7 @@ export class wizard extends enemy {
     }
 
     // el mago ataca de otra manera
-    specialAttack() {
+    specialAttack(player) {
         if (!this.attacking) {
             this.attacking = true;
             player.damage(this.ATTKPoints);
@@ -318,7 +317,7 @@ export class enemyManager {
             scene.physics.add.overlap(weaponGroup, this.enemies, (weapon, enemy) => { hero.attack(enemy, weapon.Damage) });                                                  //
             scene.physics.add.overlap(this.zone, hero, (zone) => zone.parent.spotPlayer(hero));                                                                           //
             scene.physics.add.collider(this.enemies, walls);                                                                                                               // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
-            scene.physics.add.collider(this.enemies, hero, (enemy) => { enemy.attack(hero, enemy.ATTKPoints) });                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
+            scene.physics.add.collider(this.enemies, hero, (enemy,hero) => { enemy.attack(hero, enemy.ATTKPoints) });                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
 
             this.summoned = true;
             for (let i = 0; i < this.enemiesInfo.length; i++) {

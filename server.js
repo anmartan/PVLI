@@ -130,7 +130,7 @@ let makeSockets=function (hero, antiHero)
         antiHero.emit("enemySpawned", enemy);
     });
 
-    
+    hero.on("deadHero",()=>{antiHero.emit("deadHero");console.log("HERODEAD")});
     hero.on("timeUp", ()=>
     {
         clearInterval(timer);
@@ -209,7 +209,7 @@ io.on('connection', socket => {
     })
 
 
-    socket.on("deadHero", ()=> console.log("Héroe muerto"));
+    //socket.on("deadHero", ()=> console.log("Héroe muerto"));
 });
 
 

@@ -231,7 +231,11 @@ export class player extends livingEntity
     }
     kill()
     {
+        this.stunned=true;
+        this.setVisible(false);
         socket.emit("deadHero");
         console.log("Debería estar muriéndome");
+        this.scene.finish(false);
+        this.destroy();
     }
 }
