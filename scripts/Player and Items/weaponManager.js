@@ -23,7 +23,7 @@ export default class weaponManager
         scene.add.existing(BowObject);
         scene.physics.add.existing(BowObject);
         BowObject.body.setEnable(true);
-        BowObject.body.setSize(1,1);
+        BowObject.body.debugShowBody=false;
         BowObject.setVisible(false);
         BowObject.Quantity=Bow.Quantity;
         Object.assign(BowObject,Bow);
@@ -40,7 +40,7 @@ export default class weaponManager
         scene.physics.add.existing(ShieldObject);
         ShieldObject.body.setEnable(false);
         ShieldObject.body.setSize(player.body.width + 5, player.body.height + 5);
-        ShieldObject.setVisible(false);
+        ShieldObject.setVisible(false);ShieldObject.body.debugShowBody=false;
         Object.assign(ShieldObject,Shield);
 
         

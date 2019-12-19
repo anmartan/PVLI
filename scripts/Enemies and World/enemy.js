@@ -76,11 +76,14 @@ export class enemy extends livingEntity {
         if (this.zone !== undefined) this.zone.destroy();
         if (this.player !== undefined) this.player = undefined;
         this.enemyManager.removeEnemy(this);
-        //this.body.destroy();
-        this.destroy();
-        socket.emit("enemyDead", this.id);
         console.log("zombie muerto")
+        socket.emit("enemyDead", this.id);
+        this.destroy();
     }
+    /*destroy()
+    {
+        super.destroy();
+    }*/
     hide()  //cuando cambias de habitación los enemigos que queden vivos se deben ocultar
     {
 
@@ -115,7 +118,7 @@ export class enemy extends livingEntity {
             this.attacking = true;
             hero.damage(this.ATTKPoints);
             if (this.specialAttack !== undefined) this.specialAttack(hero);
-            this.scene.time.delayedCall(this.coolDown, () => { this.attacking = false; });
+            if(this.scene!==undefined)this.scene.time.delayedCall(this.coolDown, () => { this.attacking = false; });
         }
     }
 
@@ -273,6 +276,7 @@ export class enemyManager {
         if (Array.isArray(enemies)) {
             this.scene = scene;
             this.enemies = this.scene.add.group();
+            this.enemies.runChildUpdate=true;
             this.zone = this.scene.add.group();
             this.summoned = false;
             this.enemiesInfo = enemies;
@@ -281,6 +285,10 @@ export class enemyManager {
             this.enemiesInfo = new Array();
         }
         this.havePossesed = false;
+    }
+    clearEnemyGroup()
+    {
+        this.enemies.clear();
     }
     addEnemyInfo(enemyInfo) {
         //let id = this.enemies.push(enemy) - 1; //La posición en el array

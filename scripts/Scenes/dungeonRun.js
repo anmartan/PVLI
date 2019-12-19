@@ -52,7 +52,6 @@ const scene = {
             if(this.actual>=3)
             {
                 socket.emit("changeRoom");
-                exitRec.destroy();
                 this.finish(true)
             }
             else {
@@ -83,16 +82,17 @@ const scene = {
         this.finish=(bool)=>
         {
             socket.emit("DungeonFinished");
+            //this.hero.hearts.destroy();
             bool ? this.game.endMessage="Has ganado":this.game.endMessage="Has perdido";
             this.game.player="Ffo";
             this.game.scene.start("EndGame");
+            this.game.scene.stop("DungeonRun");
         }
     },
     update: function(delta)
     {
 
         this.hero.handleLogic();
-        this.enemies.enemies.getChildren()/*this.enemyGroup*/.forEach(enemy => {enemy.update();},this);
     }
    
 };

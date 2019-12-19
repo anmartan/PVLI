@@ -23,12 +23,13 @@ export class livingEntity extends Phaser.GameObjects.Sprite
     {
         if(this.vulnerable && this.body !== undefined && points>0)
         {
-            if(this.hearts !== undefined) this.hearts.loseHearts(points);
+
+            this.health -= points;
+            if(this.hearts !== undefined) if(this.health<0)points+=-this.health;this.hearts.loseHearts(points);
             this.vulnerable = false;
             this.alpha = 0.75;
             this.scene.time.delayedCall(950, this.makeVulnerable, [], this)
             if (this!== this.scene.hero)    this.knockback();
-            this.health -= points;
             if(this.health<=0){ this.kill()};
         }
         else return "No se puede dañar al enemigo, es invulnerable"
@@ -124,7 +125,7 @@ export class player extends livingEntity
 
 
         //después de equiparse todo, porque la armadura aumenta la salud
-        this.hearts = new Life(this.scene, this);
+        this.hearts = new Life(this.scene,16,16, this);
     }
     useHealthPotion()
     {

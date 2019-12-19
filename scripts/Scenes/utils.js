@@ -10,57 +10,66 @@ export class rec extends Phaser.GameObjects.Rectangle
         this.setOrigin(0,0);
         this.tileSize=scene.game.tileSize;
         this.scene=scene;
+        super.destroy.apply()
     }
     setRecPos(size, exit)
     {
         let positionInTiles=(9-size)/2;
         if(exit){positionInTiles=10-positionInTiles;
         this.body.debugBodyColor="0x00ff00";}
-
         this.x = (positionInTiles)*this.tileSize;
     }
+    destroy(){this.body.destroy();super.destroy();console.error("he hecho destroy")};
 
 }
 
-export class Life 
+export class Life extends Phaser.GameObjects. Container
 {
-    constructor(scene, player)
+    constructor(scene, x,y,player)
     {
+        super(scene,x,y)
+        scene.add.existing(this);
         this.scene = scene;
         this.player = player;
-        this.player.health = player.health;
-        this.hearts = new Array();
-        this.lastHeartAlive= this.player.health-1;
-
         for(let i=0; i< this.player.health; i++)
         {
-            this.scene.add.sprite(16 + 16*i, 32, "empty_Heart")
-            let heart;
-            heart = this.scene.add.sprite(16 + 16*i, 32, "full_Heart");
-            let id= this.hearts.push(heart);
+            
+            this.add(new heart(scene,16*i, 0));
         }
+
     }
     loseHearts(points)
     {
         for (let i = 0; i< points; i++)
         {
-            if(this.lastHeartAlive >= 0)
-                this.hearts[this.lastHeartAlive].setVisible(false);
-            this.lastHeartAlive --;
+            this.getAt(this.player.health+i).empty();
         }
     }
     gainHearts(points)
     {
         for(let i= 0; i< points; i++)
         {
-            if(this.lastHeartAlive +1 < this.player.maxHealth)
-            {
-                console.log("Aumento mi salud porque puedo")
-            this.hearts[this.lastHeartAlive+1].setVisible(true);
-            this.lastHeartAlive ++;
-            }
-            console.log(this.lastHeartAlive)
+            this.getAt(this.player.health-1-i).fill();
         }
+    }
+}
+class heart extends Phaser.GameObjects.Sprite
+{
+    constructor(scene,x,y,sprite="full_Heart")
+    {
+        super(scene,x,y,sprite)
+        {
+            scene.add.existing(this);
+            this.setOrigin(0,0)
+        }
+    }
+    fill()
+    {
+        this.setTexture('full_Heart');
+    }
+    empty()
+    {
+        this.setTexture('empty_Heart');
     }
 }
 export class Time
