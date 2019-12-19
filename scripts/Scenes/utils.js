@@ -71,23 +71,22 @@ export class Time
         //this.mins = Math.floor(seconds/60);
         //this.secs = Math.ceil(seconds% 60);
 
-        this.mins = minutes;
-        this.secs = seconds;
-        this.timeText = this.scene.add.text(x, y, this.zero(this.mins) + " : " + this.zero(this.secs) , {font:"32px m5x7", fill:"#FFFFFF"});
+        //this.mins = minutes;
+        //this.secs = seconds;
+        this.timeText = this.scene.add.text(x, y, "--:-- " , {font:"32px m5x7", fill:"#FFFFFF"});
 
     }
 
 
-    tick()
+    tick(time)
     {
-        this.secs --;
-        
-        if(this.mins <= 0 && this.secs <= 0) this.destroy();
-
-        else if (this.secs < 0)
+        //this.secs --;
+        console.log(time);
+        if(time <= 0) this.destroy();
+        else if (time > 0)
         {
-            this.secs = 59;
-            this.mins --;
+            this.mins = Math.floor(time/60);
+            this.secs = time-(this.mins*60);
         }
         this.timeText.text = this.zero(this.mins) + " : " + this.zero(this.secs);
 
@@ -108,7 +107,6 @@ export class Time
         this.mins = 0;
         this.secs = 0;
         this.timeText.text = "00 : 00";
-
     }
     destroy()
     {

@@ -5,7 +5,7 @@ const EndGame = {
     },
     create:function () {
         //this.game.player="Ffo";
-        //this.game.endMessage="Haz perdido";
+        //this.game.endMessage="Has perdido";
         //this.game.endMensaje="Haz ganado";
         //this.game.player="Off";
         this.add.image(0,0,this.game.player).setOrigin(0,0);

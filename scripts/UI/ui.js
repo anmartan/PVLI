@@ -100,7 +100,7 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         this.scene.moneyText = this.scene.add.text(240, 32, this.scene.money, {font:"32px m5x7", fill:"#FFFFFF"});
         this.scene.add.sprite(210, 48, "coins");
         this.timer = new Time(scene, 32, 4, 2, 0);
-        socket.on("second", () => this.timer.tick());
+        socket.on("second", (time) => this.timer.tick(time));
 
 
         

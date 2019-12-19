@@ -83,7 +83,7 @@ const scene = {
         this.finish=(bool)=>
         {
             socket.emit("DungeonFinished");
-            bool ? this.game.endMessage="Haz ganado":this.game.endMessage="Haz perdido";
+            bool ? this.game.endMessage="Haz ganado":this.game.endMessage="Has perdido";
             this.game.player="Ffo";
             //this.game.scene.stop("DungeonRun");
             this.game.scene.start("EndGame");

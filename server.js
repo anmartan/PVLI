@@ -4,14 +4,11 @@ const http = require('http').createServer(app); // servidor HTTP
 const io = require('socket.io')(http); // Importamos `socket.io`
 const port = 420; // El puerto
 var clients = [];
-let players = [false,false]
 
 let timer;
 let heroQueue=[];
 let antiHeroQueue=[];
 let games=[];
-
-
 
 let checkGame = function checkGame() 
 {
@@ -27,9 +24,6 @@ let checkGame = function checkGame()
     }
 }
 
-let serverDungeon;
-let serverInventory;
-
 class Timer
 {
     constructor(duration,updateEvent,finishEvent, partida, freq = 1000)
@@ -39,18 +33,20 @@ class Timer
         this.updateEvent = updateEvent;
         this.finishEvent = finishEvent;
         this.partida = partida;
-        this.interval = setInterval(this.tick,this.freq)
+        this.interval = setInterval(()=>this.tick(),this.freq)
     }
     tick()
     {
-        this.partida.toBoth(this.updateEvent,this.time)//un metodo que mande el mismo mensaje para ambos
+        console.log("second")
+        this.partida.toBoth(this.updateEvent, this.time)//un metodo que mande el mismo mensaje para ambos
         this.time--;//resta un segundo al contador
-        if(this.time<=0)
+        if(this.time<0)
         {
-            this.clearInterval(this.interval);
+            clearInterval(this.interval);
             this.partida.toBoth(this.finishEvent, this.time);
         }
     }
+    clearTimer(){this.time=0;};
 }
 
 
@@ -73,32 +69,24 @@ class partida
         this.inventory=inventory;
         this.checkDungeonRun();
     }
-    toBoth(event, time)
+    toBoth(event, param)
     {
-        this.hero.emit (event, time);
-        this.antiHero.emit(event, time);
+        this.hero.emit (event, param);
+        this.antiHero.emit(event, param);
     }
     start()
     {
         this.hero.emit('startMatch', {});;
         this.antiHero.emit('startMatch', {});;
-        timer =  setInterval(() => this.sendTime(), 1000);
         /*aquí es cuando puedes crear uno de clase timer creo*/
         //Mira a ver si encuentras tú el fallo 
-        //this.timer = new Timer (120, "second", "timeUp", this)
-    }
-    sendTime()
-    {
-        this.hero.emit ("second");
-        this.antiHero.emit("second");
+        this.timer = new Timer (10, "second", "timeUp", this)
     }
     checkDungeonRun()
     {
         if(this.inventory!==undefined && this.dungeon!=undefined)
         {
             this.toBoth("startDung",{dungeon:this.dungeon,inventory:this.inventory});
-            clearInterval(timer);
-            timer = 0;
         }
     }
 
@@ -145,12 +133,20 @@ let makeSockets=function (hero, antiHero,partida)
     hero.on("timeUp", ()=>
     {
         hero.timeUp=true;
-        if(antiHero.timeUp)partida.toBoth("changeScene");
+        if(antiHero.timeUp)
+        {
+            clearInterval(partida.timer.interval)
+            partida.toBoth("changeScene");
+        }
     })
     antiHero.on("timeUp", ()=>
     {
         antiHero.timeUp=true;
-        if(hero.timeUp)partida.toBoth("changeScene");
+        if(hero.timeUp)
+        {
+            clearInterval(partida.timer.interval)
+            partida.toBoth("changeScene");
+        }
     })
     antiHero.on("enemyPossesed",id=>{hero.emit("enemyPossesed",id);});
     antiHero.on("possesedMoved",dir=>{hero.emit("possesedMoved",dir);console.log("moved")});
@@ -222,16 +218,6 @@ io.on('connection', socket => {
         }
 
     });*/
-
-    socket.on ("second", ()=>
-    {
-        clients.forEach((client) =>
-        {
-            client.emit("secondPassed");
-        })
-    })
-
-
     //socket.on("deadHero", ()=> console.log("Héroe muerto"));
 });
 
