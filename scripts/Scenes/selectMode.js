@@ -5,6 +5,8 @@ const SelectGameMode=
     {
         this.load.image("Ffo","../assets/Ffo.png");
         this.load.image("Off","../assets/Off.png");
+        this.load.image("Half-Ffo","../assets/Half-Ffo.png");
+        this.load.image("Half-Off","../assets/Half-Off.png");
         this.load.image("Foo&Off","../assets/Foo&Off.png");
 
         this.load.image("button","../assets/debug/white.png");
@@ -149,17 +151,28 @@ const SelectGameMode=
         });
 
         this.add.image(0,0,"Foo&Off").setOrigin(0,0);
-        let left = this.add.sprite(10*2,88*2,"button");
-        let right = this.add.sprite(166*2,88*2,"button2");
+        this.left = this.add.image(0,0,"Half-Off").setOrigin(0,0);
+        this.right = this.add.image(0,0,"Half-Ffo").setOrigin(0,0);
+        //let left = this.add.sprite(10*2,88*2,"button");
+        //let right = this.add.sprite(166*2,88*2,"button2");
+        let style = {fontFamily:"m5x7", fontSize:"32px", color:"#FF"};
+        this.left.setInteractive({pixelPerfect: true, alphaTolerance:1});
+        this.left.text=this.add.text(32,32,"Offwaldo",style);
+        this.right.setInteractive({pixelPerfect: true, alphaTolerance:1});
+        this.right.text=this.add.text((this.cameras.main.centerX*2)-(32*5),(this.cameras.main.centerY*2)-32,"Ffort",style);
 
-        left.setInteractive();
-        right.setInteractive();
-
-        left.on("pointerover", () =>
+        this.right.on("pointerover", () =>
         {
-            console.log("Héroe");
+            this.right.text.setTintFill("0xFF00FF","","0xFF00FF","");
         })
-        left.on("pointerdown", () =>
+        this.right.on("pointerout",()=>this.right.text.clearTint());
+        this.left.on("pointerover", () =>
+        {
+            this.left.text.setTintFill("0xFF00FF","","0xFF00FF","");
+        })
+        this.left.on("pointerout",()=>this.left.text.clearTint());
+
+        this.right.on("pointerdown", () =>
         {
             this.game.scene.stop("selectGameMode");
             socket.emit("start", "Hero");
@@ -168,11 +181,8 @@ const SelectGameMode=
                 this.game.scene.start("ItemShop");
             })
         })
-        right.on("pointerover", () =>
-        {
-            console.log("Anti-Héroe");
-        })
-        right.on("pointerdown", () =>
+
+        this.left.on("pointerdown", () =>
         {
             this.game.scene.stop("selectGameMode");
             socket.emit("start", "AntiHero");
@@ -182,7 +192,8 @@ const SelectGameMode=
             })
         })
         socket.on("Role", (string)=>console.log(string.role+" is your role"))
-        this.add.text(0, 0, "hack", {font:"1px m5x7", fill:"#FFFFFF"});
+       
+        
 
     },
     update: function () {
