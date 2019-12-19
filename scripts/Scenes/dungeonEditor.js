@@ -41,10 +41,10 @@ const  scene =
             clickedColor : "#FF00FF",
             cursorOverColor : "#00FF00",
             basicColor : "#FFFFFF",
-            style : {fontFamily:"m5x7", fontSize:"16px"},
+            style : {fontFamily:"m5x7", fontSize:"32px"},
         }
-        let continuar = new textButton(config,110,160,"Continuar");
-        continuar.on("pointerdown", () =>
+        this.continuar = new textButton(config,110 *2 ,160 * 2,"Continuar");
+        this.continuar.on("pointerdown", () =>
         {
             this.game.scene.stop("DungeonEditor");
             let dungeon = update(this);
@@ -62,6 +62,8 @@ const  scene =
             this.game.inventory = inventory;
             this.game.scene.start("DungeonRunAH");
         })
+
+        socket.on("changeScene", ()=>  this.continuar.emit("pointerdown"));   
     },
     update : function(time,delta)
     {

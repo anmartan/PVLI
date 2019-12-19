@@ -1,4 +1,5 @@
 import { enemyInfo } from "../Enemies and World/enemy.js";
+import { Time } from '../Scenes/utils.js';
 
 export class textButton extends Phaser.GameObjects.Text{
     constructor(config, x, y, text)
@@ -98,6 +99,9 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
 
         this.scene.moneyText = this.scene.add.text(240, 32, this.scene.money, {font:"32px m5x7", fill:"#FFFFFF"});
         this.scene.add.sprite(210, 48, "coins");
+        this.timer = new Time(scene, 32, 4, 0, 10);
+        socket.on("second", () => this.timer.tick());
+
 
         
 

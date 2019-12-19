@@ -334,8 +334,8 @@ export class enemyManager {
     summon(enemyInfo, scene, id) {
 
         //El default es el beetle: no se puede crear un enemigo que no existe así que TIENE QUE HABER un default para dejar esto en una sola línea
-        // return (new (enemyInfo.type === 'zombie' ? zombie :enemyInfo.type === 'spider' ? spider : enemyInfo.type === 'littleSpider' ? littleSpider : enemyInfo === 'bee' ? bee : enemyInfo.type === 'wizard' ? wizard :  beetle)(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id))
-
+     return (new (enemyInfo.type === 'zombie' ? zombie :enemyInfo.type === 'spider' ? spider : enemyInfo.type === 'littleSpider' ? littleSpider : enemyInfo === 'bee' ? bee : enemyInfo.type === 'wizard' ? wizard :  beetle)(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id))
+/*
         switch (enemyInfo.type) {
             case "zombie":
                 let z;
@@ -374,8 +374,11 @@ export class enemyManager {
                 console.log("No se puede crear un enemigo de tipo " + enemyInfo.type);
                 break;
         }
+        */
     }
-    summonDummyEnemies(scene) {
+    
+    summonDummyEnemies(scene) 
+    {
         this.summoned = true;
         //this.enemiesInfo.forEach(function(enemy){this.summonDummy(enemy, scene, enemy.id);});
         for (let i = 0; i < this.enemiesInfo.length; i++) {
@@ -384,7 +387,8 @@ export class enemyManager {
 
         }
     }
-    summonDummy(enemy, scene, i) {
+    summonDummy(enemy, scene, i) 
+    {
 
         if (enemy.type === "zombie" || enemy.type === "bee" || enemy.type === "beetle" || enemy.type === "spider" || enemy.type === "littleSpider" || enemy.type === "wizard") {
             console.log(enemy.type + " " + enemy.pos.x + " " + enemy.pos.y)
@@ -398,7 +402,8 @@ export class enemyManager {
         return 0;
     }
 
-    getPrice(subtypeOfEnemy) {
+    getPrice(subtypeOfEnemy) 
+    {
         switch (subtypeOfEnemy) {
             case "zombie":
                 return 3;

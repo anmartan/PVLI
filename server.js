@@ -6,6 +6,7 @@ const port = 420; // El puerto
 var clients = [];
 let players = [false,false]
 
+let timer;
 let heroQueue=[];
 let antiHeroQueue=[];
 let games=[];
@@ -28,7 +29,6 @@ let checkGame = function checkGame()
 
 let serverDungeon;
 let serverInventory;
-let timer;
 
 class partida
 {
@@ -58,6 +58,7 @@ class partida
         this.hero.emit ("second");
         this.antiHero.emit("second");
     }
+    
 }
 
 let makeSockets=function (hero, antiHero)
@@ -94,6 +95,16 @@ let makeSockets=function (hero, antiHero)
     {
         antiHero.emit("enemySpawned", enemy);
     });
+
+    
+    hero.on("timeUp", ()=>
+    {
+        clearInterval(timer);
+        timer = 0;
+        antiHero.emit("changeScene");
+        hero.emit("changeScene");
+    })
+    
     antiHero.on("enemyPossesed",id=>{hero.emit("enemyPossesed",id);});
     antiHero.on("possesedMoved",dir=>{hero.emit("possesedMoved",dir);console.log("moved")});
 }
@@ -163,11 +174,6 @@ io.on('connection', socket => {
         })
     })
 
-    socket.on("timeUp", ()=>
-    {
-        clearInterval(this.timer);
-        console.log("No more Timing");
-    })
 
     socket.on("deadHero", ()=> console.log("Héroe muerto"));
 });

@@ -53,40 +53,52 @@ export class Life
     {
         for(let i= 0; i< points; i++)
         {
-            this.hearts[this.lastHeartAlive +1].setVisible(true);
+            if(this.lastHeartAlive +1 < this.player.maxHealth)
+            {
+                console.log("Aumento mi salud porque puedo")
+            this.hearts[this.lastHeartAlive+1].setVisible(true);
             this.lastHeartAlive ++;
+            }
+            console.log(this.lastHeartAlive)
         }
     }
 }
 export class Time
 {
-    constructor(scene, x, y, timeInSec)
+    constructor(scene, x, y, minutes, seconds)
     {
         this.scene = scene;
-        this.timeInSeconds = timeInSec;
-        this.timeText = this.scene.add.text(x, y, this.zero(this.timeInSeconds/60) + " : " + this.zero(this.timeInSeconds%60) , {font:"32px m5x7", fill:"#FFFFFF"});
+        this.mins = minutes;
+        this.secs = seconds;
+        this.timeText = this.scene.add.text(x, y, this.zero(this.mins) + " : " + this.zero(this.secs) , {font:"32px m5x7", fill:"#FFFFFF"});
 
     }
 
 
     tick()
     {
-        this.timeInSeconds--;
-        let minutes = Math.floor (this.timeInSeconds/ 60);
-        let seconds  =this.timeInSeconds % 60;
-        this.timeText.text = this.zero(minutes) + " : " + this.zero(seconds);
+        this.secs --;
+        
+        if(this.mins <= 0 && this.secs <= 0) this.destroy();
 
-        if(this.timeInSeconds <= 0) this.destroy();
+        else if (this.secs < 0)
+        {
+            this.secs = 59;
+            this.mins --;
+        }
+        this.timeText.text = this.zero(this.mins) + " : " + this.zero(this.secs);
+
 
     }
 
     //para que los segundos no se muevan de sitio y se carguen el texto cuando quedan menos de diez segundos de cada minuto
     //también se hace con los minutos aunque no haga falta
-    zero(sec)
+    zero(time)
     {
-        if(sec<10)
-            sec = "0" +sec;
-        return sec;
+        if(time === 0) time = "00";
+        else if(time<10)
+            time = "0" + time;
+        return time;
     }
 
     destroy()

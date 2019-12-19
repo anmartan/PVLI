@@ -16,8 +16,8 @@ export class shopUiManager
         scene.inventory = new inventory(1000);
         console.log(scene.inventory.gold);
         
-        this.timer = new Time(scene, 32, 4, 10);
-        socket.on("second", ()=> {try{this.timer.tick()}catch{}});
+        this.timer = new Time(scene, 32, 4, 0, 10);
+        socket.on("second", ()=>this.timer.tick());
         
 
         let config =
@@ -111,8 +111,8 @@ export class shopUiManager
         //Botón de continuar
         {
 
-        let continuar = new textButton(config,106*2,152*2,"Continuar");
-        continuar.on("pointerdown", () =>
+        this.continuar = new textButton(config,106*2,152*2,"Continuar");
+        this.continuar.on("pointerdown", () =>
         {
             scene.game.scene.stop("ItemShop");
             scene.game.inventory = scene.inventory;
@@ -126,7 +126,7 @@ export class shopUiManager
             })
         })
         }
-
+        socket.on("changeScene", ()=>  this.continuar.emit("pointerdown"));   
     }
 
 
