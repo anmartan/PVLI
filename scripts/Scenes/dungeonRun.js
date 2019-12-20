@@ -28,9 +28,9 @@ const scene = {
         let size=actualRoom.size;
 
         let entranceRec = new rec(this);
-        let exitRec =  new rec(this);
+        this.exitRec =  new rec(this);
         entranceRec.setRecPos(size,false);
-        exitRec.setRecPos(size,true);
+        this.exitRec.setRecPos(size,true);
 
         this.hero = new player (this, (this.game.tileSize*4), (this.game.tileSize*5), 30, "caballero_idle0", "idle", {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
         this.hero.x = ((11.5-(size))/2)*this.game.tileSize; 
@@ -45,14 +45,36 @@ const scene = {
 
         this.physics.add.collider(this.hero, this.tileMap.Walls);
         this.physics.add.collider(this.hero, entranceRec);
-
-        this.physics.add.collider(this.hero, exitRec, () => 
+        this.exitRec.setInteractive();
+        this.exitRec.on("pointerdown",() => this.colExit())
+        this.col = this.physics.add.overlap(this.hero, this.exitRec, () => 
         {      
+           this.colExit();
+        })
+        this.finish=(bool)=>
+        {
+            socket.emit("DungeonFinished");
+            this.toloco=true;
+            console.log( this.physics.world.removeCollider(this.col))
+            this.game.scene.stop("DungeonRun");
+            console.log( "por aquí")
+            bool ? this.game.endMessage="Has ganado":this.game.endMessage="Has perdido";
+            this.game.player="Ffo";
+            this.game.scene.start("EndGame");
+        }
+        this.colExit=function()
+        {
+            console.error(this.actual);      
             if(this.enemyGroup.length===0)  this.actual +=1;        
             if(this.actual>=3)
             {
-                socket.emit("changeRoom");
-                this.finish(true)
+
+                if(!this.toloco)
+                {
+                    this.hero.x = ((11.5-(size))/2)*this.game.tileSize;
+                    this.time.delayedCall(100,()=>this.finish(true));
+                    socket.emit("changeRoom"); 
+                }
             }
             else {
             //Informar al servidor de que ha habido un cambio de habitación
@@ -72,28 +94,17 @@ const scene = {
             this.hero.x = ((11.5-(size))/2)*this.game.tileSize; 
             this.hero.y = (this.game.tileSize*5) + 2; 
             entranceRec.setRecPos(size,false);
-            exitRec.setRecPos(size,true);
+            this.exitRec.setRecPos(size,true);
             
             //Creamos las nuevas trampas y enemigos
             this.enemies.summonEnemies(this, this.hero, this.hero.weaponManager.weaponGroup, this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
             this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
         }
-        })
-        this.finish=(bool)=>
-        {
-            socket.emit("DungeonFinished");
-            //this.game.scene.pause("DungeonRun");
-            this.stop=true;
-            //this.hero.hearts.destroy();
-            bool ? this.game.endMessage="Has ganado":this.game.endMessage="Has perdido";
-            this.game.player="Ffo";
-            this.game.scene.start("EndGame");
         }
     },
     update: function(delta)
     {
         if(this.hero!==undefined)this.hero.handleLogic();
-        console.error(this);
     }
    
 };

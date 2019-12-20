@@ -1,4 +1,4 @@
-export class rec extends Phaser.GameObjects.Rectangle
+export class rec extends Phaser.GameObjects.Zone
 {
     constructor(scene)
     {
@@ -18,11 +18,9 @@ export class rec extends Phaser.GameObjects.Rectangle
         this.body.debugBodyColor="0x00ff00";}
         this.x = (positionInTiles)*this.tileSize;
     }
-    //destroy(){super.destroy();console.error("he hecho destroy")};
-
 }
 
-export class Life extends Phaser.GameObjects. Container
+export class Life extends Phaser.GameObjects.Container
 {
     constructor(scene, x,y,player)
     {
@@ -52,7 +50,7 @@ export class Life extends Phaser.GameObjects. Container
         }
     }
 }
-class heart extends Phaser.GameObjects.Sprite
+class heart extends Phaser.GameObjects.Image
 {
     constructor(scene,x,y,sprite="full_Heart")
     {

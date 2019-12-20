@@ -5,7 +5,8 @@ import {enemyManager} from '../Enemies and World/enemy.js';
 import {trapManager} from '../Enemies and World/traps.js';
 
 
-
+import {player} from "../Player and Items/player.js"
+import {inventory} from "../Player and Items/items.js"
 
 
 const  scene =
@@ -33,7 +34,8 @@ const  scene =
         let voffset = 0;
         this.tileMap = new tilemap(this, "tiles2", this.game.tileSize, 0.5, "tilesImage",hoffset, voffset);
         this.editorMenu = new editorMenu(this,hoffset,voffset,this.game.tileSize);
-        
+        this.game.inventory=new inventory(10);
+        new player(this,0,0,0,"","",2);
 
         let config =
         {
