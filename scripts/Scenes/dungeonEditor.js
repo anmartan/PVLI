@@ -46,7 +46,7 @@ const  scene =
         this.continuar = new textButton(config,110 *2 ,160 * 2,"Continuar");
         this.continuar.on("pointerdown", () =>
         {
-            this.editorMenu.timer.setTimeToZero();
+            this.timer.setTimeToZero();
             this.game.scene.stop("DungeonEditor");
             let dungeon = update(this);
             socket.emit("finished", dungeon);
@@ -65,7 +65,11 @@ const  scene =
         })
         socket.on("enemyDisconected",()=>
         {
-            if(this.game.scene.isActive("DungeonEditor"))this.game.scene.stop("DungeonEditor");
+            if(this.game.scene.isActive("ItemShop"))
+            {
+                this.game.scene.stop("ItemShop");
+                if(this.timer!==undefined)this.timer.setTimeToZero();
+            }
             this.game.player="Off";
             this.game.endMessage="Has ganado";
             this.game.scene.start("EndGame");

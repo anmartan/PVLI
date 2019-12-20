@@ -171,9 +171,9 @@ export default class weaponManager
     throwProjectiles(typeOfProjectile)
     {
 
-        if(this[typeOfProjectile+"s"] > 0){
+        if(this[typeOfProjectile].Units > 0){
             new (typeOfProjectile==="Grenade" ? Grenade : Radar)(this.scene, this.player.x, this.player.y);
-            this[typeOfProjectile+"s"]--;
+            this[typeOfProjectile].Units--;
         }
     }
 }
