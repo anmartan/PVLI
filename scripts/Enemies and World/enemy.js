@@ -247,15 +247,10 @@ export class beetle extends enemy {
 Enemigo         Puntos de vida          Puntos de ataque            Velocidad           Precio
 
 Zombie              3                           1                       Baja             3 
- 
 Abeja               1-2                         1                       Alta            5-6   
-
 Araña               2                           2                       Baja             20
-
 Arañita             1                           1                       Media            x
-
 Mago                4                           3-4                     Baja            15
-
 Escarabajo          3+3                         1-2                     Media           10
 */
 
