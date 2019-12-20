@@ -136,7 +136,7 @@ export class loadingBar
         
         let percentText = scene.make.text({
             x: width / 2,
-            y: height / 2 - 5,
+            y: height / 2 ,
             text: '0%',
             style: {
                 font: '18px monospace',

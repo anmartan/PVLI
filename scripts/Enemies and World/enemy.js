@@ -42,7 +42,7 @@ export class enemy extends livingEntity {
     spotPlayer(player) {
         this.zone.destroy();
         this.player = player;
-        if(!this.possesed)this.findDir();
+        this.findDir();
     }
     findDir() {
         if (!this.possesed)
@@ -106,6 +106,8 @@ export class enemy extends livingEntity {
         this.scene.time.delayedCall(500, () => { this.knockbacked = false; this.speed /= 2 });
     }
     moveEnemy() {
+        //El mago se empezará a mover de forma diferente cuando encuentre al héroe
+        if(this.specialMove !== undefined && this.player !== undefined) this.specialMove();
         this.move();
     }
     update() {
@@ -209,21 +211,52 @@ export class littleSpider extends enemy {
 export class wizard extends enemy {
     constructor(scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleWizard";
         let speed = 15;
+        let anim = "idleWizard";
         let sprite = "wizard";
         super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
+        this.speed = speed;
+        this.projectileSpeed = 25;
+        this.scene= scene;
         this.price = 15;
         this.ATTKPoints = 1;
         this.coolDown = 2750;
     }
 
     // el mago ataca de otra manera
-    specialAttack(player) {
+    /*specialAttack(player) {
         if (!this.attacking) {
             this.attacking = true;
             player.damage(this.ATTKPoints);
             this.scene.time.delayedCall(this.coolDown, () => { this.attacking = false; });
+        }
+    }*/
+    
+    spotPlayer(player) {
+        this.zone.destroy();
+        this.player = player;
+        this.findDir();
+        this.attack();
+    }
+
+    specialMove()
+    {
+        console.log(this.dir);
+        this.dir.x *= -1;
+        this.dir.y *= -1;
+        console.log(this.dir);
+    }
+    attack()
+    {
+        if(!this.attacking)
+        {
+            this.attacking= true;
+            
+            this.ball = new wizardProjectiles(this.scene, this.x, this.y, this.dir, this.projectileSpeed, "button2", this.ATTKPoints);
+            this.scene.time.delayedCall(this.coolDown, ()=> {
+                this.attacking = false;
+                this.attack();
+            });
         }
     }
 }
@@ -416,5 +449,36 @@ export class enemyManager {
         console.error("No se puede crear un enemigo de tipo " + enemy.subtype);
         return 0;
     }
+}
 
+/* Clase nueva para los proyectiles del mago */
+
+export class wizardProjectiles extends Phaser.GameObjects.Sprite
+{
+    constructor(scene,x,y, dir, speed, sprite, damage)
+    {
+        super(scene, x, y, sprite);
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+        this.scene = scene;
+        this.damage = damage;
+        scene.physics.add.collider(this, scene.tileMap.Walls, ()=> this.die());
+        scene.physics.add.collider(this, scene.hero, () =>
+        {
+            this.scene.hero.damage(this.damage);
+            this.die();
+        })
+
+        //El mago siempre dispara en dirección contraria a la que se mueve, es decir, hacia el héroe
+        this.body.setVelocity((-dir.x) * speed, (-dir.y)* speed);
+        this.scene.time.delayedCall(1500, () => this.die());
+    }
+
+    die()
+    {
+        this.setVisible(false);
+        console.log("Soy invisible");
+        this.destroy();
+        console.log("Me he destruido");
+    }
 }
