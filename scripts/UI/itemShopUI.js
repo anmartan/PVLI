@@ -53,7 +53,7 @@ export class shopUiManager
                 let name = itemName+toBuyItemLevel;
                 price = itemAtlas[name].Price;
                 console.log("Vas a pagar: "+price);
-                if(scene.inventory[itemName].Units===0 && price < scene.inventory.gold)
+                if(scene.inventory[itemName].Units===0 && price <= scene.inventory.gold)
                 {
                     scene.inventory[itemName].addUnits(1);
                     scene.inventory.substractGold(price);
@@ -65,7 +65,7 @@ export class shopUiManager
                     }
                     else button.changeText(0);
                 }
-                else if(price < scene.inventory.gold)
+                else if(price <= scene.inventory.gold)
                 {
                     scene.inventory.substractGold(price);
                     scene.inventory.upgradeItem(itemName);
@@ -84,7 +84,7 @@ export class shopUiManager
                 (itemName==="Arrow")? name=itemName+level : name=itemName;
                 console.log(name);
                 price = itemAtlas[name].Price;
-                if(price<scene.inventory.gold)
+                if(price<=scene.inventory.gold)
                 {
                     scene.inventory.substractGold(price);
                     scene.inventory[name].addUnits(units);

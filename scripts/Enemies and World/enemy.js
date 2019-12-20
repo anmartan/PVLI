@@ -237,9 +237,46 @@ export class beetle extends enemy {
         let speed = 30;
         let sprite = "beetle";
         super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 6 }, id);
+        console.log(this.ally);
         this.price = 10;
         this.ATTKPoints = 2;
         this.coolDown = 1750;
+
+    }    
+    findDir() 
+    {
+        console.log(this.ally);
+        if(this.ally===undefined)this.ally = this.enemyManager.getRandomEnemy();
+        if (this.possesed) return;
+        if (this.ally !== 0 && this.ally!==undefined) 
+        {
+            if(this.ally.player!==undefined)
+            {
+                
+                let midPoint = { x: this.ally.player.x + this.ally.x, y: this.ally.player.y + this.ally.y };
+                midPoint.x /=2;
+                midPoint.y /=2;
+                console.log(midPoint);
+                let dir = { x: midPoint.x - this.x, y: midPoint.y - this.y };
+                let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
+                this.dir = { x: dir.x / mod, y: dir.y / mod };
+            }
+            else
+            {
+                let dir = {x:this.ally.x-this.x, y:this.ally.y-this.y} ;
+                let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
+                this.dir = { x: dir.x / mod, y: dir.y / mod };
+            }
+            if (this.body !== undefined) //Si no he muerto
+            {
+                if (!this.knockbacked) {
+                    this.moveEnemy();
+                }
+                this.scene.time.delayedCall(1000, this.findDir, [], this)
+            }
+        } 
+        else
+            super.findDir();
     }
 }
 /*
@@ -291,17 +328,25 @@ export class enemyManager {
         this.enemies.clear();
     }
     addEnemyInfo(enemyInfo) {
-        //let id = this.enemies.push(enemy) - 1; //La posición en el array
-        //this.enemies[id].id = id;
         enemyInfo.id = this.enemiesInfo.push(enemyInfo);
+    }
+    //Este método devuelve un enemigo que no sea de tipo beetle. Si no existe, o solo hay 1 enemigo devuelve undefined
+    getRandomEnemy()
+    {
+        let enemies= this.enemies.getChildren().filter(e=>!(e instanceof beetle));
+        if(enemies.length<1)return undefined;
+        else
+        {
+            enemies.filter(e => e.active)
+            let randomEnemy = enemies[Phaser.Math.RND.integerInRange(0, enemies.length - 1)]
+            return randomEnemy;
+        }
     }
     addEnemy(enemy) {
         this.enemies.add(enemy);
     }
     getLastID() { return this.enemies.getChildren().length - 1; }
     hideAllAlive() {
-        //let enemiesList= this.enemies.getChildren();
-        //enemiesList.forEach((enemy)=>{enemy.hide();});
         this.enemies.getChildren().forEach(function (enemy) { enemy.hide(); });
     }
     showAllAlive() {
@@ -342,46 +387,6 @@ export class enemyManager {
 
         //El default es el beetle: no se puede crear un enemigo que no existe así que TIENE QUE HABER un default para dejar esto en una sola línea
      return (new (enemyInfo.type === 'zombie' ? zombie :enemyInfo.type === 'spider' ? spider : enemyInfo.type === 'littleSpider' ? littleSpider : enemyInfo.type === 'bee' ? bee : enemyInfo.type === 'wizard' ? wizard :  beetle)(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id))
-/*
-        switch (enemyInfo.type) {
-            case "zombie":
-                let z;
-                z = new zombie(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-                return z;
-
-            case "spider":
-                let s;
-                console.log("voy a invocar una araña")
-                s = new spider(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-                return s;
-
-            case "littleSpider":
-                let ls;
-                ls = new littleSpider(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-                return ls;
-
-            case "bee":
-                let b;
-                b = new bee(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-                return b;
-
-            case "wizard":
-                // let w;
-                // w = new wizard(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-                // return w;
-                return new wizard(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-
-
-            case "beetle":
-                let bt;
-                bt = new beetle(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id);                              //paserle una referencia del manager al zombie para que cuando se destruya este se entere
-                return bt;
-
-            default:
-                console.log("No se puede crear un enemigo de tipo " + enemyInfo.type);
-                break;
-        }
-        */
     }
     
     summonDummyEnemies(scene) 
