@@ -3,7 +3,6 @@ import { dummieEnemy } from "./dummieEntitties.js";
 
 export class enemy extends livingEntity {
     constructor(scene, x, y, speed, sprite, anim, enemyManager, health, id) {
-        console.log("enemigo invocado");
         super(scene, (x + 1.5) * scene.game.tileSize, (y + 1.5) * scene.game.tileSize, sprite, speed, health);
         this.enemyManager = enemyManager;
         this.zone = this.createZone(scene);
@@ -26,7 +25,6 @@ export class enemy extends livingEntity {
         if (this.zone !== undefined) this.zone.destroy();
         socket.on("possesedMoved", (dir) => {
             if (this.possesed && this.body !== undefined) {
-                console.log("move");
                 this.dir = dir;
                 this.moveEnemy();
             }
@@ -45,8 +43,7 @@ export class enemy extends livingEntity {
         this.findDir();
     }
     findDir() {
-        if (!this.possesed)
-        {
+        if (!this.possesed) {
             if (this.player !== undefined) {
                 let dir = { x: this.player.x - this.x, y: this.player.y - this.y };
                 let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
@@ -78,7 +75,6 @@ export class enemy extends livingEntity {
         if (this.zone !== undefined) this.zone.destroy();
         if (this.player !== undefined) this.player = undefined;
         this.enemyManager.removeEnemy(this);
-        console.log("zombie muerto")
         socket.emit("enemyDead", this.id);
         this.destroy();
     }
@@ -107,7 +103,7 @@ export class enemy extends livingEntity {
     }
     moveEnemy() {
         //El mago se empezará a mover de forma diferente cuando encuentre al héroe
-        if(this.specialMove !== undefined && this.player !== undefined) this.specialMove();
+        if (this.specialMove !== undefined && this.player !== undefined) this.specialMove();
         this.move();
     }
     update() {
@@ -118,7 +114,7 @@ export class enemy extends livingEntity {
             this.attacking = true;
             hero.damage(this.ATTKPoints);
             if (this.specialAttack !== undefined) this.specialAttack(hero);
-            if(this.scene!==undefined)this.scene.time.delayedCall(this.coolDown, () => { this.attacking = false; });
+            if (this.scene !== undefined) this.scene.time.delayedCall(this.coolDown, () => { this.attacking = false; });
         }
     }
 
@@ -188,7 +184,6 @@ export class spider extends enemy {
         this.body.destroy();
         this.destroy();
         socket.emit("enemyDead", this.id);
-        console.log("zombie muerto")
     }
 }
 
@@ -217,7 +212,7 @@ export class wizard extends enemy {
         super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
         this.speed = speed;
         this.projectileSpeed = 25;
-        this.scene= scene;
+        this.scene = scene;
         this.price = 15;
         this.ATTKPoints = 1;
         this.coolDown = 2750;
@@ -231,7 +226,7 @@ export class wizard extends enemy {
             this.scene.time.delayedCall(this.coolDown, () => { this.attacking = false; });
         }
     }*/
-    
+
     spotPlayer(player) {
         this.zone.destroy();
         this.player = player;
@@ -239,27 +234,12 @@ export class wizard extends enemy {
         this.attack();
     }
 
-    specialMove()
-    {
-        console.log(this.dir);
+    specialMove() {
         this.dir.x *= -1;
         this.dir.y *= -1;
-        console.log(this.dir);
     }
-    attack()
-    {
-        this.on('animationrepeat-idleWizard', ()=> this.ball = new wizardProjectiles(this.scene, this.x, this.y, this.dir, this.projectileSpeed, "button2", this.ATTKPoints));
-        /*if(!this.attacking)
-        {
-            this.attacking= true;
-            
-            this.ball = new wizardProjectiles(this.scene, this.x, this.y, this.dir, this.projectileSpeed, "button2", this.ATTKPoints);
-            this.scene.time.delayedCall(this.coolDown, ()=> {
-                this.attacking = false;
-                this.attack();
-            });
-        }
-        */
+    attack() {
+        this.on('animationrepeat-idleWizard', () => this.ball = new wizardProjectiles(this.scene, this.x, this.y, this.dir, this.projectileSpeed, "fireBall", this.ATTKPoints));
     }
 }
 
@@ -270,34 +250,26 @@ export class beetle extends enemy {
         let speed = 30;
         let sprite = "beetle";
         super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 6 }, id);
-        console.log(this.ally);
         this.price = 10;
         this.ATTKPoints = 2;
         this.coolDown = 1750;
 
-    }    
-    findDir() 
-    {
-        if (!this.possesed)
-        {
-            console.log(this.ally);
-            if(this.ally===undefined)this.ally = this.enemyManager.getRandomEnemy();
-            if (this.ally !== 0 && this.ally!==undefined) 
-            {
-                if(this.ally.player!==undefined)
-                {
-                    
+    }
+    findDir() {
+        if (!this.possesed) {
+            if (this.ally === undefined) this.ally = this.enemyManager.getRandomEnemy();
+            if (this.ally !== 0 && this.ally !== undefined) {
+                if (this.ally.player !== undefined) {
+
                     let midPoint = { x: this.ally.player.x + this.ally.x, y: this.ally.player.y + this.ally.y };
-                    midPoint.x /=2;
-                    midPoint.y /=2;
-                    console.log(midPoint);
+                    midPoint.x /= 2;
+                    midPoint.y /= 2;
                     let dir = { x: midPoint.x - this.x, y: midPoint.y - this.y };
                     let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
                     this.dir = { x: dir.x / mod, y: dir.y / mod };
                 }
-                else
-                {
-                    let dir = {x:this.ally.x-this.x, y:this.ally.y-this.y} ;
+                else {
+                    let dir = { x: this.ally.x - this.x, y: this.ally.y - this.y };
                     let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
                     this.dir = { x: dir.x / mod, y: dir.y / mod };
                 }
@@ -308,7 +280,7 @@ export class beetle extends enemy {
                     }
                     this.scene.time.delayedCall(1000, this.findDir, [], this)
                 }
-            } 
+            }
             else
                 super.findDir();
         }
@@ -341,7 +313,7 @@ export class enemyManager {
         if (Array.isArray(enemies)) {
             this.scene = scene;
             this.enemies = this.scene.add.group();
-            this.enemies.runChildUpdate=true;
+            this.enemies.runChildUpdate = true;
             this.zone = this.scene.add.group();
             this.summoned = false;
             this.enemiesInfo = enemies;
@@ -351,20 +323,17 @@ export class enemyManager {
         }
         this.havePossesed = false;
     }
-    clearEnemyGroup()
-    {
+    clearEnemyGroup() {
         this.enemies.clear();
     }
     addEnemyInfo(enemyInfo) {
         enemyInfo.id = this.enemiesInfo.push(enemyInfo);
     }
     //Este método devuelve un enemigo que no sea de tipo beetle. Si no existe, o solo hay 1 enemigo devuelve undefined
-    getRandomEnemy()
-    {
-        let enemies= this.enemies.getChildren().filter(e=>!(e instanceof beetle));
-        if(enemies.length<1)return undefined;
-        else
-        {
+    getRandomEnemy() {
+        let enemies = this.enemies.getChildren().filter(e => !(e instanceof beetle));
+        if (enemies.length < 1) return undefined;
+        else {
             enemies.filter(e => e.active)
             let randomEnemy = enemies[Phaser.Math.RND.integerInRange(0, enemies.length - 1)]
             return randomEnemy;
@@ -395,10 +364,10 @@ export class enemyManager {
 
     summonEnemies(scene, hero, weaponGroup, walls) {
         if (!this.summoned) {
-            scene.physics.add.overlap(weaponGroup, this.enemies, (weapon, enemy) => { hero.attack(enemy, weapon.Damage);if(weapon.destroyOnCol)weapon.destroy();console.log(weapon) });                                                  //
+            scene.physics.add.overlap(weaponGroup, this.enemies, (weapon, enemy) => { hero.attack(enemy, weapon.Damage); if (weapon.destroyOnCol) weapon.destroy(); console.log(weapon) });                                                  //
             scene.physics.add.overlap(this.zone, hero, (zone) => zone.parent.spotPlayer(hero));                                                                           //
             scene.physics.add.collider(this.enemies, walls);                                                                                                               // TODO: En un mundo ideal se le pasará un objeto config a la constructora de zombie con todo esto
-            scene.physics.add.collider(this.enemies, hero, (enemy,hero) => { enemy.attack(hero, enemy.ATTKPoints) });                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
+            scene.physics.add.collider(this.enemies, hero, (enemy, hero) => { enemy.attack(hero, enemy.ATTKPoints) });                                                               //       que se encargará de crear todas las colisiones correspondientes y quedará mucho más limpio
 
             this.summoned = true;
             for (let i = 0; i < this.enemiesInfo.length; i++) {
@@ -414,11 +383,10 @@ export class enemyManager {
     summon(enemyInfo, scene, id) {
 
         //El default es el beetle: no se puede crear un enemigo que no existe así que TIENE QUE HABER un default para dejar esto en una sola línea
-     return (new (enemyInfo.type === 'zombie' ? zombie :enemyInfo.type === 'spider' ? spider : enemyInfo.type === 'littleSpider' ? littleSpider : enemyInfo.type === 'bee' ? bee : enemyInfo.type === 'wizard' ? wizard :  beetle)(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id))
+        return (new (enemyInfo.type === 'zombie' ? zombie : enemyInfo.type === 'spider' ? spider : enemyInfo.type === 'littleSpider' ? littleSpider : enemyInfo.type === 'bee' ? bee : enemyInfo.type === 'wizard' ? wizard : beetle)(scene, enemyInfo.pos.x, enemyInfo.pos.y, this, id))
     }
-    
-    summonDummyEnemies(scene) 
-    {
+
+    summonDummyEnemies(scene) {
         this.summoned = true;
         //this.enemiesInfo.forEach(function(enemy){this.summonDummy(enemy, scene, enemy.id);});
         for (let i = 0; i < this.enemiesInfo.length; i++) {
@@ -427,8 +395,7 @@ export class enemyManager {
 
         }
     }
-    summonDummy(enemy, scene, i) 
-    {
+    summonDummy(enemy, scene, i) {
 
         if (enemy.type === "zombie" || enemy.type === "bee" || enemy.type === "beetle" || enemy.type === "spider" || enemy.type === "littleSpider" || enemy.type === "wizard") {
             console.log(enemy.type + " " + enemy.pos.x + " " + enemy.pos.y)
@@ -441,40 +408,33 @@ export class enemyManager {
         console.error("No se puede crear un enemigo de tipo " + enemy.subtype);
         return 0;
     }
-    static prices() 
-    {
-        return{zombie:3,bee:5,spider:20,wizard:15,beetle:10}
+    static prices() {
+        return { zombie: 3, bee: 5, spider: 20, wizard: 15, beetle: 10 }
     }
 }
 
 /* Clase nueva para los proyectiles del mago */
 
-export class wizardProjectiles extends Phaser.GameObjects.Sprite
-{
-    constructor(scene,x,y, dir, speed, sprite, damage)
-    {
+export class wizardProjectiles extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y, dir, speed, sprite, damage) {
         super(scene, x, y, sprite);
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.scene = scene;
         this.damage = damage;
-        scene.physics.add.collider(this, scene.tileMap.Walls, ()=> this.die());
-        scene.physics.add.collider(this, scene.hero, () =>
-        {
+        scene.physics.add.collider(this, scene.tileMap.Walls, () => this.die());
+        scene.physics.add.collider(this, scene.hero, () => {
             this.scene.hero.damage(this.damage);
             this.die();
         })
 
         //El mago siempre dispara en dirección contraria a la que se mueve, es decir, hacia el héroe
-        this.body.setVelocity((-dir.x) * speed, (-dir.y)* speed);
-        this.scene.time.delayedCall(1500, () => this.die());
+        this.body.setVelocity((-dir.x) * speed, (-dir.y) * speed);
+        this.scene.time.delayedCall(7000, () => this.die());
     }
 
-    die()
-    {
+    die() {
         this.setVisible(false);
-        console.log("Soy invisible");
         this.destroy();
-        console.log("Me he destruido");
     }
 }

@@ -9,15 +9,15 @@ let scenes = [SelectGameMode, ItemShop, DungeonEditor, DungeonRun,DungeonRunAH, 
 let config = {
     pixelArt: true,
     parent:document.getElementById("GameCanvas"),
-    createDOMContainer:true,
+    createDOMContainer:false,
     type: Phaser.AUTO,
     width: 11*tileSize,//960,
     height: 11*tileSize,
-    backgroundColor:"#181425",/* COMENTANDO ESTO POR LO MENOS SE VE
-    scale: {   //Esto sirve para centrar el canvas
+    backgroundColor:"#181425",
+    scale: {
         mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_HORIZONTALY
-    },*/
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     physics: {
         default: 'arcade',
         arcade: {

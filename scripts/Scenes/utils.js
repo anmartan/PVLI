@@ -37,9 +37,10 @@ export class Life extends Phaser.GameObjects.Container
     }
     loseHearts(points)
     {
+        let health = (this.player.health<0)?0:this.player.health
         for (let i = 0; i< points; i++)
         {
-            this.getAt(this.player.health+i).empty();
+            this.getAt(health+i).empty();
         }
     }
     gainHearts(points)

@@ -6,8 +6,10 @@
 	font-family: "m5x7";
 	font-style: normal;
 	font-weight: 400;
-	src: url("/assets/m5x7.ttf");
+  src: url("/assets/m5x7.ttf");
 }
+canvas{
+  outline:2px #ff3366 !important;}
 section {
   background-color: #eeeeee; }
 

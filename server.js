@@ -154,8 +154,6 @@ io.on('connection', socket => {
         if(socket.queue !== undefined)
         {
             socket.queue.splice(socket.queueId);
-            console.log("Añadiendo socket en cola["+queueId+"]");
-
         }
         if (socket.matchID !== undefined)
         {

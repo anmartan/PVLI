@@ -7,11 +7,11 @@ const SelectGameMode=
     {
         new loadingBar(this);
 
-        this.load.image("Ffo","../assets/Ffo.png");
-        this.load.image("Off","../assets/Off.png");
-        this.load.image("Half-Ffo","../assets/Half-Ffo.png");
-        this.load.image("Half-Off","../assets/Half-Off.png");
-        this.load.image("Foo&Off","../assets/Foo&Off.png");
+        this.load.image("Ffo","../assets/backgrounds/Ffo.png");
+        this.load.image("Off","../assets/backgrounds/Off.png");
+        this.load.image("Half-Ffo","../assets/backgrounds/Half-Ffo.png");
+        this.load.image("Half-Off","../assets/backgrounds/Half-Off.png");
+        this.load.image("Foo&Off","../assets/backgrounds/Foo&Off.png");
 
         this.load.image("button","../assets/debug/white.png");
         this.load.image("button2","../assets/debug/pink.png");
@@ -32,6 +32,11 @@ const SelectGameMode=
         this.load.image("enemiesSymbol",     "../assets/ui/dungeonEditor/enemies.png");
         this.load.image("enemiesSymbol2",     "../assets/ui/dungeonEditor/enemies2.png");
         this.load.image("clicked",    "../assets/ui/dungeonEditor/clicked.png");
+
+
+        /*Bola de fuego*/
+        this.load.spritesheet("fireball","../assets/enemies/Fireball.png",{frameWidth:126,frameHeight:32})
+        this.load.image("fireBall",    "../assets/enemies/Fire16.png");
 
         /* Botones de enemigos y trampas dentro del editor de mazmorras */
         this.load.image("smallRoomButton",    "../assets/ui/dungeonEditor/smallSize.png")
@@ -83,7 +88,7 @@ const SelectGameMode=
         this.load.image("Shield3", "../assets/objects/shield3.png")
         /*----------*/
         
-        this.load.spritesheet("trap", "../assets/traps/spike_animation.png",{ frameWidth: 22, frameHeight: 19})
+        this.load.spritesheet("trap", "../assets/traps/spike_animation.png",{ frameWidth: 252, frameHeight: 97})
 
 
         this.load.image("caballero_idle0", "../assets/player/knight_m_idle_anim_f0.png")
@@ -119,7 +124,7 @@ const SelectGameMode=
 
     },
     create:function () {
-        let playerIdle = this.anims.create({     //animación del jugador
+        this.anims.create({     //animación del jugador
             key: 'idle',
             frames:
             [
@@ -131,7 +136,7 @@ const SelectGameMode=
             frameRate: 10,
             repeat: -1,
         });
-        let zombieIdle = this.anims.create({    //animación del zombie
+        this.anims.create({    //animación del zombie
             key: 'idleZombie',
             frames:
             [
@@ -177,7 +182,12 @@ const SelectGameMode=
             frameRate: 4,
             repeat: -1
         });
-
+        this.anims.create({
+            key: 'fireballAnim',
+            frames: this.anims.generateFrameNumbers('fireball', { start: 0, end: 5 }),
+            frameRate: 7,
+            repeat: -1
+        });
         this.anims.create({
             key: 'trapAnim',
             frames: this.anims.generateFrameNumbers('trap', { start: 0, end: 3 }),

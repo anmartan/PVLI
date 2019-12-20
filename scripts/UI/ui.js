@@ -72,7 +72,7 @@ class indexButton extends textButton //este botón servirá en la parte de edici
         if(this.menu.actualState!=="Size")this.menu.states[0].emit("pointerdown");
         this.menu.states[0].emit("pointerdown");
         this.menu.grid=this.menu.grids[this.menu.actualRoom];
-        console.log(this.menu);
+        console.error(this.menu.actualRoom);
     }   
     );
     }
