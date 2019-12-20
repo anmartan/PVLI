@@ -42,10 +42,10 @@ export class enemy extends livingEntity {
     spotPlayer(player) {
         this.zone.destroy();
         this.player = player;
-        this.findDir();
+        if(!this.possesed)this.findDir();
     }
     findDir() {
-        if (this.possesed) return;
+        //if (this.possesed) return;
         if (this.player !== undefined) {
             let dir = { x: this.player.x - this.x, y: this.player.y - this.y };
             let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
@@ -69,7 +69,7 @@ export class enemy extends livingEntity {
             if (!this.knockbacked) {
                 this.moveEnemy();
             }
-            this.scene.time.delayedCall(1000, this.findDir, [], this)
+            if(!this.possesed) this.scene.time.delayedCall(1000, this.findDir, [], this)
         }
     }
     kill() {
