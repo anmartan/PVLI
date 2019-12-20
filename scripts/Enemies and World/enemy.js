@@ -45,31 +45,33 @@ export class enemy extends livingEntity {
         if(!this.possesed)this.findDir();
     }
     findDir() {
-        //if (this.possesed) return;
-        if (this.player !== undefined) {
-            let dir = { x: this.player.x - this.x, y: this.player.y - this.y };
-            let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
-            this.dir = { x: dir.x / mod, y: dir.y / mod };
-        }
-        else {
-            let r = (Math.random() > 0.5);
-            let sign;
-            if (r)
-                sign = 1;
-            else
-                sign = -1;
-            let x = Math.random() * sign;
-            let y = Math.random() * sign;
-            this.dir = { x: x, y: y };
-            this.zone.x = this.x;
-            this.zone.y = this.y;
-        }
-        if (this.body !== undefined) //Si no he muerto
+        if (!this.possesed)
         {
-            if (!this.knockbacked) {
-                this.moveEnemy();
+            if (this.player !== undefined) {
+                let dir = { x: this.player.x - this.x, y: this.player.y - this.y };
+                let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
+                this.dir = { x: dir.x / mod, y: dir.y / mod };
             }
-            if(!this.possesed) this.scene.time.delayedCall(1000, this.findDir, [], this)
+            else {
+                let r = (Math.random() > 0.5);
+                let sign;
+                if (r)
+                    sign = 1;
+                else
+                    sign = -1;
+                let x = Math.random() * sign;
+                let y = Math.random() * sign;
+                this.dir = { x: x, y: y };
+                this.zone.x = this.x;
+                this.zone.y = this.y;
+            }
+            if (this.body !== undefined) //Si no he muerto
+            {
+                if (!this.knockbacked) {
+                    this.moveEnemy();
+                }
+                this.scene.time.delayedCall(1000, this.findDir, [], this)
+            }
         }
     }
     kill() {
@@ -245,38 +247,40 @@ export class beetle extends enemy {
     }    
     findDir() 
     {
-        console.log(this.ally);
-        if(this.ally===undefined)this.ally = this.enemyManager.getRandomEnemy();
-        if (this.possesed) return;
-        if (this.ally !== 0 && this.ally!==undefined) 
+        if (!this.possesed)
         {
-            if(this.ally.player!==undefined)
+            console.log(this.ally);
+            if(this.ally===undefined)this.ally = this.enemyManager.getRandomEnemy();
+            if (this.ally !== 0 && this.ally!==undefined) 
             {
-                
-                let midPoint = { x: this.ally.player.x + this.ally.x, y: this.ally.player.y + this.ally.y };
-                midPoint.x /=2;
-                midPoint.y /=2;
-                console.log(midPoint);
-                let dir = { x: midPoint.x - this.x, y: midPoint.y - this.y };
-                let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
-                this.dir = { x: dir.x / mod, y: dir.y / mod };
-            }
-            else
-            {
-                let dir = {x:this.ally.x-this.x, y:this.ally.y-this.y} ;
-                let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
-                this.dir = { x: dir.x / mod, y: dir.y / mod };
-            }
-            if (this.body !== undefined) //Si no he muerto
-            {
-                if (!this.knockbacked) {
-                    this.moveEnemy();
+                if(this.ally.player!==undefined)
+                {
+                    
+                    let midPoint = { x: this.ally.player.x + this.ally.x, y: this.ally.player.y + this.ally.y };
+                    midPoint.x /=2;
+                    midPoint.y /=2;
+                    console.log(midPoint);
+                    let dir = { x: midPoint.x - this.x, y: midPoint.y - this.y };
+                    let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
+                    this.dir = { x: dir.x / mod, y: dir.y / mod };
                 }
-                this.scene.time.delayedCall(1000, this.findDir, [], this)
-            }
-        } 
-        else
-            super.findDir();
+                else
+                {
+                    let dir = {x:this.ally.x-this.x, y:this.ally.y-this.y} ;
+                    let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
+                    this.dir = { x: dir.x / mod, y: dir.y / mod };
+                }
+                if (this.body !== undefined) //Si no he muerto
+                {
+                    if (!this.knockbacked) {
+                        this.moveEnemy();
+                    }
+                    this.scene.time.delayedCall(1000, this.findDir, [], this)
+                }
+            } 
+            else
+                super.findDir();
+        }
     }
 }
 /*
