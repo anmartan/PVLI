@@ -34,8 +34,6 @@ const  scene =
         let voffset = 0;
         this.tileMap = new tilemap(this, "tiles2", this.game.tileSize, 0.5, "tilesImage",hoffset, voffset);
         this.editorMenu = new editorMenu(this,hoffset,voffset,this.game.tileSize);
-        this.game.inventory=new inventory(10);
-        new player(this,0,0,0,"","",2);
 
         let config =
         {

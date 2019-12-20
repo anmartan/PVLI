@@ -83,13 +83,13 @@ export class livingEntity extends Phaser.GameObjects.Sprite
 
 export class player extends livingEntity
 {
-    constructor(scene, x, y, speed,sprite, anim, sword)
+    constructor(scene, x, y)
     {
-        super(scene,x -8 ,y, sprite,100, {maxHealth: 6})
+        super(scene,x ,y, "caballero_idle0",30, {maxHealth: 6})
    
         /*----        corrigiendo collider y activando worldbounds      -----*/
         this.body.setSize(14,14);
-        this.body.offset.y=14;
+        this.body.setOffset(0,14);
         this.body.setCollideWorldBounds(true);
         this.stunned = false;
         
@@ -114,7 +114,7 @@ export class player extends livingEntity
         this.key_2     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_TWO  );
         this.key_3     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_THREE);
         
-        //this.play(anim);
+        this.play("idle");
         
         //Intento de meter el inventario
         this.inventory = this.scene.game.inventory;
@@ -227,8 +227,6 @@ export class player extends livingEntity
             if(this.key_Q.isDown)
                 this.weaponManager.useShield();
         }
-        this.dir.x=1;
-        this.move();
     }
     kill()
     {

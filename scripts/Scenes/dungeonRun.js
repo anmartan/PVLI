@@ -32,10 +32,7 @@ const scene = {
         entranceRec.setRecPos(size,false);
         this.exitRec.setRecPos(size,true);
 
-        this.hero = new player (this, (this.game.tileSize*4), (this.game.tileSize*5), 30, "caballero_idle0", "idle", {name:"sword", pos:{x:0,y:0}, scale:0.5}); //x debería ser 48 e y debería ser 80
-        this.hero.x = ((11.5-(size))/2)*this.game.tileSize; 
-        this.hero.y = (this.game.tileSize*5) + 2; 
-
+        this.hero = new player (this, ((11.5-(size))/2)*this.game.tileSize, (this.game.tileSize*5) + 2); //x debería ser 48 e y debería ser 80
         this.enemies = new enemyManager(this,actualRoom.enemies.enemiesInfo);
         this.enemies.summonEnemies(this,this.hero, this.hero.weaponManager.weaponGroup,this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
         this.enemyGroup = this.enemies.enemies.getChildren();

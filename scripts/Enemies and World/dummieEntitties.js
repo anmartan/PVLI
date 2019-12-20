@@ -14,21 +14,22 @@ export class dummiePlayer extends Phaser.GameObjects.Sprite
         this.sword.x = 0;
         this.sword.y = 0;
         socket.on("playerMove", (data)=>this.move(data.pos, data.flip));
-        socket.on("playerAttack", (data)=>this.attack(data.angle, data.offsetX,data.offsetY));
+        socket.on("playerAttack", (data)=>this.attack(data.angle, data.offsetX,data.offsetY,data.weaponSprite));
         socket.on("playerHaveAttacked", () =>this.sword.setVisible(false)); 
     }
     move(pos, flip)
     {
         this.x = pos.x;
         this.y = pos.y;
-        this.sword.x = this.x+this.offsetX;
-        this.sword.y = this.y+this.offsetY;
+        this.sword.x = this.x+this.offsetX+2;
+        this.sword.y = this.y+this.offsetY+5;
         this.setFlipX(flip);
 
     }
-    attack(angle, offsetX,offsetY)
+    attack(angle, offsetX,offsetY,sprite)
     {
         this.sword.setVisible(true);
+        this.sword.setTexture(sprite);
         this.sword.setAngle(angle);
         this.offsetX=offsetX;
         this.offsetY=offsetY;

@@ -117,7 +117,7 @@ export default class weaponManager
             {
                 this.shootArrow(angle, this.arrowSelected.Damage);
             } 
-            socket.emit("playerAttack", {angle: angle, offsetX: this.offsetX, offsetY:this.offsetY});
+            socket.emit("playerAttack", {angle: angle, offsetX: this.offsetX, offsetY:this.offsetY,weaponSprite:this.weapon.Images.Sprite});
             this.scene.time.delayedCall(this.weapon.Cooldown,   this.haveAttacked,[],this)
             this.scene.time.delayedCall(this.weapon.Cooldown,   ()=> this.attacking=false);
         }
