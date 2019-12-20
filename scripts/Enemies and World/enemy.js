@@ -195,14 +195,14 @@ export class spider extends enemy {
 export class littleSpider extends enemy {
     constructor(scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleZ";                        //será otro sprite? O solo le vamos a cambiar la escala?
+        let anim = "idleSpider";                        //será otro sprite? O solo le vamos a cambiar la escala?
         let speed = 25;
-        let sprite = "spider_idle0";
+        let sprite = "spider";
         super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 1 }, id);
         this.price = 0;                                 // las arañitas no se pueden crear desde el editor de mazmorras. Solo aparecen cuando muere una araña
         this.ATTKPoints = 1;
         this.coolDown = 1500;
-
+        this.setScale(0.5);
         this.vulnerable = false;
         this.scene.time.delayedCall(1000, this.makeVulnerable());
     }
