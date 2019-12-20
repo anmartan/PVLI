@@ -110,7 +110,8 @@ export class enemy extends livingEntity {
         this.scene.time.delayedCall(500, () => { this.knockbacked = false; this.speed /= 2 });
     }
     moveEnemy() {
-        if(this.specialMove !== undefined) this.specialMove();
+        //El mago se empezará a mover de forma diferente cuando encuentre al héroe
+        if(this.specialMove !== undefined && this.player !== undefined) this.specialMove();
         this.move();
     }
     update() {
@@ -234,6 +235,13 @@ export class wizard extends enemy {
             this.scene.time.delayedCall(this.coolDown, () => { this.attacking = false; });
         }
     }*/
+    
+    spotPlayer(player) {
+        this.zone.destroy();
+        this.player = player;
+        this.findDir();
+        this.attack();
+    }
 
     specialMove()
     {
@@ -248,7 +256,10 @@ export class wizard extends enemy {
         {
             this.attacking= true;
             this.ball = new wizardProjectiles(this.scene, this.x, this.y, this.dir, this.projectileSpeed, "button2", this.ATTKPoints);
-            this.scene.time.delayedCall(this.coolDown, ()=> this.attacking = false);
+            this.scene.time.delayedCall(this.coolDown, ()=> {
+                this.attacking = false;
+                this.attack();
+            });
         }
     }
 }
