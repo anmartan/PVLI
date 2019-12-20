@@ -26,8 +26,8 @@ const scene = {
         entranceRec.setRecPos(size, false);
         this.exitRec.setRecPos(size, true);
 
-        this.hero = new player(this, ((11.5 - (size)) / 2) * this.game.tileSize, (this.game.tileSize * 5) + 2); //x debería ser 48 e y debería ser 80
         this.enemies = new enemyManager(this, actualRoom.enemies.enemiesInfo);
+        this.hero = new player(this, ((11.5 - (size)) / 2) * this.game.tileSize, (this.game.tileSize * 5) + 2); //x debería ser 48 e y debería ser 80
         this.enemies.summonEnemies(this, this.hero, this.hero.weaponManager.weaponGroup, this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
         this.enemyGroup = this.enemies.enemies.getChildren();
 

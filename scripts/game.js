@@ -26,9 +26,6 @@ let config = {
         }
     },
     scene: scenes,
-    canvas: {
-        display: proyectoFFOOFF
-    }
 }
 
 let game = new Phaser.Game(config);

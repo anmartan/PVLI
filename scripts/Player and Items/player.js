@@ -121,8 +121,6 @@ export class player extends livingEntity {
     equip() {
         if (this.inventory.Armor.Units > 0)
             this.augmentMaxHealth(this.inventory.Armor.ExtraMaxHealth)
-        if (this.inventory.Shield.Units > 0)
-            this.shield = this.inventory.Shield.MaxHits;
         if (this.inventory.Boots.Units > 0)
             this.speed *= this.inventory.Boots.Speed;
 
@@ -163,16 +161,16 @@ export class player extends livingEntity {
             socket.emit("playerMove", { pos: { x: this.x, y: this.y }, flip: flip });
             //Teclas de attaque, atacar en la dirección
             if (this.key_DOWN.isDown) {
-                this.weaponManager.useWeapon("down")
+                this.weaponManager.useWeapon(180)
             }
             if (this.key_UP.isDown) {
-                this.weaponManager.useWeapon("up")
+                this.weaponManager.useWeapon(0)
             }
             if (this.key_RIGHT.isDown) {
-                this.weaponManager.useWeapon("right")
+                this.weaponManager.useWeapon(90)
             }
             if (this.key_LEFT.isDown) {
-                this.weaponManager.useWeapon("left")
+                this.weaponManager.useWeapon(270)
             }
             //Teclas para cambiar de arma
             if (Phaser.Input.Keyboard.JustDown(this.key_TAB)) {
@@ -192,7 +190,7 @@ export class player extends livingEntity {
             if (Phaser.Input.Keyboard.JustDown(this.key_THREE) || Phaser.Input.Keyboard.JustDown(this.key_3)) {
                 this.useHealthPotion();
             }
-            if (this.key_Q.isDown)
+            if (this.key_Q.isDown && this.weaponManager.ShieldObject.MaxHits>=0)
                 this.weaponManager.useShield();
         }
     }

@@ -25,10 +25,12 @@ const ItemShop =
     },
     create: function () {
         socket.on("enemyDisconected", () => {
-            if (this.game.scene.isActive("ItemShop")) {
-                this.game.scene.stop("ItemShop");
-                if (this.timer !== undefined) this.timer.setTimeToZero();
-            }
+            let scenesToPuse = this.game.getScenes(true);
+            scenesToPuse.forEach(scene => {
+                this.game.stop(scene.key);
+
+                if (scene.timer !== undefined) scene.timer.setTimeToZero();
+            })
             this.game.player = "Ffo";
             this.game.endMessage = "Has ganado";
             this.game.scene.start("EndGame");

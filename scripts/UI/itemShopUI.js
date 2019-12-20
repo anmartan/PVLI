@@ -41,6 +41,7 @@ export class shopUiManager {
             let toBuyItemLevel;
             let price;
             let nextLvl;
+            let buy=false;
             console.log("Estás comprando: " + itemName);
 
             if (upgrade && scene.inventory[itemName].Level < 3) {
@@ -50,6 +51,7 @@ export class shopUiManager {
                 price = itemAtlas[name].Price;
                 console.log("Vas a pagar: " + price);
                 if (scene.inventory[itemName].Units === 0 && price <= scene.inventory.gold) {
+                    buy=true;
                     scene.inventory[itemName].addUnits(1);
                     scene.inventory.substractGold(price);
 
@@ -60,6 +62,7 @@ export class shopUiManager {
                     else button.changeText(0);
                 }
                 else if (price <= scene.inventory.gold) {
+                    buy=true;
                     scene.inventory.substractGold(price);
                     scene.inventory.upgradeItem(itemName);
                     if (toBuyItemLevel < 3) {
@@ -82,7 +85,7 @@ export class shopUiManager {
             }
             text.text = scene.inventory.gold;
             console.log(scene.inventory);
-            return nextLvl;
+            return {lvl:nextLvl,buy:buy};
         }
 
         scene.Sword_Button = new itemButton3lvl(scene, hsize, y + 0 * vsize, "bg_3lvls", "border_3lvls", "lvlButton", "number_3lvls", "Sword", itemAtlas.Sword1.Price);
@@ -232,7 +235,9 @@ export class itemButton3lvl {
         //bg.on("pointerover", ()=>bg.setTintFill("0xc67aed"));
         bg.on("pointerout", () => bg.clearTint());
         bg.on("pointerdown", () => {
-            let toBuyItemLvl = scene.buy(this.itemID, this, true);
+            let buyResult = scene.buy(this.itemID, this, true);
+            let toBuyItemLvl=buyResult.lvl;
+            let buy = buyResult.buy;
             if (toBuyItemLvl < 4) {
                 let name = itemID + toBuyItemLvl;
                 if (itemID !== "Armor") {
@@ -241,7 +246,7 @@ export class itemButton3lvl {
                     if (itemID === "Sword") this.expositor.angle = 90;
                     container.add(this.expositor);
                 }
-            } else this.expositor.destroy();
+            } else if(buy)this.expositor.destroy();
         })
     }
     changeText(newText) {

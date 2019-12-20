@@ -180,6 +180,7 @@ export const itemAtlas =
     Shield1:
     {
         Type: "Shield",
+        Damage:1,
         MaxHits: 2,
         Price: 20,
         Level: 1,
@@ -192,6 +193,7 @@ export const itemAtlas =
     Shield2:
     {
         Type: "Shield",
+        Damage:1,
         MaxHits: 4,
         Price: 40,
         Level: 2,
@@ -204,6 +206,7 @@ export const itemAtlas =
     Shield3:
     {
         Type: "Shield",
+        Damage:1,
         MaxHits: 6,
         Price: 80,
         Level: 3,

@@ -26,6 +26,8 @@ export default class weaponManager {
         this.SwordObject = createWeaponObject(Sword, this.weaponGroup);
         this.BowObject = createWeaponObject(Bow, this.weaponGroup);
         this.ShieldObject = createWeaponObject(Shield, this.weaponGroup);
+        scene.physics.add.collider(scene.enemies.enemies, this.ShieldObject, (enemy,shield) => { shield.MaxHits--;if(shield.MaxHits<0) shield.destroy();});
+
 
         //Si solo hay flechas de fuego, se seleccionan esas
         //Si hay flechas normales, o no hay de ningunas, son las seleccionadas por defecto.
@@ -49,48 +51,15 @@ export default class weaponManager {
         socket.emit("playerHaveAttacked");
         this.showWeapon(false);
     }
-    useWeapon(dir) {
+    useWeapon(angle) {
         if (!this.attacking) {
-            let angle = 0;
-            switch (dir) {
-                case "up":
-                    angle = 0;
-                    break;
-                case "down":
-                    angle = 180;
-                    break;
-                case "right":
-                    angle = 90;
-                    break;
-                case "left":
-                    angle = 270;
-                    break;
-            }
             const originalY = -12;
             this.attacking = true;
             let size;
             let vsize;
             let hsize;
-            switch (this.weapon) {
-                case this.SwordObject:
-                    vsize =
-                    {
-                        x: 14,
-                        y: 32,
-                    }
-                    hsize =
-                    {
-                        x: 32,
-                        y: 14,
-                    }
-                    break;
-
-                case this.BowObject:
-                    vsize = hsize = { x: 10, y: 10 };       //Hay que calcularlo dependiendo del sprite que metamos
-                    break;
-            }
-
-
+            (this.weapon===this.SwordObject)?vsize={x:14,y:32}:(this.weapon===this.BowObject)?vsize={x:10,y:10}:vsize={x:32,y:32};
+            (this.weapon===this.SwordObject)?hsize={x:32,y:14}:(this.weapon===this.BowObject)?hsize={x:10,y:10}:hsize={x:32,y:32};
             let horizontal = (angle === 90 || angle === 270);
             let upleft = (angle === 0 || angle === 270);
             horizontal ? size = hsize : size = vsize;
@@ -137,15 +106,17 @@ export default class weaponManager {
     }
 
     useShield() {
-        if (!this.attacking && this.player.shield > 0) {
+        if (!this.attacking) {
             this.attacking = true;
             let weaponBeingUsed = this.weapon;
             this.weapon = this.ShieldObject;
             this.showWeapon(true);
-            this.scene.physics.add.collider(this.scene.enemies.enemies, this.ShieldObject, () => { this.player.shield--; });
+            this.ShieldObject.body.setSize(32,32);
+
             this.scene.time.delayedCall(500, () => {
                 this.attacking = false;
-                this.showWeapon(false);
+                //si nos e ha roto el escudo
+                if(this.weapon.body!==undefined)this.showWeapon(false);
                 this.weapon = weaponBeingUsed;
             });
         }

@@ -216,10 +216,6 @@ export class Button extends Phaser.GameObjects.Sprite {
         if (Array.isArray(this.sprite) && this.sprite.length > 2)        //si tinee imagen de over
         {
             this.on("pointerover", () => {
-                /*let defaultSprite = this.scene.textures.get(this.sprite[0]);    
-                let overSprite = this.scene.textures.get(this.sprite[2]);    
-                if(this.texture === defaultSprite && this.texture !== overSprite)
-                    this.setOverSprite();*/
                 this.overSprite.x = this.x;
                 this.overSprite.y = this.y;
                 this.overSprite.setVisible(true);
