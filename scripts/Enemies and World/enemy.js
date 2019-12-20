@@ -333,16 +333,6 @@ export class enemyInfo {
 
 
 export class enemyManager {
-
-    static prices=
-    {
-        zombie:3,
-        bee:5,
-        spider:20,
-        wizard:15,
-        beetle:10
-    }
-
     constructor(scene, enemies = undefined) {
 
         /* Si nos han pasado un Array con enemyInfo entonces estamos en el dungeonRun */
@@ -448,6 +438,10 @@ export class enemyManager {
         }
         console.error("No se puede crear un enemigo de tipo " + enemy.subtype);
         return 0;
+    }
+    static prices() 
+    {
+        return{zombie:3,bee:5,spider:20,wizard:15,beetle:10}
     }
 }
 

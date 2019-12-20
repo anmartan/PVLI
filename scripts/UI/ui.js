@@ -488,7 +488,7 @@ class dungeonGrid
         //cell.actual = this.scene.actual;        //Necesitamos guardar "actual" que hace referencia al número de la habitación de la celda
         if(cell.type==="")
         {
-            if(this.scene.money - enemyManager.prices[this.currentSubtype]>=0)
+            if(this.scene.money - enemyManager.prices()[this.currentSubtype]>=0)
             this.setCell(cell.i, cell.j);
         }
         else if(cell.type !== "bloqued")
@@ -586,12 +586,12 @@ class cell extends Button
         {
             if(this.type === "enemy")
             {
-                price = enemyManager.prices[subtype];
+                price = enemyManager.prices()[subtype];
                 this.scene.money -=  price;
             }
             else if (this.type === "trap") 
             {                
-                price = trapManager.prices[subtype];;
+                price = trapManager.prices()[subtype];;
                 this.scene.money -=  price;
             }
             this.scene.moneyText.text=this.scene.money;
@@ -611,11 +611,11 @@ class cell extends Button
         //buscamos el precio de la trampa o enemigo en concreto para restarlo del dinero total
         if(this.type === "enemy")
         {
-            price = enemyManager.prices[this.subtype];
+            price = enemyManager.prices()[this.subtype];
         }
         else if (this.type === "trap") 
         {                
-            price = trapManager.prices[this.subtype];
+            price = trapManager.prices()[this.subtype];
         }
         console.log(this.scene);
         this.scene.money +=  price;

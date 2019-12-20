@@ -4,14 +4,11 @@ import { zombie } from "./enemy.js";
 //Se encarga de transformar la información en el editor de mazmorras en trampas dentro de la habitación
 export class trapManager
 {
-    static prices=
+    static prices()
     {
-        "spikes":15,
-        "poison":15,
-        "stun":20,
-        "spawn":22,
-        "teleportation":25
+        return {"spikes":15,"poison":15,"stun":20,"spawn":22,"teleportation":25}
     }
+    
 
     constructor(traps = undefined)
     {
