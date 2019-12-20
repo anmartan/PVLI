@@ -45,6 +45,7 @@ export const itemAtlas =
         {
             Sprite: "Armor2",
             Icon: "",
+            Tint: "7200b3"
         }
     },
     Armor3:
@@ -57,6 +58,7 @@ export const itemAtlas =
         {
             Sprite: "Armor3",
             Icon: "",
+            Tint: "ff00ff"
         }
     },
     Arrow1:
