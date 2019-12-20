@@ -87,7 +87,7 @@ const SelectGameMode =
         this.load.image("Shield3", "../assets/objects/shield3.png")
         /*----------*/
 
-        this.load.spritesheet("trap", "../assets/traps/spike_animation.png", { frameWidth: 252, frameHeight: 97 })
+        this.load.spritesheet("trap", "../assets/traps/spike_animation.png", { frameWidth: 22, frameHeight: 19 })
 
 
         this.load.image("caballero_idle0", "../assets/player/knight_m_idle_anim_f0.png")
@@ -189,7 +189,7 @@ const SelectGameMode =
         });
         this.anims.create({
             key: 'trapAnim',
-            frames: this.anims.generateFrameNumbers('trap', { start: 0, end: 3 }),
+            frames: this.anims.generateFrameNumbers('trap', { start: 0, end: 4 }),
             frameRate: 10,
             repeat: 0
         });

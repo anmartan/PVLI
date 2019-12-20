@@ -427,7 +427,8 @@ class dungeonGrid {
     cellClicked(cell) {
         //cell.actual = this.scene.actual;        //Necesitamos guardar "actual" que hace referencia al número de la habitación de la celda
         if (cell.type === "") {
-            if (this.scene.money - enemyManager.prices()[this.currentSubtype] >= 0)
+            let manager = (this.currentType==="enemy")?enemyManager:trapManager;
+            if (this.scene.money - manager.prices()[this.currentSubtype] >= 0)
                 this.setCell(cell.i, cell.j);
         }
         else if (cell.type !== "bloqued") {

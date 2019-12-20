@@ -111,6 +111,15 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite {
         this.setVisible(false);
     }
 }
+export class dummieArrow extends Phaser.GameObjects.Sprite
+{
+    constructor(scene, x, y,angle) {
+        super(scene, x, y, "Arrow");
+        this.angle=angle;
+        socket.on("arrowMove",(pos)=>{if(id===this.id){this.x=pos.x;this.y=pos.y}})
+        socket.on("arrowDead",(id)=>{if(id===this.id)this.destroy();})
+    }
+}
 export class dummieTrap extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, sprite, trapManager, id) {
         super(scene, (x + 1.5) * scene.game.tileSize, (y + 1.5) * scene.game.tileSize, "trap");
