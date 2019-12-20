@@ -114,24 +114,24 @@ export class editorMenu  //Manager que se encarga de decidir qué botones se mue
         
         //Opciones de states[0] tamaño de habitación:
         //--Pequeña (5x5), Mediana (7x7) y Grande (9x9)--
-        this.states[0].add(new sizeOptionButton(scene,optionsX + 50,optionsY,    ["sizeSymbol","sizeSymbol2","clicked"], 5))
-        this.states[0].add(new sizeOptionButton(scene,optionsX + 50,optionsY+ 32,  ["sizeSymbol","sizeSymbol2","clicked"], 7))
-        this.states[0].add(new sizeOptionButton(scene,optionsX + 50,optionsY+ 64, ["sizeSymbol","sizeSymbol2","clicked"], 9))
+        this.states[0].add(new sizeOptionButton(scene,optionsX + 50,optionsY,    ["smallRoomButton","smallRoom2Button","clicked"], 5))
+        this.states[0].add(new sizeOptionButton(scene,optionsX + 50,optionsY+ 32,  ["mediumRoomButton","mediumRoom2Button","clicked"], 7))
+        this.states[0].add(new sizeOptionButton(scene,optionsX + 50,optionsY+ 64, ["bigRoomButton","bigRoom2Button","clicked"], 9))
 
         //Opciones de states[1] monstruos:
         //--Zombie, araña, abeja, mago y escarabajo--
-        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY,          ["enemiesSymbol","enemiesSymbol2","clicked"], this,"enemy","zombie")); //
-        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 32,     ["enemiesSymbol","enemiesSymbol2","clicked"], this,"enemy","spider" )); // En un mundo ideal habría varios tipos más
-        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 64 ,    ["enemiesSymbol","enemiesSymbol2","clicked"], this,"enemy","bee" )); //
-        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 96,     ["enemiesSymbol","enemiesSymbol2","clicked"], this,"enemy","beetle" )); //
-        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 128,    ["enemiesSymbol","enemiesSymbol2","clicked"], this,"enemy","wizard" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY,          ["zombieButton","zombie2Button","clicked"], this,"enemy","zombie")); //
+        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 32,     ["spiderButton","spider2Button","clicked"], this,"enemy","spider" )); // En un mundo ideal habría varios tipos más
+        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 64 ,    ["beeButton","bee2Button","clicked"], this,"enemy","bee" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 96,     ["beetleButton","beetle2Button","clicked"], this,"enemy","beetle" )); //
+        this.states[1].add(new gridOptionButton(scene,optionsX + 50, optionsY + 128,    ["wizardButton","wizard2Button","clicked"], this,"enemy","wizard" )); //
         
         //Opciones de states[2] trampas:
         //--Daño, veneno, stuneo y spawn--
-        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY,      ["trapSymbol","trapSymbol2","clicked"], this,"trap", "spikes"));  // 
-        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 32, ["trapSymbol","trapSymbol2","clicked"], this,"trap", "poison"));  // En un mundo ideal habría varios tipos más
-        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 64, ["trapSymbol","trapSymbol2","clicked"], this,"trap", "stun"));    //
-        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 96, ["trapSymbol","trapSymbol2","clicked"], this,"trap", "spawn"));   //
+        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY,      ["spikesButton","spikes2Button","clicked"], this,"trap", "spikes"));  // 
+        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 32, ["poisonButton","poison2Button","clicked"], this,"trap", "poison"));  // En un mundo ideal habría varios tipos más
+        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 64, ["stunButton","stun2Button","clicked"], this,"trap", "stun"));    //
+        this.states[2].add(new gridOptionButton(scene,optionsX + 50, optionsY + 96, ["spawnButton","spawn2Button","clicked"], this,"trap", "spawn"));   //
         //this.states[2].add(new gridOptionButton(scene,optionsX,optionsY + 128, ["white2","green2"], this.grid,"trap", "teleportation"));   // esta no funciona todavía
         
         this.states[0].emit("pointerdown")                                                                                 //Empezamos por defecto con el estado "Size"

@@ -33,6 +33,37 @@ const SelectGameMode=
         this.load.image("enemiesSymbol2",     "../assets/ui/dungeonEditor/enemies2.png");
         this.load.image("clicked",    "../assets/ui/dungeonEditor/clicked.png");
 
+        /* Botones de enemigos y trampas dentro del editor de mazmorras */
+        this.load.image("smallRoomButton",    "../assets/ui/dungeonEditor/smallSize.png")
+        this.load.image("smallRoom2Button",   "../assets/ui/dungeonEditor/smallSize2.png")
+        this.load.image("mediumRoomButton",   "../assets/ui/dungeonEditor/mediumSize.png")
+        this.load.image("mediumRoom2Button",  "../assets/ui/dungeonEditor/mediumSize2.png")
+        this.load.image("bigRoomButton",      "../assets/ui/dungeonEditor/bigSize.png")
+        this.load.image("bigRoom2Button",     "../assets/ui/dungeonEditor/bigSize2.png")
+        
+        
+        this.load.image("zombieButton",       "../assets/ui/dungeonEditor/zombie.png")
+        this.load.image("zombie2Button",      "../assets/ui/dungeonEditor/zombie2.png")
+        this.load.image("spiderButton",       "../assets/ui/dungeonEditor/spider.png")
+        this.load.image("spider2Button",      "../assets/ui/dungeonEditor/spider2.png")
+        this.load.image("beeButton",          "../assets/ui/dungeonEditor/bee.png")
+        this.load.image("bee2Button",         "../assets/ui/dungeonEditor/bee2.png")
+        this.load.image("beetleButton",       "../assets/ui/dungeonEditor/beetle.png")
+        this.load.image("beetle2Button",      "../assets/ui/dungeonEditor/beetle2.png")
+        this.load.image("wizardButton",       "../assets/ui/dungeonEditor/wizard.png")
+        this.load.image("wizard2Button",      "../assets/ui/dungeonEditor/wizard2.png")
+        
+        
+        this.load.image("poisonButton",       "../assets/ui/dungeonEditor/poison.png")
+        this.load.image("poison2Button",      "../assets/ui/dungeonEditor/poison2.png")
+        this.load.image("spikesButton",       "../assets/ui/dungeonEditor/spikes.png")
+        this.load.image("spikes2Button",      "../assets/ui/dungeonEditor/spikes2.png")
+        this.load.image("stunButton",         "../assets/ui/dungeonEditor/stun.png")
+        this.load.image("stun2Button",        "../assets/ui/dungeonEditor/stun2.png")
+        this.load.image("spawnButton",        "../assets/ui/dungeonEditor/spawn.png")
+        this.load.image("spawn2Button",       "../assets/ui/dungeonEditor/spawn2.png")
+        /*-----------*/
+
 
         /*Objetos nuevos*/
         this.load.image("Sword0", "../assets/objects/sword0.png")

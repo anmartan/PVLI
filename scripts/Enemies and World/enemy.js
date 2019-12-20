@@ -42,10 +42,10 @@ export class enemy extends livingEntity {
     spotPlayer(player) {
         this.zone.destroy();
         this.player = player;
-        this.findDir();
+        if(!this.possesed)this.findDir();
     }
     findDir() {
-        if (this.possesed) return;
+        //if (this.possesed) return;
         if (this.player !== undefined) {
             let dir = { x: this.player.x - this.x, y: this.player.y - this.y };
             let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
@@ -69,7 +69,7 @@ export class enemy extends livingEntity {
             if (!this.knockbacked) {
                 this.moveEnemy();
             }
-            this.scene.time.delayedCall(1000, this.findDir, [], this)
+            if(!this.possesed) this.scene.time.delayedCall(1000, this.findDir, [], this)
         }
     }
     kill() {
@@ -284,15 +284,10 @@ export class beetle extends enemy {
 Enemigo         Puntos de vida          Puntos de ataque            Velocidad           Precio
 
 Zombie              3                           1                       Baja             3 
- 
 Abeja               1-2                         1                       Alta            5-6   
-
 Araña               2                           2                       Baja             20
-
 Arañita             1                           1                       Media            x
-
 Mago                4                           3-4                     Baja            15
-
 Escarabajo          3+3                         1-2                     Media           10
 */
 
