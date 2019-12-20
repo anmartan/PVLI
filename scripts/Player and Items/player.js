@@ -122,7 +122,7 @@ export class player extends livingEntity {
         if (this.inventory.Armor.Units > 0)
         {
             this.augmentMaxHealth(this.inventory.Armor.ExtraMaxHealth)
-            this.setTint(this.inventory.Armor.Tint);
+            this.setTint(this.inventory.Armor.Images.Tint);
         }
         if (this.inventory.Boots.Units > 0)
             this.speed *= this.inventory.Boots.Speed;
