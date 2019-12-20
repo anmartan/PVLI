@@ -6,61 +6,39 @@ export default class weaponManager
         let Sword         = player.inventory.Sword;
         let Bow           = player.inventory.Bow;
         let Shield        = player.inventory.Shield;
-        this.NormalArrows = player.inventory.Arrow1.Units;       //number of normal arrows
-        this.FireArrows   = player.inventory.Arrow2.Units;      //number of fire arrows
-        this.Grenades     = player.inventory.Grenade.Units;     //amount of grenades
-        this.Radars       = player.inventory.Radar.Units;       //amount of radars
         
-        let SwordObject = scene.add.sprite(0,0,Sword.Images.Sprite);
-        scene.add.existing(SwordObject);
-        scene.physics.add.existing(SwordObject);
-        SwordObject.body.setEnable(true);
-        SwordObject.body.setSize(1,1);
-        SwordObject.setVisible(false);
-        Object.assign(SwordObject,Sword);
+        this.Grenade      = player.inventory.Grenade;
+        this.Radar         = player.inventory.Radar;
+        this.NormalArrow   = player.inventory.Arrow1;
+        this.FireArrow     = player.inventory.Arrow2;  
+      
 
-        let BowObject = scene.add.sprite(0,0,Bow.Images.Sprite);
-        scene.add.existing(BowObject);
-        scene.physics.add.existing(BowObject);
-        BowObject.body.setEnable(true);
-        BowObject.body.debugShowBody=false;
-        BowObject.setVisible(false);
-        BowObject.Quantity=Bow.Quantity;
-        Object.assign(BowObject,Bow);
-
+        this.weaponGroup = scene.add.group();
+        const createWeaponObject = function(name, weaponGroup)
+        {
+            let nameObject = scene.add.sprite(0,0,name.Images.Sprite);
+            scene.add.existing(nameObject);
+            scene.physics.add.existing(nameObject);
+            nameObject.body.setEnable(true);
+            nameObject.body.setSize(1,1);nameObject.body.debugShowBody=false;
+            nameObject.setVisible(false);
+            Object.assign(nameObject,name);
+            weaponGroup.add(nameObject);
+            return nameObject;
+        }
+        this.SwordObject=createWeaponObject(Sword,this.weaponGroup);
+        this.BowObject=createWeaponObject(Bow,this.weaponGroup);
+        this.ShieldObject=createWeaponObject(Shield,this.weaponGroup);
 
         //Si solo hay flechas de fuego, se seleccionan esas
         //Si hay flechas normales, o no hay de ningunas, son las seleccionadas por defecto.
-        if(this.NormalArrows === 0 && this.FireArrows > 0) this.arrowSelected= this.FireArrows;
-        else this.arrowSelected = this.NormalArrows;
-        
-        
-        let ShieldObject = scene.add.sprite(0,0,Shield.Images.Sprite);
-        scene.add.existing(ShieldObject);
-        scene.physics.add.existing(ShieldObject);
-        ShieldObject.body.setEnable(false);
-        ShieldObject.body.setSize(player.body.width + 5, player.body.height + 5);
-        ShieldObject.setVisible(false);ShieldObject.body.debugShowBody=false;
-        Object.assign(ShieldObject,Shield);
+        this.arrowSelected = (this.NormalArrow.Units === 0 && this.FireArrow.Units > 0) ? this.FireArrow : this.NormalArrow;
 
-        
-        
-        let weaponGroup = scene.add.group();
-
-        
-        this.NormalArrowsDamage = player.inventory.Arrow1.Damage;
-        this.FireArrowsDamage   = player.inventory.Arrow2.Damage;
-        this.GrenadeDamage      = player.inventory.Grenade.Damage;
-        this.SwordObject        = SwordObject;
-        this.BowObject          = BowObject;
-        this.ShieldObject       = ShieldObject;
-        this.weapon             = this.SwordObject;                 //el arma por defecto es la espada
-        this.offsetX            = 0;
-        this.offsetY            = 0;
-        this.scene              = scene;
-        this.weaponGroup = weaponGroup;
-        this.weaponGroup.add(this.SwordObject);
-        this.weaponGroup.add(this.BowObject);
+        //el arma por defecto es la espada
+        this.weapon = this.SwordObject;                 
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.scene   = scene;
         this.player = player;
         this.showWeapon(false);
     }
@@ -80,12 +58,27 @@ export default class weaponManager
     {
         if(!this.attacking)
         {
+            let angle=0;
+            switch (dir) 
+            {
+                case "up":
+                    angle=0;
+                    break;
+                case "down":
+                    angle = 180;
+                    break;
+                case "right":
+                    angle=90; 
+                    break;
+                case "left":
+                    angle=270; 
+                    break;
+            }
+            const originalY=-12;
             this.attacking = true;
-            let angle;
             let size;
             let vsize;
             let hsize; 
-            let delay;
             switch(this.weapon)
             {
                 case this.SwordObject:
@@ -99,58 +92,34 @@ export default class weaponManager
                     x: 32, 
                     y: 14, 
                     }
-                    delay = 1000;
                     break;
 
                 case this.BowObject:
                     vsize = hsize={x:10,y:10};       //Hay que calcularlo dependiendo del sprite que metamos
-                    delay=250;
                     break;
             }
             
-            switch (dir) 
-            {
-                case "up":
-                    this.offsetX=-2;
-                    this.offsetY=-12;
-                    size = vsize;
-                    angle=0;
-                    break;
-                    case "down":
-                        this.offsetX=-2;
-                    this.offsetY= 12;
-                    
-                    size = vsize;
-                    angle = 180;
-                    break;
-                case "right":
-                    this.offsetX=12;
-                    this.offsetY=2;
-                    this.weapon.setFlipX(false);
-                    
-                    size = hsize;
-                    angle=90; 
-                    break;
-                    case "left":
-                        this.offsetX=-14;
-                        this.offsetY=2;
-                        this.weapon.setFlipX(true);
-                    
-                        size = hsize;
-                        angle=270; 
-                        break;
-            }
+
+            let horizontal=(angle===90||angle===270);
+            let upleft=(angle===0||angle===270);
+            horizontal ? size=hsize : size=vsize;
+            horizontal ? this.offsetY=-2 : this.offsetX=2;
+            horizontal ? this.offsetX=upleft ?originalY:-originalY : this.offsetY = upleft ? originalY:-originalY
+            this.weapon.setFlipX(horizontal);
+
+
+
             this.weapon.body.setSize(size.x,size.y);
             this.weapon.setAngle(angle); 
             
             this.showWeapon(true);
-            if(this.weapon === this.BowObject)
+            if(this.weapon === this.BowObject && this.arrowSelected.Units>0)
             {
-                this.shootArrow(this.offsetX, this.offsetY, angle);
+                this.shootArrow(angle, this.arrowSelected.Damage);
             } 
             socket.emit("playerAttack", {angle: angle, offsetX: this.offsetX, offsetY:this.offsetY});
-            this.scene.time.delayedCall(delay,   this.haveAttacked,[],this)
-            this.scene.time.delayedCall(delay,   ()=> this.attacking=false);
+            this.scene.time.delayedCall(this.weapon.Cooldown,   this.haveAttacked,[],this)
+            this.scene.time.delayedCall(this.weapon.Cooldown,   ()=> this.attacking=false);
         }
     }
     showWeapon(bool)
@@ -169,33 +138,16 @@ export default class weaponManager
     }
     changeArrows()
     {
-        if(this.arrowSelected === this.FireArrows) this.arrowSelected = this.NormalArrows;
-        else this.arrowSelected = this.FireArrows;
+        if(this.arrowSelected === this.FireArrow) this.arrowSelected = this.NormalArrow;
+        else this.arrowSelected = this.FireArrow;
     }
-    shootArrow(offsetX, offsetY, angle)
+    shootArrow(angle,damage)
     {
-        if(this.NormalArrows>0)
-        {
-            let arrow;
-            
-            if (this.arrowSelected === this.FireArrows && this.FireArrows > 0)
-            {
-                arrow = new Arrow (this.scene, this.player.x, this.player.y, angle, "fire");
-                arrow.Damage = this.FireArrowsDamage;
-                this.FireArrows--; 
-                this.arrowSelected--;  
-                this.weaponGroup.add(arrow);     //Esto hace que no se dispare dos veces la misma flecha
-            }
-
-            else if(this.arrowSelected == this.NormalArrows && this.NormalArrows > 0)
-            { 
-                arrow = new Arrow (this.scene, this.player.x, this.player.y, angle, "normal");
-                arrow.Damage = this.NormalArrowsDamage;
-                this.NormalArrows--;
-                this.arrowSelected--;
-                this.weaponGroup.add(arrow);     //Esto hace que no se dispare dos veces la misma flecha
-            }
-        }
+        let type = (this.arrowSelected===this.NormalArrow)?"normal":"fire";
+        let arrow = new Arrow (this.scene, this.player.x, this.player.y, angle, type);
+        this.arrowSelected.Units--;
+        arrow.Damage = damage;
+        this.weaponGroup.add(arrow);     
     }
 
     useShield()
@@ -233,33 +185,13 @@ export default class weaponManager
         super(scene, x, y, sprite);
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        scene.physics.add.overlap(this, scene.enemies.enemies ,()=> {if(this.effect===undefined)this.die()});
+        //scene.physics.add.overlap(this, scene.enemies.enemies ,()=> {if(this.effect===undefined)this.die()});
         scene.physics.add.collider(this, scene.tileMap.Walls,()=> {if(this.effect===undefined)this.die()});
-        this.setAngle(dir);
-        dir-=90;
         this.scene=scene;
-        switch(dir)
-        {
-            case(0):
-            this.body.velocity.x=speed;
-            this.body.velocity.y=0;
-            break;
-            
-            case(90):
-            this.body.velocity.x=0;
-            this.body.velocity.y=speed;
-            break;
-            
-            case(-90):
-            this.body.velocity.x=0;
-            this.body.velocity.y=-speed;
-            break;
-            case(180):
-            this.body.velocity.x=-speed;
-            this.body.velocity.y=0;
-            break;
-            
-        }
+        let _x=0;
+        let _y=0;
+        (dir===90)?_x=speed:(dir===270)?_x=-speed:(dir===0)?_y=-speed:_y=speed;
+        this.body.setVelocity(_x,_y);
     }
     //Las flechas se destruyen después de un tiempo o cuando colisionan con un enemigo o las paredes
     die()
@@ -272,17 +204,19 @@ class Arrow extends Projectile
 {
     constructor(scene,x,y,dir, typeOfArrow)
     {
-        let speed = 100;
         let sprite;
         if(typeOfArrow === "normal")
             sprite = "Arrow";
         else 
             sprite = "Arrow";
+        super(scene, x, y, sprite, dir, 100);
         
-        super(scene, x, y, sprite, dir, speed);
+        this.setAngle(dir);
+        this.destroyOnCol=true;
 
         //Hay que acceder al inventario, buscar el nivel del arco, su effect, y multiplicar el tiempo por el data.quantity
-        scene.time.delayedCall(250 * scene.hero.weaponManager.BowObject.Quantity,()=> this.die());
+        scene.time.delayedCall(250 * scene.hero.weaponManager.BowObject.Distance,()=> this.die());
+        return this;
     }
     
 }
@@ -320,7 +254,7 @@ class Grenade extends Projectile
     {
         this.zone = scene.add.zone (this.x, this.y, scene.game.tileSize * 2, scene.game.tileSize*2);
         scene.physics.add.existing(this.zone);
-        scene.physics.add.overlap(scene.enemies.enemies, this.zone, (enemy)=> {enemy.damage(scene.hero.weaponManager.GrenadeDamage);});
+        scene.physics.add.overlap(scene.enemies.enemies, this.zone, (enemy)=> {enemy.damage(this.Grenade.Damage);});
         scene.time.delayedCall(1000, ()=>{this.zone.destroy();this.destroy();});
     }
 }

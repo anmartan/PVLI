@@ -13,7 +13,7 @@ export class shopUiManager
     {
         let background = scene.add.image(0,0,"background");
         background.setOrigin(0,0);
-        scene.inventory = new inventory(1000);
+        scene.inventory = new inventory(100);
         console.log(scene.inventory.gold);
         
         this.timer = new Time(scene, 32, 4, 2, 0);        

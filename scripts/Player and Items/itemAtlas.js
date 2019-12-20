@@ -86,7 +86,8 @@ export const itemAtlas =
     Bow1:
     {
         Type: "Weapon",
-        Damage:4,
+        Damage:0,
+        Distance:4,
         Cooldown:2000,
         Price:15,
         Level:1,
@@ -99,7 +100,8 @@ export const itemAtlas =
     Bow2:
     {
         Type: "Weapon",
-        Damage:6,
+        Damage:0,
+        Distance:6,
         Cooldown:1500,
         Price:30,
         Level:2,
@@ -112,7 +114,8 @@ export const itemAtlas =
     Bow3:
     {
         Type: "Weapon",
-        Damage:8,
+        Damage:1,
+        Distance:8,
         Cooldown:1000,
         Price:60,
         Level:3,
@@ -139,7 +142,7 @@ export const itemAtlas =
     {
         Type: "Weapon",
         Damage:1,
-        Cooldown:1000,
+        Cooldown:800,
         Price:15,
         Level:1,
         Images:
@@ -152,7 +155,7 @@ export const itemAtlas =
     {
         Type: "Weapon",
         Damage:2,
-        Cooldown:1000,
+        Cooldown:500,
         Price:30,
         Level:2,
         Images:
@@ -165,7 +168,7 @@ export const itemAtlas =
     {
         Type: "Weapon",
         Damage:4,
-        Cooldown:1000,
+        Cooldown:300,
         Price:60,
         Level:3,
         Images:

@@ -10,7 +10,6 @@ export class rec extends Phaser.GameObjects.Rectangle
         this.setOrigin(0,0);
         this.tileSize=scene.game.tileSize;
         this.scene=scene;
-        super.destroy.apply()
     }
     setRecPos(size, exit)
     {
@@ -19,7 +18,7 @@ export class rec extends Phaser.GameObjects.Rectangle
         this.body.debugBodyColor="0x00ff00";}
         this.x = (positionInTiles)*this.tileSize;
     }
-    destroy(){this.body.destroy();super.destroy();console.error("he hecho destroy")};
+    //destroy(){super.destroy();console.error("he hecho destroy")};
 
 }
 

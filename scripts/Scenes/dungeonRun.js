@@ -75,24 +75,25 @@ const scene = {
             exitRec.setRecPos(size,true);
             
             //Creamos las nuevas trampas y enemigos
-            this.enemies.summonEnemies(this, this.hero, this.hero.weaponManager.weapon, this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
+            this.enemies.summonEnemies(this, this.hero, this.hero.weaponManager.weaponGroup, this.tileMap.Walls); //invoca a los enemigos, y activa las físicas y colisiones
             this.traps.CreateTraps(this, this.hero, this.tileMap.Walls);
-            this.physics.add.collider(this.hero, entranceRec);}
+        }
         })
         this.finish=(bool)=>
         {
             socket.emit("DungeonFinished");
+            //this.game.scene.pause("DungeonRun");
+            this.stop=true;
             //this.hero.hearts.destroy();
             bool ? this.game.endMessage="Has ganado":this.game.endMessage="Has perdido";
             this.game.player="Ffo";
             this.game.scene.start("EndGame");
-            this.game.scene.stop("DungeonRun");
         }
     },
     update: function(delta)
     {
-
-        this.hero.handleLogic();
+        if(this.hero!==undefined)this.hero.handleLogic();
+        console.error(this);
     }
    
 };

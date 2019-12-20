@@ -25,7 +25,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite
         {
 
             this.health -= points;
-            if(this.hearts !== undefined) if(this.health<0)points+=-this.health;this.hearts.loseHearts(points);
+            if(this.hearts !== undefined) {if(this.health<0)points-=this.health;this.hearts.loseHearts(points)};
             this.vulnerable = false;
             this.alpha = 0.75;
             this.scene.time.delayedCall(950, this.makeVulnerable, [], this)
@@ -85,7 +85,7 @@ export class player extends livingEntity
 {
     constructor(scene, x, y, speed,sprite, anim, sword)
     {
-        super(scene,x -8 ,y, sprite,speed, {maxHealth: 6})
+        super(scene,x -8 ,y, sprite,100, {maxHealth: 6})
    
         /*----        corrigiendo collider y activando worldbounds      -----*/
         this.body.setSize(14,14);
@@ -114,7 +114,7 @@ export class player extends livingEntity
         this.key_2     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_TWO  );
         this.key_3     = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_THREE);
         
-        this.play(anim);
+        //this.play(anim);
         
         //Intento de meter el inventario
         this.inventory = this.scene.game.inventory;
@@ -131,7 +131,6 @@ export class player extends livingEntity
     {
         if(this.inventory.Potion.Units >0)
         this.heal(this.inventory.Potion.Health);
-        
     }
 
     //Ajusta los valores de la armadura, el escudo y las botas
@@ -228,7 +227,8 @@ export class player extends livingEntity
             if(this.key_Q.isDown)
                 this.weaponManager.useShield();
         }
-
+        this.dir.x=1;
+        this.move();
     }
     kill()
     {
