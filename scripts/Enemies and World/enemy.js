@@ -110,6 +110,7 @@ export class enemy extends livingEntity {
         this.scene.time.delayedCall(500, () => { this.knockbacked = false; this.speed /= 2 });
     }
     moveEnemy() {
+        if(this.specialMove !== undefined) this.specialMove();
         this.move();
     }
     update() {
@@ -234,6 +235,13 @@ export class wizard extends enemy {
         }
     }*/
 
+    specialMove()
+    {
+        console.log(this.dir);
+        this.dir.x *= -1;
+        this.dir.y *= -1;
+        console.log(this.dir);
+    }
     attack()
     {
         if(!this.attacking)
