@@ -26,6 +26,14 @@ const ItemShop =
     },
     create: function()
     {
+        socket.on("enemyDisconected",()=>
+        {
+            if(this.game.scene.isActive("ItemShop"))this.game.scene.stop("ItemShop");
+            this.game.player="Ffo";
+            this.game.endMessage="Has ganado";
+            this.game.scene.start("EndGame");
+        })
+        
         let music = this.sound.add("introHero");
         music.play({volume:0.1});
         let loop =this.sound.add("loopHero") 

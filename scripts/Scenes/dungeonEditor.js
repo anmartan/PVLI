@@ -63,6 +63,13 @@ const  scene =
             this.game.inventory = data.inventory;
             this.game.scene.start("DungeonRunAH");
         })
+        socket.on("enemyDisconected",()=>
+        {
+            if(this.game.scene.isActive("DungeonEditor"))this.game.scene.stop("DungeonEditor");
+            this.game.player="Off";
+            this.game.endMessage="Has ganado";
+            this.game.scene.start("EndGame");
+        })
 
         socket.on("continuar", ()=>  this.continuar.emit("pointerdown"));   
     },

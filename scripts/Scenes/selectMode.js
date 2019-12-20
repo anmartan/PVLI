@@ -178,7 +178,8 @@ const SelectGameMode=
         this.right.on("pointerdown", () =>
         {
             this.game.scene.stop("selectGameMode");
-            socket.emit("start", "Hero");
+            if(!this.emitted)socket.emit("start", "Hero");
+            this.emitted=true;
             socket.on("startMatch", () =>
             {
                 this.game.scene.start("ItemShop");
@@ -188,7 +189,8 @@ const SelectGameMode=
         this.left.on("pointerdown", () =>
         {
             this.game.scene.stop("selectGameMode");
-            socket.emit("start", "AntiHero");
+            if(!this.emitted)socket.emit("start", "AntiHero");
+            this.emitted=true;
             socket.on("startMatch", () =>
             {
                 this.game.scene.start("DungeonEditor");
