@@ -248,7 +248,8 @@ export class wizard extends enemy {
     }
     attack()
     {
-        if(!this.attacking)
+        this.on('animationrepeat-idleWizard' ()=> this.ball = new wizardProjectiles(this.scene, this.x, this.y, this.dir, this.projectileSpeed, "button2", this.ATTKPoints));
+        /*if(!this.attacking)
         {
             this.attacking= true;
             
@@ -258,6 +259,7 @@ export class wizard extends enemy {
                 this.attack();
             });
         }
+        */
     }
 }
 
