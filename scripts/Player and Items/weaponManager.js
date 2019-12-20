@@ -74,7 +74,7 @@ export default class weaponManager {
 
             this.showWeapon(true);
             if (this.weapon === this.BowObject && this.arrowSelected.Units > 0) {
-                this.shootArrow(angle, this.arrowSelected.Damage);
+                this.shootArrow(angle, this.arrowSelected.Damage,this.arrowSelected.Units);
             }
             socket.emit("playerAttack", { angle: angle, offsetX: this.offsetX, offsetY: this.offsetY, weaponSprite: this.weapon.Images.Sprite });
             this.scene.time.delayedCall(this.weapon.Cooldown, this.haveAttacked, [], this)
@@ -97,9 +97,9 @@ export default class weaponManager {
         if (this.arrowSelected === this.FireArrow) this.arrowSelected = this.NormalArrow;
         else this.arrowSelected = this.FireArrow;
     }
-    shootArrow(angle, damage) {
+    shootArrow(angle, damage,id) {
         let type = (this.arrowSelected === this.NormalArrow) ? "normal" : "fire";
-        let arrow = new Arrow(this.scene, this.player.x, this.player.y, angle, type);
+        let arrow = new Arrow(this.scene, this.player.x, this.player.y, angle, type,id);
         this.arrowSelected.Units--;
         arrow.Damage = damage;
         this.weaponGroup.add(arrow);
@@ -125,14 +125,14 @@ export default class weaponManager {
     throwProjectiles(typeOfProjectile) {
 
         if (this[typeOfProjectile].Units > 0) {
-            new (typeOfProjectile === "Grenade" ? Grenade : Radar)(this.scene, this.player.x, this.player.y);
+            new (typeOfProjectile === "Grenade" ? Grenade : Radar) (this.scene, this.player.x, this.player.y,this[typeOfProjectile].Units);
             this[typeOfProjectile].Units--;
         }
     }
 }
 
 class Projectile extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, sprite, dir, speed) {
+    constructor(scene, x, y, sprite, dir, speed, prefix,id) {
         super(scene, x, y, sprite);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -143,22 +143,48 @@ class Projectile extends Phaser.GameObjects.Sprite {
         let _y = 0;
         (dir === 90) ? _x = speed : (dir === 270) ? _x = -speed : (dir === 0) ? _y = -speed : _y = speed;
         this.body.setVelocity(_x, _y);
+        let data = 
+        {
+            x:this.x,
+            y:this.y,
+            sprite:sprite,
+            angle:dir,
+            id:id,
+            prefix:prefix,
+        }
+        socket.emit("newProyectile", data);
+        this.id=id;
+        this.prefix=prefix;
     }
     //Las flechas se destruyen después de un tiempo o cuando colisionan con un enemigo o las paredes
     die() {
         if (this.effect !== undefined) { this.effect(this.scene); this.setVisible(false) }
         else this.destroy();
     }
+    update()
+    {
+        let name =this.prefix+"Move";
+        socket.emit(name,{x:this.x,y:this.y,id:this});
+        console.log("aaa");
+        super.update();
+    }
+    destroy()
+    {
+        let name=this.prefix+"Dead";
+        socket.emit(name,this.id);
+        console.log("aaa");
+
+        super.destroy();
+    }
 }
 class Arrow extends Projectile {
-    constructor(scene, x, y, dir, typeOfArrow) {
+    constructor(scene, x, y, dir, typeOfArrow,id) {
         let sprite;
         if (typeOfArrow === "normal")
             sprite = "Arrow";
         else
             sprite = "Arrow";
-        super(scene, x, y, sprite, dir, 100);
-
+        super(scene, x, y, sprite, dir, 100, "arrow",id);
         this.setAngle(dir);
         this.destroyOnCol = true;
 
@@ -169,10 +195,10 @@ class Arrow extends Projectile {
 
 }
 class Radar extends Projectile {
-    constructor(scene, x, y, dir = 0) {
+    constructor(scene, x, y, dir = 0, id) {
         let speed = 0;
         let sprite = "";
-        super(scene, x, y, sprite, dir, speed);
+        super(scene, x, y, sprite, dir, speed,"badar",id);
 
         scene.time.delayedCall(1000, () => this.die());
 
@@ -186,10 +212,10 @@ class Radar extends Projectile {
     }
 }
 class Grenade extends Projectile {
-    constructor(scene, x, y, dir = 0) {
+    constructor(scene, x, y, dir = 0,id) {
         let speed = 0;
         let sprite = "Bomb";
-        super(scene, x, y, sprite, dir, speed);
+        super(scene, x, y, sprite, dir, speed,"bomb",id);
 
         scene.time.delayedCall(1000, () => this.die());
     }

@@ -1,4 +1,4 @@
-import { dummiePlayer, dummieEnemy } from "../Enemies and World/dummieEntitties.js";
+import { dummiePlayer, dummieEnemy,dummieProyectile } from "../Enemies and World/dummieEntitties.js";
 import { enemyManager } from "../Enemies and World/enemy.js";
 import { tilemap } from '../Enemies and World/tilemap.js';
 import { trapManager } from "../Enemies and World/traps.js";
@@ -38,7 +38,10 @@ const scene = {
             //new dummieEnemy(this,5,5,"zombie_idle0",zombieIdle,this.enemies,0);
             this.enemies.addEnemy(this.enemies.summonDummy(enemy.enemy, this, enemy.id));
         })
-
+        socket.on("newProyectile", data =>
+        {
+            new dummieProyectile(this,data.x,data.y,data.sprite,data.angle,data.id,data.prefix);
+        })
         socket.on("deadHero", () => {
             console.log("ha muerto el hero")
             this.finish(false);

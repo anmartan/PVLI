@@ -4,7 +4,7 @@ export class dummiePlayer extends Phaser.GameObjects.Sprite {
 
     constructor(scene, x, y, sprite, spriteSword, scale) {
         super(scene, x, y, sprite);
-        this.sword = scene.add.sprite(x, y, spriteSword).setScale(scale);
+        this.sword = scene.add.sprite(x, y, spriteSword);
         scene.add.existing(this);
         scene.add.existing(this.sword);
         this.sword.setVisible(false);
@@ -111,13 +111,15 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite {
         this.setVisible(false);
     }
 }
-export class dummieArrow extends Phaser.GameObjects.Sprite
+export class dummieProyectile extends Phaser.GameObjects.Sprite
 {
-    constructor(scene, x, y,angle) {
-        super(scene, x, y, "Arrow");
-        this.angle=angle;
-        socket.on("arrowMove",(pos)=>{if(id===this.id){this.x=pos.x;this.y=pos.y}})
-        socket.on("arrowDead",(id)=>{if(id===this.id)this.destroy();})
+    constructor(scene, x, y,sprite,angle,id,eventNamePrefix) {
+        super(scene, x, y, sprite);
+        this.setAngle(angle.x,angle.y);
+        this.id=id;
+        socket.on(eventNamePrefix+"Move",(pos)=>{if(id===this.id){this.x=pos.x;this.y=pos.y}})
+        socket.on(eventNamePrefix+"Dead",(id)=>{if(id===this.id)this.destroy();})
+        scene.add.existing(this);
     }
 }
 export class dummieTrap extends Phaser.GameObjects.Sprite {
