@@ -214,15 +214,13 @@ export class itemButton3lvl {
         container.add(bg)
         console.log(itemID)
 
-        if (itemID !== "Armor") {
-            if (itemID === "Sword") {
-                this.expositor = scene.add.image(0, 4, itemAtlas[itemID + "1"].Images.Sprite);
-                this.expositor.angle = 90;
-            }
-            else
-                this.expositor = scene.add.image(0, 4, scene.inventory[itemID].Images.Sprite);
-            container.add(this.expositor);
+        if (itemID === "Sword") {
+            this.expositor = scene.add.image(0, 4, itemAtlas[itemID + "1"].Images.Sprite);
+            this.expositor.angle = 90;
         }
+        else
+            this.expositor = scene.add.image(0, 4, scene.inventory[itemID].Images.Sprite);
+        container.add(this.expositor);
 
         let style = { fontFamily: "m5x7", fontSize: "32px", color: "#00" };
 
@@ -240,12 +238,10 @@ export class itemButton3lvl {
             let buy = buyResult.buy;
             if (toBuyItemLvl < 4) {
                 let name = itemID + toBuyItemLvl;
-                if (itemID !== "Armor") {
-                    this.expositor.destroy();
-                    this.expositor = scene.add.image(0, 4, itemAtlas[name].Images.Sprite);
-                    if (itemID === "Sword") this.expositor.angle = 90;
-                    container.add(this.expositor);
-                }
+                this.expositor.destroy();
+                this.expositor = scene.add.image(0, 4, itemAtlas[name].Images.Sprite);
+                if (itemID === "Sword") this.expositor.angle = 90;
+                container.add(this.expositor);
             } else if(buy)this.expositor.destroy();
         })
     }

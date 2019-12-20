@@ -31,20 +31,21 @@ export const itemAtlas =
         Level: 1,
         Images:
         {
-            Sprite: "",
+            Sprite: "Armor1",
             Icon: "",
         }
     },
     Armor2:
     {
-        Type: "Armor",
+        Type: "Armor2",
         ExtraMaxHealth: 4,
         Price: 40,
         Level: 2,
         Images:
         {
-            Sprite: "",
+            Sprite: "Armor2",
             Icon: "",
+            Tint: 0x7200B3
         }
     },
     Armor3:
@@ -55,8 +56,9 @@ export const itemAtlas =
         Level: 3,
         Images:
         {
-            Sprite: "",
+            Sprite: "Armor3",
             Icon: "",
+            Tint: 0xFF00FF
         }
     },
     Arrow1:
