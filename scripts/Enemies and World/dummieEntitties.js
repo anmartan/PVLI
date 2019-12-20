@@ -45,7 +45,7 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite
         super(scene,(x+1.5)*scene.game.tileSize,(y+1.5)*scene.game.tileSize,sprite);
         scene.add.existing(this);
         this.enemyManager=enemyManager;
-        if(anim="idleLittleSpider")
+        if(anim==="idleLittleSpider")
         {
             anim="idleSpider";
             this.setScale(0.5);

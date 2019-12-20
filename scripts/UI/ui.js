@@ -1,5 +1,7 @@
 import { enemyInfo } from "../Enemies and World/enemy.js";
+import { enemyManager } from "../Enemies and World/enemy.js";
 import { Time } from '../Scenes/utils.js';
+import { trapManager } from "../Enemies and World/traps.js";
 
 export class textButton extends Phaser.GameObjects.Text{
     constructor(config, x, y, text)
@@ -75,8 +77,6 @@ class indexButton extends textButton //este botón servirá en la parte de edici
     );
     }
 }
-
-
 
 
 export class editorMenu  //Manager que se encarga de decidir qué botones se muestran y qué botones no
@@ -212,7 +212,16 @@ export class Button extends Phaser.GameObjects.Sprite
         this.setInteractive();
         this.click();                           // -->Todos los Button deben implementar su método Click<--
 
-        this.clickDefault();                    // |  Método default para al clicar en el botón           |
+        if(Array.isArray(this.sprite))
+        {
+            this.on("pointerdown",() => 
+            {
+                this.clickDefault();                    // |  Método default para al clicar en el botón           |
+            })
+        } 
+
+
+    
         this.overDefault();                     // |  Método default para al pasar  el ratón en el botón  |
         this.outDefault();                      // |  Método default para al quitar el ratón en el botón  |
 
@@ -220,20 +229,12 @@ export class Button extends Phaser.GameObjects.Sprite
     }
     clickDefault()
     {
-        if(Array.isArray(this.sprite))
+        let clicikedSprite = this.scene.textures.get(this.sprite[1]);
+        if(this.texture !== clicikedSprite) this.setClickedSprite()
+        else
         {
-            this.on("pointerdown",() => 
-            {
-                let clicikedSprite = this.scene.textures.get(this.sprite[1]);
-                if(this.texture !== clicikedSprite) this.setClickedSprite()
-                else
-                {
-                    this.setDefaultSprite();            
-                }
-            })
-        } 
-
-
+            this.setDefaultSprite();            
+        }
     }
     overDefault()
     {
@@ -439,11 +440,8 @@ class dungeonGrid
         {
             for(let j = 0; j<length;j++)
             {
-                if(this.cells[i][j].type!=="bloqued")
-                {
-                    if(j+1 !== Math.round(size/2) || (i!==0 && i!==size-1))
-                    this.cells[i][j].setVisible(true);                  //Solo hace visibles las celdas que se encuentren en el tilemap de la habitación actual (lengthxlenght)
-                }
+                if(j+1 !== Math.round(size/2) || (i!==0 && i!==size-1))
+                this.cells[i][j].setVisible(true);                  //Solo hace visibles las celdas que se encuentren en el tilemap de la habitación actual (lengthxlenght)
             }
         }
     }
@@ -479,10 +477,10 @@ class dungeonGrid
     }
     unblockCells(x,y)
     {
-        if(x-1>0)this.cells[x-1][y].unblock();
+        if(x-1>=0)this.cells[x-1][y].unblock();
         if(x+1<9-this.roomSize)this.cells[x+1][y].unblock();
         if(y+1<9-this.roomSize)this.cells[x][y+1].unblock();
-        if(y-1>0)this.cells[x][y-1].unblock();
+        if(y-1>=0)this.cells[x][y-1].unblock();
     }
     //Al pulsar una celda se llamará este método
     cellClicked(cell)
@@ -490,14 +488,13 @@ class dungeonGrid
         //cell.actual = this.scene.actual;        //Necesitamos guardar "actual" que hace referencia al número de la habitación de la celda
         if(cell.type==="")
         {
-            if(this.scene.money-this.scene.rooms[this.scene.actual].enemies.getPrice(this.currentSubtype)>=0)
+            if(this.scene.money - enemyManager.prices[this.currentSubtype]>=0)
             this.setCell(cell.i, cell.j);
         }
-        else 
+        else if(cell.type !== "bloqued")
         {
             this.cells[cell.i][cell.j].refound();
             this.setCell(cell.i,cell.j,"","");
-            this.unblockCells(cell.i,cell.j);
         }
     }
 
@@ -565,6 +562,10 @@ class cell extends Button
         this.i=i;
         this.j=j;
     }
+    clickDefault()
+    {
+        if(this.type!=="bloqued")super.clickDefault();
+    }
     setType(type)
     {
         if(this.type==="" || type==="")
@@ -585,12 +586,12 @@ class cell extends Button
         {
             if(this.type === "enemy")
             {
-                price = this.scene.rooms[this.scene.actual].enemies.getPrice(subtype)
+                price = enemyManager.prices[subtype];
                 this.scene.money -=  price;
             }
             else if (this.type === "trap") 
             {                
-                price = this.scene.rooms[this.scene.actual].traps.getPrice(subtype)
+                price = trapManager.prices[subtype];;
                 this.scene.money -=  price;
             }
             this.scene.moneyText.text=this.scene.money;
@@ -610,11 +611,11 @@ class cell extends Button
         //buscamos el precio de la trampa o enemigo en concreto para restarlo del dinero total
         if(this.type === "enemy")
         {
-            price = this.scene.rooms[this.scene.actual].enemies.getPrice(this.subtype)
+            price = enemyManager.prices[this.subtype];
         }
         else if (this.type === "trap") 
         {                
-            price = this.scene.rooms[this.scene.actual].traps.getPrice(this.subtype)
+            price = trapManager.prices[this.subtype];
         }
         console.log(this.scene);
         this.scene.money +=  price;
@@ -625,14 +626,11 @@ class cell extends Button
     {
         this.type="bloqued";
         this.subtype="bloqued";
-        this.setVisible(false);
     }
     unblock()
     {
         this.type="";
         this.subtype="";
-        if(this.j+1 !== Math.round(this.scene.rooms[this.scene.actual].size/2) || (this.i!==0 && this.i!==this.scene.rooms[this.scene.actual].size-1))
-        this.setVisible(true);
     }
     click()
     {

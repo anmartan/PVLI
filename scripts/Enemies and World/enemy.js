@@ -82,10 +82,6 @@ export class enemy extends livingEntity {
         socket.emit("enemyDead", this.id);
         this.destroy();
     }
-    /*destroy()
-    {
-        super.destroy();
-    }*/
     hide()  //cuando cambias de habitación los enemigos que queden vivos se deben ocultar
     {
 
@@ -304,9 +300,17 @@ export class enemyInfo {
 
 
 export class enemyManager {
+
+    static prices=
+    {
+        zombie:3,
+        bee:5,
+        spider:20,
+        wizard:15,
+        beetle:10
+    }
+
     constructor(scene, enemies = undefined) {
-        //if(enemies===undefined){this.enemies = new Array();} //Este array de enemigos contendrá lo necesario para invocar a cada enemigo en cada habitación antes de que se invoquen. Y al invocarlos a los mismos enemigos
-        //else this.enemies=enemies;
 
         /* Si nos han pasado un Array con enemyInfo entonces estamos en el dungeonRun */
         if (Array.isArray(enemies)) {
@@ -413,19 +417,4 @@ export class enemyManager {
         return 0;
     }
 
-    getPrice(subtypeOfEnemy) 
-    {
-        switch (subtypeOfEnemy) {
-            case "zombie":
-                return 3;
-            case "bee":
-                return 5;
-            case "spider":
-                return 20;
-            case "wizard":
-                return 15;
-            case "beetle":
-                return 10;
-        }
-    }
 }
