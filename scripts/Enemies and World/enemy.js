@@ -213,21 +213,34 @@ export class littleSpider extends enemy {
 export class wizard extends enemy {
     constructor(scene, x, y, enemyManager, id) //las coordenadas x e y deben venir en rango [0-8]. Señalando las celdas correspondientes
     {
-        let anim = "idleWizard";
         let speed = 15;
+        let anim = "idleWizard";
         let sprite = "wizard";
         super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
+        this.speed = speed;
+        this.projectileSpeed = 25;
+        this.scene= scene;
         this.price = 15;
         this.ATTKPoints = 1;
         this.coolDown = 2750;
     }
 
     // el mago ataca de otra manera
-    specialAttack(player) {
+    /*specialAttack(player) {
         if (!this.attacking) {
             this.attacking = true;
             player.damage(this.ATTKPoints);
             this.scene.time.delayedCall(this.coolDown, () => { this.attacking = false; });
+        }
+    }*/
+
+    attack()
+    {
+        if(!this.attacking)
+        {
+            this.attacking= true;
+            this.ball = new wizardProjectiles(this.scene, this.x, this.y, this.dir, this.projectileSpeed, "button2", this.ATTKPoints);
+            this.scene.time.delayedCall(this.coolDown, ()=> this.attacking = false);
         }
     }
 }
@@ -427,5 +440,37 @@ export class enemyManager {
             case "beetle":
                 return 10;
         }
+    }
+}
+
+/* Clase nueva para los proyectiles del mago */
+
+export class wizardProjectiles extends Phaser.GameObjects.Sprite
+{
+    constructor(scene,x,y, dir, speed, sprite, damage)
+    {
+        super(scene, x, y, sprite);
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+        this.scene = scene;
+        this.damage = damage;
+        scene.physics.add.collider(this, scene.tileMap.Walls, ()=> this.die());
+        scene.physics.add.collider(this, scene.hero, () =>
+        {
+            this.scene.hero.damage(this.damage);
+            this.die();
+        })
+        this.dir = dir;
+        this.speed = speed;
+
+        this.scene.time.delayedCall(1500, () => this.die());
+    }
+
+    die()
+    {
+        this.setVisible(false);
+        console.log("Soy invisible");
+        this.destroy();
+        console.log("Me he destruido");
     }
 }
