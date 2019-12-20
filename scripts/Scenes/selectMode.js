@@ -87,7 +87,7 @@ const SelectGameMode =
         this.load.image("Shield3", "../assets/objects/shield3.png")
 
         
-        this.load.image("Armor1", "../assets/objects/armor1.png") 
+        this.load.image("Armor1", "../assets/objects/armor.png") 
         this.load.image("Armor2", "../assets/objects/armor2.png") 
         this.load.image("Armor3", "../assets/objects/armor3.png") 
 

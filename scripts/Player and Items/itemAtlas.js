@@ -37,7 +37,7 @@ export const itemAtlas =
     },
     Armor2:
     {
-        Type: "Armor",
+        Type: "Armor2",
         ExtraMaxHealth: 4,
         Price: 40,
         Level: 2,
