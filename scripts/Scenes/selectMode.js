@@ -85,6 +85,13 @@ const SelectGameMode =
         this.load.image("Shield1", "../assets/objects/shield1.png")
         this.load.image("Shield2", "../assets/objects/shield2.png")
         this.load.image("Shield3", "../assets/objects/shield3.png")
+
+        
+        this.load.image("Armor1", "../assets/objects/armor1.png") 
+        this.load.image("Armor2", "../assets/objects/armor2.png") 
+        this.load.image("Armor3", "../assets/objects/armor3.png") 
+
+
         /*----------*/
 
         this.load.spritesheet("trap", "../assets/traps/spike_animation.png", { frameWidth: 22, frameHeight: 19 })
