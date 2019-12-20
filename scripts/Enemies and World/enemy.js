@@ -42,34 +42,36 @@ export class enemy extends livingEntity {
     spotPlayer(player) {
         this.zone.destroy();
         this.player = player;
-        if(!this.possesed)this.findDir();
+        this.findDir();
     }
     findDir() {
-        //if (this.possesed) return;
-        if (this.player !== undefined) {
-            let dir = { x: this.player.x - this.x, y: this.player.y - this.y };
-            let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
-            this.dir = { x: dir.x / mod, y: dir.y / mod };
-        }
-        else {
-            let r = (Math.random() > 0.5);
-            let sign;
-            if (r)
-                sign = 1;
-            else
-                sign = -1;
-            let x = Math.random() * sign;
-            let y = Math.random() * sign;
-            this.dir = { x: x, y: y };
-            this.zone.x = this.x;
-            this.zone.y = this.y;
-        }
-        if (this.body !== undefined) //Si no he muerto
+        if (!this.possesed)
         {
-            if (!this.knockbacked) {
-                this.moveEnemy();
+            if (this.player !== undefined) {
+                let dir = { x: this.player.x - this.x, y: this.player.y - this.y };
+                let mod = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y, 2))
+                this.dir = { x: dir.x / mod, y: dir.y / mod };
             }
-            if(!this.possesed) this.scene.time.delayedCall(1000, this.findDir, [], this)
+            else {
+                let r = (Math.random() > 0.5);
+                let sign;
+                if (r)
+                    sign = 1;
+                else
+                    sign = -1;
+                let x = Math.random() * sign;
+                let y = Math.random() * sign;
+                this.dir = { x: x, y: y };
+                this.zone.x = this.x;
+                this.zone.y = this.y;
+            }
+            if (this.body !== undefined) //Si no he muerto
+            {
+                if (!this.knockbacked) {
+                    this.moveEnemy();
+                }
+                this.scene.time.delayedCall(1000, this.findDir, [], this)
+            }
         }
     }
     kill() {
