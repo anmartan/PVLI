@@ -255,6 +255,7 @@ export class wizard extends enemy {
         if(!this.attacking)
         {
             this.attacking= true;
+            
             this.ball = new wizardProjectiles(this.scene, this.x, this.y, this.dir, this.projectileSpeed, "button2", this.ATTKPoints);
             this.scene.time.delayedCall(this.coolDown, ()=> {
                 this.attacking = false;
@@ -479,9 +480,9 @@ export class wizardProjectiles extends Phaser.GameObjects.Sprite
             this.scene.hero.damage(this.damage);
             this.die();
         })
-        this.dir = dir;
-        this.speed = speed;
 
+        //El mago siempre dispara en dirección contraria a la que se mueve, es decir, hacia el héroe
+        this.body.setVelocity((-dir.x) * speed, (-dir.y)* speed);
         this.scene.time.delayedCall(1500, () => this.die());
     }
 
