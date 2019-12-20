@@ -1,0 +1,15 @@
+p {
+    color: fuchsia;
+    text-align: center;
+}
+img {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+}
+@font-face {
+	font-family: "m5x7";
+	font-style: normal;
+	font-weight: 400;
+	src: url("../assets/m5x7.ttf");
+}

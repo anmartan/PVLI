@@ -8,14 +8,16 @@ let tileSize = 32;
 let scenes = [SelectGameMode, ItemShop, DungeonEditor, DungeonRun,DungeonRunAH, EndGame]
 let config = {
     pixelArt: true,
+    parent:document.getElementById("GameCanvas"),
+    createDOMContainer:true,
     type: Phaser.AUTO,
     width: 11*tileSize,//960,
     height: 11*tileSize,
-    backgroundColor:"#181425",
+    backgroundColor:"#181425",/* COMENTANDO ESTO POR LO MENOS SE VE
     scale: {   //Esto sirve para centrar el canvas
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_HORIZONTALY
-    },
+    },*/
     physics: {
         default: 'arcade',
         arcade: {

@@ -19,10 +19,18 @@
   <link rel="stylesheet" href="assets/theme/css/style.css">
   <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
   
-  
+  <script src = "/scripts/phaser.js"></script>
+    
+  <script type="module" src = "/scripts/game.js"></script>
   
 </head>
 <body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+            const direccion = '85.58.145.62';
+            const puerto = 80;
+            const socket = io('http://' + direccion + ':' + puerto);
+    </script>
   <section class="header11 cid-rLd2FIPP77 mbr-fullscreen" id="header11-3">
 
     <!-- Block parameters controls (Blue "Gear" panel) -->
@@ -154,7 +162,12 @@
             <div class="mbr-text col-12 mbr-fonts-style display-1 col-md-8"><strong>Proyecto FFOOFF</strong></div>
         </div>
     </div>
+    <div class ="GameCanvas">
+        Error 420: chachi game not found
+    </div>
 </section>
+
+
 
 <section class="cid-qTkAaeaxX5" id="footer1-2">
 

@@ -86,7 +86,7 @@ export class shopUiManager
                 price = itemAtlas[name].Price;
                 if(price<=scene.inventory.gold)
                 {
-                    scene.inventory.substractGold(price);
+                    scene.inventory.substractGold(price*units);
                     scene.inventory[name].addUnits(units);
                 }
             }
@@ -164,14 +164,14 @@ export class itemButton1lvl
         this.itemID = itemID;
 
         this.expositor.setInteractive();
-        this.expositor.on("pointerover", ()=>this.expositor.setTint("0x888888"));
-        this.expositor.on("pointerout", ()=>this.expositor.clearTint());
+        this.expositor.on("pointerover", ()=>this.text.setTintFill("0x880088"));
+        this.expositor.on("pointerout", ()=>this.text.clearTint());
         this.expositor.on("pointerdown", () =>
         {
-            this.expositor.setTint("0xAAAAAA");
+            this.text.setTintFill("0xFF00FF");
             scene.buy(this.itemID, this,false);
         })
-        this.expositor.on("pointerup", () =>this.expositor.clearTint());
+        this.expositor.on("pointerup", () =>this.text.clearTint());
     }
     changeText(newText)
     {
@@ -205,7 +205,7 @@ export class itemButton2lvl
 
 
         lbg.setInteractive({pixelPerfect: true, alphaTolerance:1});
-        lbg.on("pointerover", ()=>lbg.setTintFill("0xc67aed"));
+        lbg.on("pointerover", ()=>this.text.text="x10");
         lbg.on("pointerout", ()=>lbg.clearTint());
         lbg.on("pointerdown", () =>
         {
@@ -214,7 +214,7 @@ export class itemButton2lvl
         })
 
         rbg.setInteractive({pixelPerfect: true, alphaTolerance:1});
-        rbg.on("pointerover", ()=>rbg.setTintFill("0xc67aed"));
+        rbg.on("pointerover", ()=>this.text.text="x9");
         rbg.on("pointerout", ()=>rbg.clearTint());
         rbg.on("pointerdown", () =>
         {

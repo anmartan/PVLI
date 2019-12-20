@@ -2,6 +2,12 @@
  * Mobirise v4 theme (https://mobirise.com/)
  * Copyright 2017 Mobirise
  */
+ @font-face {
+	font-family: "m5x7";
+	font-style: normal;
+	font-weight: 400;
+	src: url("../assets/m5x7.ttf");
+}
 section {
   background-color: #eeeeee; }
 
