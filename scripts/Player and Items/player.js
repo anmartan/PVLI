@@ -1,20 +1,26 @@
 import weaponManager from './weaponManager.js';
-import { Life } from '../Scenes/utils.js';
+import { Life, healthBar} from '../Scenes/utils.js';
 export class livingEntity extends Phaser.GameObjects.Sprite {
-
     constructor(scene, x, y, spriteID, speed, health) {
         super(scene, x, y, spriteID)
         this.speed = speed;
         this.dir = { x: 0, y: 0 }                        //Movement direction (0,0) initial value
         scene.add.existing(this);
         scene.physics.add.existing(this);
-
+        this.healthBar=new healthBar(scene,x-this.width/2,y-this.height/2,this.width, 3)
         /* Sistema de vida */
         this.vulnerable = true;
         this.health = health.maxHealth;
         this.maxHealth = health.maxHealth;
         this.scene = scene;
     }
+    preUpdate(time,delta)
+    {
+        this.healthBar.x=this.x-this.width/2;
+        this.healthBar.y=this.y-this.height/2;
+        super.preUpdate(time,delta);
+    }
+    destroy(){this.healthBar.destroy();super.destroy();}
     damage(points) {
         if (this.vulnerable && this.body !== undefined && points > 0) {
 
@@ -28,6 +34,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite {
             else
             {
                 socket.emit("entityChangeHealth",{id:(this.id===undefined)?"player":this.id,actualHealth:this.health,maxHealth:this.maxHealth});
+                this.healthBar.modifyHealth(this.health,this.maxHealth);
             }
         }
     }

@@ -58,6 +58,40 @@ class heart extends Phaser.GameObjects.Image {
         this.setTexture('empty_Heart');
     }
 }
+
+export class healthBar extends Phaser.GameObjects.Container {
+    constructor(scene, x, y, healthWidth, healthHeight = 2, baseColor = 0x4d1f34, fillColor = 0xd12e7d) {
+        super(scene, x, y);
+        scene.add.existing(this);
+        this.baseHealthBar = new bar(scene,healthWidth, healthHeight, baseColor);
+        this.actualHealthBar = new bar(scene,healthWidth, healthHeight, fillColor);
+        this.add([this.baseHealthBar,this.actualHealthBar]);
+    }
+    modifyHealth(actualHealth, maxHealth) {
+        let factor = actualHealth / maxHealth;
+        this.actualHealthBar.fill(factor);
+    }
+}
+class bar extends Phaser.GameObjects.Graphics
+{
+    constructor(scene,width,height,fillColor=0xFFF000)
+    {
+        super(scene);
+        scene.add.existing(this);
+        this.width=width;
+        this.height=height;
+        this.defaultFillColor = fillColor;
+        this.fillStyle(fillColor,1);
+        this.fillRect(0,0,this.width,this.height,false)
+    }
+    fill(factor)
+    {
+        if(true)this.clear();
+        //this.fillStyle(0xfff000,1);
+        this.fillRect(0, 0, this.width*factor, this.height); 
+    }
+}
+
 export class Time {
     constructor(scene, x, y) {
         this.scene = scene;

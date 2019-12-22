@@ -1,4 +1,5 @@
 import { Life } from '../Scenes/utils.js';
+import {healthBar} from "../Scenes/utils.js";
 
 class dummieEntity extends Phaser.GameObjects.Container {
     constructor(scene, x, y, sprite, id) {
@@ -22,38 +23,6 @@ class dummieEntity extends Phaser.GameObjects.Container {
     play(anim)
     {
         this.image.play(anim)
-    }
-}
-class healthBar extends Phaser.GameObjects.Container {
-    constructor(scene, x, y, healthWidth, healthHeight = 2, baseColor = 0x4d1f34, fillColor = 0xd12e7d) {
-        super(scene, x, y);
-        scene.add.existing(this);
-        this.baseHealthBar = new bar(scene,healthWidth, healthHeight, baseColor);
-        this.actualHealthBar = new bar(scene,healthWidth, healthHeight, fillColor);
-        this.add([this.baseHealthBar,this.actualHealthBar]);
-    }
-    modifyHealth(actualHealth, maxHealth) {
-        let factor = actualHealth / maxHealth;
-        this.actualHealthBar.fill(factor);
-    }
-}
-class bar extends Phaser.GameObjects.Graphics
-{
-    constructor(scene,width,height,fillColor,borderColor=0x00)
-    {
-        super(scene);
-        scene.add.existing(this);
-        this.width=width;
-        this.height=height;
-        this.defaultFillColor = fillColor;
-        this.fillStyle(fillColor,1);
-        this.fillRect(0,0,this.width,this.height,false)
-    }
-    fill(factor)
-    {
-        if(true)this.clear();
-        //this.fillStyle(0xfff000,1);
-        this.fillRect(0, 0, this.width*factor, this.height); 
     }
 }
 
