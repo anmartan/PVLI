@@ -2,10 +2,10 @@ import { livingEntity } from "../Player and Items/player.js";
 import { dummieEnemy } from "./dummieEntitties.js";
 
 export class enemy extends livingEntity {
-    constructor(scene, x, y, speed, sprite, anim, enemyManager, health, id) {
+    constructor(scene, x, y, speed, sprite, anim, enemyManager, health, id,FoV) {
         super(scene, (x + 1.5) * scene.game.tileSize, (y + 1.5) * scene.game.tileSize, sprite, speed, health);
         this.enemyManager = enemyManager;
-        this.zone = this.createZone(scene);
+        this.zone = this.createZone(scene,FoV);
         this.enemyManager.zone.add(this.zone);
         this.play(anim);
         this.findDir();                     //Encuentra una dirección aleatoria mientras no haya referencia a player
@@ -30,8 +30,8 @@ export class enemy extends livingEntity {
             }
         });
     }
-    createZone(scene) {
-        let zone = scene.add.zone(this.x, this.y, scene.game.tileSize * 3, scene.game.tileSize * 3);
+    createZone(scene, FoV=3) {
+        let zone = scene.add.zone(this.x, this.y, scene.game.tileSize * FoV, scene.game.tileSize * FoV);
         scene.physics.add.existing(zone);
         zone.body.debugBodyColor = "0xFFFF00"
         zone.parent = this;
@@ -157,7 +157,7 @@ export class spider extends enemy {
         let anim = "idleSpider";
         let speed = 15;
         let sprite = "spider";
-        super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 2 }, id);
+        super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 2 }, id,5);
         this.price = 20;
         this.ATTKPoints = 2;
         this.coolDown = 1500;
@@ -170,8 +170,9 @@ export class spider extends enemy {
         {
             let pos = this.getPos();
             this.scene.game.fromPixelToTile(pos);
+            console.log(pos);
             let x = pos.x; let y = pos.y;
-            let spidy = new enemyInfo(x + Phaser.Math.RND.between(-0.25, +0.25), y + Phaser.Math.RND.between(-0.25, +0.25), "littleSpider")
+            let spidy = new enemyInfo(x + Phaser.Math.RND.between(-1, +1), y + Phaser.Math.RND.between(-0.25, +0.25), "littleSpider")
             let idEnemy = this.scene.enemies.getLastID() + 1;
             this.scene.enemies.addEnemy(this.scene.enemies.summon(spidy, this.scene, idEnemy));
             socket.emit("enemySpawned", { enemy: spidy, id: idEnemy });
@@ -193,7 +194,7 @@ export class littleSpider extends enemy {
         let anim = "idleSpider";                        //será otro sprite? O solo le vamos a cambiar la escala?
         let speed = 25;
         let sprite = "spider";
-        super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 1 }, id);
+        super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 1 }, id,3);
         this.price = 0;                                 // las arañitas no se pueden crear desde el editor de mazmorras. Solo aparecen cuando muere una araña
         this.ATTKPoints = 1;
         this.coolDown = 1500;
@@ -209,7 +210,7 @@ export class wizard extends enemy {
         let speed = 15;
         let anim = "idleWizard";
         let sprite = "wizard";
-        super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 4 }, id);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
+        super(scene, x, y, speed, sprite, anim, enemyManager, { maxHealth: 4 }, id,7);             //en el GDD pone 3 ptos de salud, pero me parece que todos tienen la misma salud...
         this.speed = speed;
         this.projectileSpeed = 25;
         this.scene = scene;

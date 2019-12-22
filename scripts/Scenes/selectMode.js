@@ -95,6 +95,7 @@ const SelectGameMode =
         /*----------*/
 
         this.load.spritesheet("trap", "../assets/traps/spike_animation.png", { frameWidth: 22, frameHeight: 19 })
+        this.load.spritesheet("radarEye", "../assets/objects/animRadar.png", { frameWidth: 96, frameHeight: 96 })
 
 
         this.load.image("caballero_idle0", "../assets/player/knight_m_idle_anim_f0.png")
@@ -200,6 +201,12 @@ const SelectGameMode =
             frameRate: 10,
             repeat: 0
         });
+        this.anims.create({
+            key: "radarAnim",
+            frames: this.anims.generateFrameNumbers("radarEye", {start:0,end:9}),
+            frameRate: 5,
+            repeat: 0
+        })
 
         this.left = this.add.image(0, 0, "Half-Off").setOrigin(0, 0);
         this.right = this.add.image(0, 0, "Half-Ffo").setOrigin(0, 0);

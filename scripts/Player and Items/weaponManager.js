@@ -132,7 +132,7 @@ export default class weaponManager {
 }
 
 class Projectile extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, sprite, dir, speed, prefix,id) {
+    constructor(scene, x, y, sprite, dir, speed, prefix,id,anim) {
         super(scene, x, y, sprite);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -151,6 +151,7 @@ class Projectile extends Phaser.GameObjects.Sprite {
             angle:dir,
             id:id,
             prefix:prefix,
+            anim:anim
         }
         socket.emit("newProyectile", data);
         this.id=id;
@@ -158,33 +159,24 @@ class Projectile extends Phaser.GameObjects.Sprite {
     }
     //Las flechas se destruyen después de un tiempo o cuando colisionan con un enemigo o las paredes
     die() {
+        socket.emit("proyectileDead",{id:this.id,eventNamePrefix:this.prefix});
         if (this.effect !== undefined) { this.effect(this.scene); this.setVisible(false) }
         else this.destroy();
     }
-    update()
+    preUpdate(time, delta)
     {
-        let name =this.prefix+"Move";
-        socket.emit(name,{x:this.x,y:this.y,id:this});
-        console.log("aaa");
-        super.update();
-    }
-    destroy()
-    {
-        let name=this.prefix+"Dead";
-        socket.emit(name,this.id);
-        console.log("aaa");
-
-        super.destroy();
+        socket.emit("proyectileMove",{x:this.x,y:this.y,id:this.id,eventNamePrefix:this.prefix});
+        super.preUpdate(time, delta);
     }
 }
 class Arrow extends Projectile {
-    constructor(scene, x, y, dir, typeOfArrow,id) {
+    constructor(scene, x, y, dir, typeOfArrow,id,anim) {
         let sprite;
         if (typeOfArrow === "normal")
             sprite = "Arrow";
         else
             sprite = "Arrow";
-        super(scene, x, y, sprite, dir, 100, "arrow",id);
+        super(scene, x, y, sprite, dir, 100, "arrow",id,anim);
         this.setAngle(dir);
         this.destroyOnCol = true;
 
@@ -197,10 +189,12 @@ class Arrow extends Projectile {
 class Radar extends Projectile {
     constructor(scene, x, y, dir = 0, id) {
         let speed = 0;
-        let sprite = "";
-        super(scene, x, y, sprite, dir, speed,"badar",id);
-
-        scene.time.delayedCall(1000, () => this.die());
+        let sprite = "radarEye";
+        super(scene, x, y, sprite, dir, speed,"radar",id,"radarAnim");
+        this.play("radarAnim");
+        this.setAlpha(0.5)
+        //scene.time.delayedCall(1000, () => this.die());
+        this.on("animationcomplete-radarAnim", ()=>this.die());
 
     }
     effect(scene) {

@@ -9,7 +9,6 @@ let scenes = [SelectGameMode, ItemShop, DungeonEditor, DungeonRun,DungeonRunAH, 
 let config = {
     pixelArt: true,
     parent:document.getElementById("GameCanvas"),
-    createDOMContainer:false,
     type: Phaser.AUTO,
     width: 11*tileSize,//960,
     height: 11*tileSize,
@@ -24,6 +23,9 @@ let config = {
             gravity: false,
             debug: false
         }
+    },
+    dom: {
+        createContainer: true
     },
     scene: scenes,
 }

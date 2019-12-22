@@ -1,42 +1,103 @@
 import { Life } from '../Scenes/utils.js';
 
-export class dummiePlayer extends Phaser.GameObjects.Sprite {
-
-    constructor(scene, x, y, sprite, spriteSword, scale) {
-        super(scene, x, y, sprite);
-        this.sword = scene.add.sprite(x, y, spriteSword);
+class dummieEntity extends Phaser.GameObjects.Container {
+    constructor(scene, x, y, sprite, id) {
+        super(scene, 100, 100);
         scene.add.existing(this);
-        scene.add.existing(this.sword);
-        this.sword.setVisible(false);
+        let image = scene.add.sprite(0, 0, sprite);
+        scene.add.existing(image);
+        this.id = id;
+        this.healthBar=new healthBar(scene,-image.width/2,-image.height/2 ,image.width);
+        this.add(image);
+        this.add(this.healthBar);
+        this.image=image;
+        socket.on("entityChangeHealth", data=>
+        {
+            if(data.id===this.id)this.modifyHealth(data.actualHealth,data.maxHealth);
+        })
+    }
+    modifyHealth(actualHealth, maxHealth) {
+        this.healthBar.modifyHealth(actualHealth,maxHealth);
+    }
+    play(anim)
+    {
+        this.image.play(anim)
+    }
+}
+class healthBar extends Phaser.GameObjects.Container {
+    constructor(scene, x, y, healthWidth, healthHeight = 2, baseColor = 0x4d1f34, fillColor = 0xd12e7d) {
+        super(scene, x, y);
+        scene.add.existing(this);
+        this.baseHealthBar = new bar(scene,healthWidth, healthHeight, baseColor);
+        this.actualHealthBar = new bar(scene,healthWidth, healthHeight, fillColor);
+        this.add([this.baseHealthBar,this.actualHealthBar]);
+    }
+    modifyHealth(actualHealth, maxHealth) {
+        let factor = actualHealth / maxHealth;
+        this.actualHealthBar.fill(factor);
+    }
+}
+class bar extends Phaser.GameObjects.Graphics
+{
+    constructor(scene,width,height,fillColor,borderColor=0x00)
+    {
+        super(scene);
+        scene.add.existing(this);
+        this.width=width;
+        this.height=height;
+        this.defaultFillColor = fillColor;
+        this.fillStyle(fillColor,1);
+        this.fillRect(0,0,this.width,this.height,false)
+    }
+    fill(factor)
+    {
+        if(true)this.clear();
+        //this.fillStyle(0xfff000,1);
+        this.fillRect(0, 0, this.width*factor, this.height); 
+    }
+}
+
+
+
+export class dummiePlayer extends dummieEntity {
+
+    constructor(scene, x, y, sprite, spriteSword) {
+        super(scene, x, y, sprite, "player");
+        this.play("idle")
+        this.weapon = scene.add.sprite(x, y, spriteSword);
+        //scene.add.existing(this);
+        scene.add.existing(this.weapon);
+        this.weapon.setVisible(false);
         this.scene = scene;
-        this.sword.x = 0;
-        this.sword.y = 0;
+        this.weapon.x = 0;
+        this.weapon.y = 0;
         socket.on("playerMove", (data) => this.move(data.pos, data.flip));
         socket.on("playerAttack", (data) => this.attack(data.angle, data.offsetX, data.offsetY, data.weaponSprite));
-        socket.on("playerHaveAttacked", () => this.sword.setVisible(false));
+        socket.on("playerHaveAttacked", () => this.weapon.setVisible(false));
     }
     move(pos, flip) {
         this.x = pos.x;
         this.y = pos.y;
-        this.sword.x = this.x + this.offsetX + 2;
-        this.sword.y = this.y + this.offsetY + 5;
-        this.setFlipX(flip);
+        this.weapon.x = this.x + this.offsetX + 2;
+        this.weapon.y = this.y + this.offsetY + 5;
+        this.image.setFlipX(flip);
 
     }
     attack(angle, offsetX, offsetY, sprite) {
-        this.sword.setVisible(true);
-        this.sword.setTexture(sprite);
-        this.sword.setAngle(angle);
+        this.weapon.setVisible(true);
+        this.weapon.setTexture(sprite);
+        this.weapon.setAngle(angle);
         this.offsetX = offsetX;
         this.offsetY = offsetY;
     }
 
 }
 
-export class dummieEnemy extends Phaser.GameObjects.Sprite {
+export class dummieEnemy extends dummieEntity{//Phaser.GameObjects.Sprite {
 
     constructor(scene, x, y, sprite, anim, enemyManager, id) {
-        super(scene, (x + 1.5) * scene.game.tileSize, (y + 1.5) * scene.game.tileSize, sprite);
+        //super(scene, (x + 1.5) * scene.game.tileSize, (y + 1.5) * scene.game.tileSize, sprite);
+        super(scene, (x + 1.5), (y + 1.5), sprite, id);
         scene.add.existing(this);
         this.enemyManager = enemyManager;
         if (anim === "idleLittleSpider") {
@@ -104,22 +165,28 @@ export class dummieEnemy extends Phaser.GameObjects.Sprite {
     move(pos, flip) {
         this.x = pos.x;
         this.y = pos.y;
-        this.setFlipX(flip);
+        this.image.setFlipX(flip);
     }
     killDumie() {
         this.destroy();
         this.setVisible(false);
     }
 }
-export class dummieProyectile extends Phaser.GameObjects.Sprite
-{
-    constructor(scene, x, y,sprite,angle,id,eventNamePrefix) {
+export class dummieProyectile extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y, sprite, angle, id, eventNamePrefix, anim) {
         super(scene, x, y, sprite);
-        this.setAngle(angle.x,angle.y);
-        this.id=id;
-        socket.on(eventNamePrefix+"Move",(pos)=>{if(id===this.id){this.x=pos.x;this.y=pos.y}})
-        socket.on(eventNamePrefix+"Dead",(id)=>{if(id===this.id)this.destroy();})
+        this.setAngle(angle);
         scene.add.existing(this);
+        this.id = id;
+        this.eventNamePrefix = eventNamePrefix;
+
+        //solo tiene animación el radar y queremos que se vea transparente
+        if (anim !== undefined) {
+            this.setAlpha(0.5);
+            this.play(anim);
+        }
+        socket.on("proyectileMove", (data) => { if (id === data.id && data.eventNamePrefix === this.eventNamePrefix) { this.x = data.x; this.y = data.y } })
+        socket.on("proyectileDead", (data) => { if (data.id === this.id && this.eventNamePrefix === data.eventNamePrefix) this.destroy(false); })
     }
 }
 export class dummieTrap extends Phaser.GameObjects.Sprite {

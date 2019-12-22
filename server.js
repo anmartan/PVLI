@@ -117,8 +117,17 @@ class match
         heroToAntihero("trapDeactivated");
         heroToAntihero("enemySpawned");
         heroToAntihero("deadHero");
-        heroToAntihero("newProyectile");
-
+        heroToAntihero("entityChangeHealth");
+        hero.on("newProyectile",data=>
+        {
+            antiHero.emit("newProyectile",data);
+        });
+        hero.on("proyectileDead",data=>
+        {
+            antiHero.emit("proyectileDead",data);
+            console.log("PROYECTILE DEAD")
+        });
+        heroToAntihero("proyectileMove");
         antiHero.on("enemyPossesed",id=>{hero.emit("enemyPossesed",id);});
         antiHero.on("possesedMoved",dir=>{hero.emit("possesedMoved",dir)});
 

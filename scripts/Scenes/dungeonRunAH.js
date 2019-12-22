@@ -13,7 +13,7 @@ const scene = {
         this.tileMap.changeRoom(this.game.dungeon.rooms[this.actual].size);
         //--------------------------------------------------------//
 
-        this.hero = new dummiePlayer(this, (16 * 4), (16 * 5), "caballero_idle0", "Sword_0", 0.5).play("idle");
+        this.hero = new dummiePlayer(this, (16 * 4), (16 * 5), "caballero_idle0", "Sword_0", 0.5)
         this.enemies = new enemyManager(this, this.game.dungeon.rooms[this.actual].enemies.enemiesInfo);
         this.enemies.summonDummyEnemies(this); //invoca a los enemigos
 
@@ -40,7 +40,8 @@ const scene = {
         })
         socket.on("newProyectile", data =>
         {
-            new dummieProyectile(this,data.x,data.y,data.sprite,data.angle,data.id,data.prefix);
+            console.log("Voy a hacer un spawn de: " + data.sprite);
+            new dummieProyectile(this,data.x,data.y,data.sprite,data.angle,data.id,data.prefix,data.anim);
         })
         socket.on("deadHero", () => {
             console.log("ha muerto el hero")

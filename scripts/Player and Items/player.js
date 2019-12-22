@@ -14,8 +14,6 @@ export class livingEntity extends Phaser.GameObjects.Sprite {
         this.health = health.maxHealth;
         this.maxHealth = health.maxHealth;
         this.scene = scene;
-
-
     }
     damage(points) {
         if (this.vulnerable && this.body !== undefined && points > 0) {
@@ -26,10 +24,12 @@ export class livingEntity extends Phaser.GameObjects.Sprite {
             this.alpha = 0.75;
             this.scene.time.delayedCall(950, this.makeVulnerable, [], this)
             if (this !== this.scene.hero) this.knockback();
-            if (this.health <= 0) { this.kill() };
+            if (this.health <= 0) { this.kill() }
+            else
+            {
+                socket.emit("entityChangeHealth",{id:(this.id===undefined)?"player":this.id,actualHealth:this.health,maxHealth:this.maxHealth});
+            }
         }
-        else return "No se puede dañar al enemigo, es invulnerable"
-
     }
     //makeInvulnerable(){this.vulnerable = false; this.scene.time.delayedCall(950, this.makeVulnerable(), [], this);}
     makeVulnerable() { this.vulnerable = true, this.alpha = 1; };
@@ -42,11 +42,6 @@ export class livingEntity extends Phaser.GameObjects.Sprite {
             this.health += points;
             this.hearts.gainHearts(points);
         }
-        /*this.health+=points;
-        if( this.health> this.maxHealth)
-            this.health=this.maxHealth;
-
-        return this.health;*/
     }
     augmentMaxHealth(points) {
         this.maxHealth += points;
