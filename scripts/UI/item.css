@@ -1,0 +1,44 @@
+.item {
+    color: white;
+    background-color: rgba(10, 0, 5, 0.8);
+    font-family: "friz", serif;
+    font-size: 10px;
+    font-weight: normal;
+    padding: 0.5em 0.6em;
+    text-shadow: 0 1px 0 black;
+    box-shadow: -1px -1px 1px rgba(10, 0, 5, 0.5), -1px 1px 1px rgba(10, 0, 5, 0.5), 1px 1px 1px rgba(10, 0, 5, 0.5), 1px -1px 1px rgba(10, 0, 5, 0.5);
+    width: 14em;
+    max-width: 24em;
+    transition: opacity 0.05s ease-out 0.05s, transform 0.1s ease-out 0.05s;
+}
+.item__header .header__title {
+    margin-bottom: 3px;
+    font-size: 1.12em;
+    margin-right: 1em;
+}
+.item .header__title {
+    color: #0070DD;
+}
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+button
+{
+    text-decoration: none;
+    background-color: rgba(10, 0, 5, 0.8);
+    border-radius: 2px;
+    border-color: rgba(53, 44, 48, 0.8);
+}
+#buyButton
+{
+    color:greenyellow
+}
+#cancelButton
+{
+    color:red;
+    float: right;
+}

@@ -22,6 +22,8 @@ const ItemShop =
         this.load.image("Sword_2", "../assets/player/sword_2.png")
         this.load.image("Sword_3", "../assets/player/sword_3.png")
 
+        this.load.html("itemHTML", "../scripts/UI/item.html");
+        this.load.css("itemCSS", "../scripts/UI/item.css");
     },
     create: function () {
         socket.on("enemyDisconected", () => {

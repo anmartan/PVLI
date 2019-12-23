@@ -9,7 +9,12 @@ import { Time } from '../Scenes/utils.js';
 
 export class shopUiManager {
     constructor(scene) {
+        //let html = '<div style="background-color:#000000;max-height:50px;max-width:100px"><h1 style="color:fuchsia;font-size:10px;text-align:center">Flechas normales</h1><p style="font-size:6px;text-align:center">Pack de 10 flechas.<br/>Se gastan al usar</p></div>'
         let background = scene.add.image(0, 0, "background");
+        //console.log(scene.cache.css.get("itemCSS"));
+        scene.domElement = scene.add.dom(scene.cameras.main.centerX, scene.cameras.main.centerY).createFromCache("itemHTML");
+        console.log(scene.domElement);
+        { scene.domElement.visible = true }
         background.setOrigin(0, 0);
         scene.inventory = new inventory(100);
         console.log(scene.inventory.gold);
@@ -27,7 +32,7 @@ export class shopUiManager {
         //Texto del dinero actual
         let text = scene.add.text(136 * 2, 2 * 2, scene.inventory.gold, config.style);
 
-
+        let weaponTypeButton = new itemTypeButton(scene,10,10,"Armas");
 
         //Botones de compra de items
         let x = 125;
@@ -38,45 +43,28 @@ export class shopUiManager {
 
         scene.buy = function (itemName, button, upgrade = true, units = 1, level = 1) {
             console.clear();
-            let toBuyItemLevel;
-            let price;
-            let nextLvl;
-            let buy=false;
-            console.log("Estás comprando: " + itemName);
-
+            let toBuyItemLevel,price,nextLvl;
+            let buy = false;
             if (upgrade && scene.inventory[itemName].Level < 3) {
-                //Si tienes 0 unidades, el nivel es el actual, si tienes 1 unidad el nivel es actual +1
                 toBuyItemLevel = scene.inventory[itemName].Level + scene.inventory[itemName].Units;
                 let name = itemName + toBuyItemLevel;
                 price = itemAtlas[name].Price;
-                console.log("Vas a pagar: " + price);
-                if (scene.inventory[itemName].Units === 0 && price <= scene.inventory.gold) {
-                    buy=true;
-                    scene.inventory[itemName].addUnits(1);
-                    scene.inventory.substractGold(price);
-
-                    if (toBuyItemLevel < 3) {
-                        nextLvl = scene.inventory[itemName].Level + 1;
-                        button.changeText(itemAtlas[itemName + nextLvl].Price);
-                    }
-                    else button.changeText(0);
-                }
-                else if (price <= scene.inventory.gold) {
-                    buy=true;
-                    scene.inventory.substractGold(price);
+                if (price <= scene.inventory.gold) {
+                    buy = true;
                     scene.inventory.upgradeItem(itemName);
-                    if (toBuyItemLevel < 3) {
-                        nextLvl = scene.inventory[itemName].Level + 1;
-                        button.changeText(itemAtlas[itemName + nextLvl].Price);
-                    }
-                    else button.changeText(0);
+                    (scene.inventory[itemName].Units === 0 )?scene.inventory[itemName].addUnits(1):scene.inventory.upgradeItem(itemName);
+                    scene.inventory.substractGold(price);
                 }
+                if (toBuyItemLevel < 3) {
+                    nextLvl = scene.inventory[itemName].Level + 1;
+                    button.changeText(itemAtlas[itemName + nextLvl].Price);
+                }
+                else button.changeText(0);
             }
             else if (!upgrade) {
                 toBuyItemLevel = level;
                 let name = "";
                 (itemName === "Arrow") ? name = itemName + level : name = itemName;
-                console.log(name);
                 price = itemAtlas[name].Price;
                 if (price <= scene.inventory.gold) {
                     scene.inventory.substractGold(price * units);
@@ -84,24 +72,25 @@ export class shopUiManager {
                 }
             }
             text.text = scene.inventory.gold;
-            console.log(scene.inventory);
-            return {lvl:nextLvl,buy:buy};
+            return { lvl: nextLvl, buy: buy };
         }
-
+        /*
         scene.Sword_Button = new itemButton3lvl(scene, hsize, y + 0 * vsize, "bg_3lvls", "border_3lvls", "lvlButton", "number_3lvls", "Sword", itemAtlas.Sword1.Price);
-        scene.Potion_Button = new itemButton1lvl(scene, x + hsize, y + 0 * vsize, "bg_1lvl", "border_1lvl", "Potion", itemAtlas.Potion.Price);
+        //scene.Potion_Button = new itemButton1lvl(scene, x + hsize, y + 0 * vsize, "bg_1lvl", "border_1lvl", "Potion", itemAtlas.Potion.Price);
         scene.Armor_Button = new itemButton3lvl(scene, hsize, y + 1 * vsize, "bg_3lvls", "border_3lvls", "lvlButton", "number_3lvls", "Armor", itemAtlas.Armor1.Price);
-        scene.Grenade_Button = new itemButton1lvl(scene, x + hsize, y + 1 * vsize, "bg_1lvl", "border_1lvl", "Grenade", itemAtlas.Grenade.Price);
+        //scene.Grenade_Button = new itemButton1lvl(scene, x + hsize, y + 1 * vsize, "bg_1lvl", "border_1lvl", "Grenade", itemAtlas.Grenade.Price);
         scene.Bow_Button = new itemButton3lvl(scene, hsize, y + 2 * vsize, "bg_3lvls", "border_3lvls", "lvlButton", "number_3lvls", "Bow", itemAtlas.Bow1.Price);
         scene.Arrow_Button = new itemButton2lvl(scene, x + hsize, y + 2 * vsize, "border_2lvls", "leftbg_2lvls", "rightbg_2lvls", "Arrow", itemAtlas.Arrow1.Price * 10);
         scene.Shield_Button = new itemButton3lvl(scene, hsize, y + 3 * vsize, "bg_3lvls", "border_3lvls", "lvlButton", "number_3lvls", "Shield", itemAtlas.Shield1.Price);
-        scene.Radar_Button = new itemButton1lvl(scene, x + hsize, y + 3 * vsize, "bg_1lvl", "border_1lvl", "Radar", itemAtlas.Radar.Price);
+       // scene.Radar_Button = new itemButton1lvl(scene, x + hsize, y + 3 * vsize, "bg_1lvl", "border_1lvl", "Radar", itemAtlas.Radar.Price);
 
-
+        scene.Radar_Button = new itemButton(scene, x + hsize, y + 3 * vsize, "Radar", itemAtlas.Radar.Price);
+        scene.Grenade_Button = new itemButton(scene, x + hsize, y + 1 * vsize, "Grenade", itemAtlas.Grenade.Price);
+        scene.Potion_Button = new itemButton(scene, x + hsize, y + 0 * vsize, "Potion", itemAtlas.Potion.Price);
+        */
 
         //Botón de continuar
         {
-
             this.continuar = new textButton(config, 106 * 2, 152 * 2, "Continuar");
             this.continuar.on("pointerdown", () => {
                 this.timer.setTimeToZero();
@@ -120,20 +109,50 @@ export class shopUiManager {
 
 }
 
-export class itemButton extends Button {
-    constructor(scene, x, y, sprite, itemID, price) {
-        super(scene, x, y, sprite);
+class itemButton extends Phaser.GameObjects.Container {
+    constructor(scene, x, y,itemID) {
+        super(scene, x, y);
+        scene.add.existing(this);
+        this.image = new itemSprite(scene,x,y,itemID,this);
+        //this.add(this.image);
         let style = { fontFamily: "m5x7", fontSize: "16px", color: "#00" };
-        this.text = scene.add.text(x + this.width / 2 + 4, y - this.height / 2 + 4, "x" + price, style);
+        this.text = scene.add.text(this.image.width / 2 + 4, -this.image.height/2 + 4, "x" +scene.inventory[itemID].Price, style);
         this.text.setOrigin(0, 0);
+        this.add(this.text);
         this.itemID = itemID;
     }
-    click() {
-        this.on("pointerdown", () => this.scene.buy(this.itemID));
+}
+class itemSprite extends Phaser.GameObjects.Sprite
+{
+    constructor(scene,x,y,itemID,container)
+    {
+        let sp = scene.inventory[itemID].Images.Sprite;
+        super(scene,x,y,sp, container);
+        scene.add.existing(this);
+        this.container=this.container;
+        this.itemID=itemID;
+        this.setInteractive({pixelPerfect:true, alphaTolerance:0});
+        this.on("pointerdown", this.click);
+        this.on("pointerover", (cr)=>this.over(cr));
+        this.on("pointerout", this.out);
+    }
+    click()
+    {
+        this.scene.buy(this.itemID,this.container,false);
+    }
+    over(cursor)
+    {
+        this.scene.domElement.setVisible(true);
+        this.setTintFill(0xFFF00)
+    }
+    out()
+    {
+        this.clearTint();
+        this.scene.domElement.setVisible(false);
     }
 }
 
-export class itemButton1lvl {
+class itemButton1lvl {
     constructor(scene, x, y, background, border, itemID, price) {
         let container = scene.add.container(x, y);
         let bg = scene.add.image(0, 0, background);
@@ -163,7 +182,7 @@ export class itemButton1lvl {
     }
 }
 
-export class itemButton2lvl {
+class itemButton2lvl {
     constructor(scene, x, y, border, leftbackground, rightbackground, itemID, price) {
         let container = scene.add.container(x, y);
         let lbg = scene.add.image(0, 0, leftbackground);
@@ -206,35 +225,37 @@ export class itemButton2lvl {
         this.text.text = "x" + newText;
     }
 }
-export class itemButton3lvl {
+class itemButton3lvl {
     constructor(scene, x, y, background, border, button, number, itemID, price) {
         let container = scene.add.container(x, y);
-        let bg = scene.add.image(0, 0, background);
-        bg.scale = 2;
-        container.add(bg)
+        this.bg = scene.add.image(x, y, background);
+        //this.bg.setScale(2);
+        //container.add(this.bg)
         console.log(itemID)
 
         if (itemID === "Sword") {
-            this.expositor = scene.add.image(0, 4, itemAtlas[itemID + "1"].Images.Sprite);
+            this.expositor = scene.add.image(x, y, itemAtlas[itemID + "1"].Images.Sprite);
             this.expositor.angle = 90;
         }
         else
-            this.expositor = scene.add.image(0, 4, scene.inventory[itemID].Images.Sprite);
-        container.add(this.expositor);
+            this.expositor = scene.add.image(x, y, scene.inventory[itemID].Images.Sprite);
+
+        //container.add(this.expositor);
 
         let style = { fontFamily: "m5x7", fontSize: "32px", color: "#00" };
 
-        this.text = scene.add.text(bg.width / 2 + 4, - bg.height / 2 + 4, "x" + price, style);
+        this.text = scene.add.text(this.bg.width / 2 + 4, - this.bg.height / 2 + 4, "x" + price, style);
         container.add(this.text);
+        container.setSize(32, 32);
         this.itemID = itemID;
 
 
-        bg.setInteractive();
-        //bg.on("pointerover", ()=>bg.setTintFill("0xc67aed"));
-        bg.on("pointerout", () => bg.clearTint());
-        bg.on("pointerdown", () => {
+        this.bg.setInteractive();
+        this.bg.on("pointerover", (cursor) => { this.bg.setTintFill(0xFFF333); scene.domElement.visible = true; });
+        this.bg.on("pointerout", () => { scene.domElement.visible = false; this.bg.clearTint() });
+        this.bg.on("pointerdown", () => {
             let buyResult = scene.buy(this.itemID, this, true);
-            let toBuyItemLvl=buyResult.lvl;
+            let toBuyItemLvl = buyResult.lvl;
             let buy = buyResult.buy;
             if (toBuyItemLvl < 4) {
                 let name = itemID + toBuyItemLvl;
@@ -242,10 +263,81 @@ export class itemButton3lvl {
                 this.expositor = scene.add.image(0, 4, itemAtlas[name].Images.Sprite);
                 if (itemID === "Sword") this.expositor.angle = 90;
                 container.add(this.expositor);
-            } else if(buy)this.expositor.destroy();
+            } else if (buy) this.expositor.destroy();
         })
     }
     changeText(newText) {
         this.text.text = "x" + newText;
+    }
+}
+
+
+
+
+class itemTypeButton extends Phaser.GameObjects.Container
+{
+    constructor(scene,x,y,itemType)
+    {
+        super(scene,x,y)
+        scene.add.existing(this);
+        let config =
+        {
+            scene: scene,
+            clickedColor: "#FF00FF",
+            cursorOverColor: "#00FF00",
+            basicColor: "#00",
+            style: { fontFamily: "m5x7", fontSize: "32px", color: "#FFFFFF" },
+        }
+        this.buttonShape=scene.add.graphics();
+        this.buttonShape.setInteractive();
+        this.buttonShape.fillStyle("0xaa00aa");
+        this.itemType=itemType;
+        this.buttonShape.fillRect(0,0,this.itemType.length*16,34);
+        this.text = scene.add.text(8,2,this.itemType,config.style);
+        this.text.setInteractive();
+        this.text.on("pointerdown",()=>this.click())
+        this.text.on("pointerover",()=>this.over())
+        this.text.on("pointerout",()=>this.out())
+        this.add(this.buttonShape);
+        this.add(this.text);
+    }
+    click()
+    {
+        if(this.state!=="clicked")
+        {
+            this.buttonShape.clear();
+            this.buttonShape.fillStyle("0x880088");
+            this.buttonShape.lineStyle(2,"0xFF00FF");
+            this.buttonShape.fillRect(0,0,this.itemType.length*16,34)
+            this.buttonShape.strokeRect(0,0,this.itemType.length*16,34)
+            this.text.style.color="#FF00FF";
+            this.setState("clicked");
+        }
+        else
+        {
+            this.buttonShape.fillStyle("0xaa00aa");
+            this.buttonShape.fillRect(0,0,this.itemType.length*16,34);
+            this.setState("unclicked");
+        }
+    }
+    over()
+    {
+        if(this.state!=="clicked")
+        {
+            this.buttonShape.clear();
+            this.buttonShape.fillStyle("0x880088");
+            this.text.style.color="#00"
+            this.buttonShape.fillRect(0,0,this.itemType.length*16,34)
+        }
+    }
+    out()
+    {
+        if(this.state!=="clicked")
+        {
+            this.buttonShape.clear();
+            this.buttonShape.fillStyle("0xaa00aa");
+            this.text.style.color="#FFFFFF"
+            this.buttonShape.fillRect(0,0,this.itemType.length*16,34)
+        }
     }
 }
