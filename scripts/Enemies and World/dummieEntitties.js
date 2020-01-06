@@ -75,26 +75,30 @@ export class dummieEnemy extends dummieEntity{//Phaser.GameObjects.Sprite {
         }
         this.play(anim);
         this.id = id;
-        this.setInteractive();
+        this.image.setInteractive();
         socket.on("enemyMove", data => {
             if (data.id === this.id) this.move(data.pos, data.flip);
         })
         socket.on("enemyDead", id => {
             if (id === this.id) this.killDumie();
         })
-        this.on("pointerdown", () => {
+        this.image.on("pointerdown", () => {
             if (!this.enemyManager.havePossesed) this.possesion();
         })
     }
     possesion() {
         socket.emit("enemyPossesed", this.id);
         this.enemyManager.havePossesed = true;
-        this.setTint("0x" + "b0fdd2");
+        this.image.setTint("0x" + "b0fdd2");
 
         this.key_D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.key_A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.key_S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.key_W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        this.key_Up = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        this.key_Down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        this.key_Left = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        this.key_Right = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.dir = { x: 0, y: 0 };
         //Teclas de movimiento, cambiar la dirección y moverse en esa direción
         this.key_A.on("down", () => {
@@ -112,7 +116,6 @@ export class dummieEnemy extends dummieEntity{//Phaser.GameObjects.Sprite {
         this.key_D.on("down", () => {
             this.dir = { x: this.dir.x + 1, y: this.dir.y }
             socket.emit("possesedMoved", this.dir);
-
         });
         this.key_A.on("up", () => {
             (this.dir.x < 0) ? this.dir.x += 1 : 0;
@@ -130,6 +133,16 @@ export class dummieEnemy extends dummieEntity{//Phaser.GameObjects.Sprite {
             (this.dir.x > 0) ? this.dir.x -= 1 : 0;
             socket.emit("possesedMoved", this.dir);
         });
+
+        this.key_Up.on("up",    ()=>this.attack({x:0,y:-1}));
+        this.key_Down.on("up",  ()=>this.attack({x:0,y:1}));
+        this.key_Right.on("up", ()=>this.attack({x:1,y:0}));
+        this.key_Left.on("up",  ()=>this.attack({x:-1,y:0}));
+    }
+    attack(dir)
+    {
+        console.log("Pew");
+        socket.emit("possesedAttacked",dir)
     }
     move(pos, flip) {
         this.x = pos.x;
@@ -144,18 +157,20 @@ export class dummieEnemy extends dummieEntity{//Phaser.GameObjects.Sprite {
 export class dummieProyectile extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, sprite, angle, id, eventNamePrefix, anim) {
         super(scene, x, y, sprite);
-        this.setAngle(angle);
+        //this.setAngle(angle);
+        this.scene=scene;
         scene.add.existing(this);
         this.id = id;
         this.eventNamePrefix = eventNamePrefix;
-
+        console.log("Me he creado");
+        console.log(this);
         //solo tiene animación el radar y queremos que se vea transparente
         if (anim !== undefined) {
             this.setAlpha(0.5);
             this.play(anim);
         }
         socket.on("proyectileMove", (data) => { if (id === data.id && data.eventNamePrefix === this.eventNamePrefix) { this.x = data.x; this.y = data.y } })
-        socket.on("proyectileDead", (data) => { if (data.id === this.id && this.eventNamePrefix === data.eventNamePrefix) this.destroy(false); })
+        socket.on("proyectileDead", (data) => { if (data.id === this.id && this.eventNamePrefix === data.eventNamePrefix) this.destroy() })
     }
 }
 export class dummieTrap extends Phaser.GameObjects.Sprite {

@@ -92,10 +92,9 @@ class bar extends Phaser.GameObjects.Graphics
     }
 }
 
-export class Time {
+export class Time extends Phaser.GameObjects.Text{
     constructor(scene, x, y) {
-        this.scene = scene;
-        this.timeText = this.scene.add.text(x, y, "--:-- ", { font: "32px m5x7", fill: "#FFFFFF" });
+        super(scene,x, y, "--:-- ", { font: "32px m5x7", fill: "#555555" });
         socket.on("second", (time) => this.tick(time));
     }
 
@@ -106,8 +105,7 @@ export class Time {
             this.mins = Math.floor(time / 60);
             this.secs = time - (this.mins * 60);
         }
-        this.timeText.text = this.zero(this.mins) + " : " + this.zero(this.secs);
-
+        this.text = this.zero(this.mins) + ":" + this.zero(this.secs);
 
     }
 
@@ -122,7 +120,7 @@ export class Time {
     setTimeToZero() {
         this.mins = 0;
         this.secs = 0;
-        this.timeText.text = "00 : 00";
+        this.text = "00:00";
         socket.off("second")
     }
 

@@ -31,6 +31,7 @@ const SelectGameMode =
         this.load.image("enemiesSymbol", "../assets/ui/dungeonEditor/enemies.png");
         this.load.image("enemiesSymbol2", "../assets/ui/dungeonEditor/enemies2.png");
         this.load.image("clicked", "../assets/ui/dungeonEditor/clicked.png");
+        this.load.atlasXML("UI", "../assets/ui/uipack_rpg_sheet.png","../assets/ui/uipack_rpg_sheet.xml");
 
 
         /*Bola de fuego*/
@@ -207,6 +208,8 @@ const SelectGameMode =
             frameRate: 5,
             repeat: 0
         })
+        this.input.setDefaultCursor('url(assets/UI/cursor.png), pointer');
+// CSSString: '
 
         this.left = this.add.image(0, 0, "Half-Off").setOrigin(0, 0);
         this.right = this.add.image(0, 0, "Half-Ffo").setOrigin(0, 0);

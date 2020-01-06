@@ -10,29 +10,16 @@ import { Time } from '../Scenes/utils.js';
 export class shopUiManager {
     constructor(scene) {
         //let html = '<div style="background-color:#000000;max-height:50px;max-width:100px"><h1 style="color:fuchsia;font-size:10px;text-align:center">Flechas normales</h1><p style="font-size:6px;text-align:center">Pack de 10 flechas.<br/>Se gastan al usar</p></div>'
-        let background = scene.add.image(0, 0, "background");
+        //let background = scene.add.image(0, 0, "background");
         //console.log(scene.cache.css.get("itemCSS"));
-        scene.domElement = scene.add.dom(scene.cameras.main.centerX, scene.cameras.main.centerY).createFromCache("itemHTML");
+        scene.domElement = scene.add.dom(scene.cameras.main.centerX, scene.cameras.main.centerY + 30).createFromCache("itemHTML");
         console.log(scene.domElement);
         { scene.domElement.visible = true }
-        background.setOrigin(0, 0);
         scene.inventory = new inventory(100);
         console.log(scene.inventory.gold);
 
-        this.timer = new Time(scene, 32, 4, 2, 0);
 
-        let config =
-        {
-            scene: scene,
-            clickedColor: "#FF00FF",
-            cursorOverColor: "#00FF00",
-            basicColor: "#00",
-            style: { fontFamily: "m5x7", fontSize: "32px", color: "#00" },
-        }
-        //Texto del dinero actual
-        let text = scene.add.text(136 * 2, 2 * 2, scene.inventory.gold, config.style);
-
-        let weaponTypeButton = new itemTypeButton(scene,10,10,"Armas");
+        new buttonPanel(scene, 20, 25);
 
         //Botones de compra de items
         let x = 125;
@@ -43,7 +30,7 @@ export class shopUiManager {
 
         scene.buy = function (itemName, button, upgrade = true, units = 1, level = 1) {
             console.clear();
-            let toBuyItemLevel,price,nextLvl;
+            let toBuyItemLevel, price, nextLvl;
             let buy = false;
             if (upgrade && scene.inventory[itemName].Level < 3) {
                 toBuyItemLevel = scene.inventory[itemName].Level + scene.inventory[itemName].Units;
@@ -52,7 +39,7 @@ export class shopUiManager {
                 if (price <= scene.inventory.gold) {
                     buy = true;
                     scene.inventory.upgradeItem(itemName);
-                    (scene.inventory[itemName].Units === 0 )?scene.inventory[itemName].addUnits(1):scene.inventory.upgradeItem(itemName);
+                    (scene.inventory[itemName].Units === 0) ? scene.inventory[itemName].addUnits(1) : scene.inventory.upgradeItem(itemName);
                     scene.inventory.substractGold(price);
                 }
                 if (toBuyItemLevel < 3) {
@@ -71,214 +58,177 @@ export class shopUiManager {
                     scene.inventory[name].addUnits(units);
                 }
             }
-            text.text = scene.inventory.gold;
+            scene.text.text = scene.inventory.gold;
             return { lvl: nextLvl, buy: buy };
         }
-        /*
-        scene.Sword_Button = new itemButton3lvl(scene, hsize, y + 0 * vsize, "bg_3lvls", "border_3lvls", "lvlButton", "number_3lvls", "Sword", itemAtlas.Sword1.Price);
-        //scene.Potion_Button = new itemButton1lvl(scene, x + hsize, y + 0 * vsize, "bg_1lvl", "border_1lvl", "Potion", itemAtlas.Potion.Price);
-        scene.Armor_Button = new itemButton3lvl(scene, hsize, y + 1 * vsize, "bg_3lvls", "border_3lvls", "lvlButton", "number_3lvls", "Armor", itemAtlas.Armor1.Price);
-        //scene.Grenade_Button = new itemButton1lvl(scene, x + hsize, y + 1 * vsize, "bg_1lvl", "border_1lvl", "Grenade", itemAtlas.Grenade.Price);
-        scene.Bow_Button = new itemButton3lvl(scene, hsize, y + 2 * vsize, "bg_3lvls", "border_3lvls", "lvlButton", "number_3lvls", "Bow", itemAtlas.Bow1.Price);
-        scene.Arrow_Button = new itemButton2lvl(scene, x + hsize, y + 2 * vsize, "border_2lvls", "leftbg_2lvls", "rightbg_2lvls", "Arrow", itemAtlas.Arrow1.Price * 10);
-        scene.Shield_Button = new itemButton3lvl(scene, hsize, y + 3 * vsize, "bg_3lvls", "border_3lvls", "lvlButton", "number_3lvls", "Shield", itemAtlas.Shield1.Price);
-       // scene.Radar_Button = new itemButton1lvl(scene, x + hsize, y + 3 * vsize, "bg_1lvl", "border_1lvl", "Radar", itemAtlas.Radar.Price);
 
-        scene.Radar_Button = new itemButton(scene, x + hsize, y + 3 * vsize, "Radar", itemAtlas.Radar.Price);
-        scene.Grenade_Button = new itemButton(scene, x + hsize, y + 1 * vsize, "Grenade", itemAtlas.Grenade.Price);
-        scene.Potion_Button = new itemButton(scene, x + hsize, y + 0 * vsize, "Potion", itemAtlas.Potion.Price);
-        */
-
+        let bar = new statusBar(scene, scene.cameras.main.centerX - 6, scene.cameras.main.centerY + 150);
         //Botón de continuar
-        {
-            this.continuar = new textButton(config, 106 * 2, 152 * 2, "Continuar");
-            this.continuar.on("pointerdown", () => {
-                this.timer.setTimeToZero();
-                scene.game.scene.stop("ItemShop");
-                scene.game.inventory = scene.inventory;
-                socket.emit("finished", scene.inventory);
-                socket.on("startDung", (data) => {
-                    scene.game.dungeon = data.dungeon;
-                    scene.game.scene.start("DungeonRun");
-                })
-            })
-        }
-        socket.on("continuar", () => this.continuar.emit("pointerdown"));
+        socket.on("continuar", () => scene.continuar.emit("pointerdown"));
     }
 
+
+}
+class statusBar extends Phaser.GameObjects.Container {
+    constructor(scene, x, y) {
+        super(scene, x, y);
+        let config =
+        {
+            scene: scene,
+            clickedColor: "#FF00FF",
+            cursorOverColor: "#00FF00",
+            basicColor: "#555555",
+            style: { fontFamily: "m5x7", fontSize: "32px", color: "#555555" },
+        }
+        //Texto del dinero actual
+        scene.continuar = new textButton(config, -6, -3, "Continuar");
+        scene.continuar.on("pointerdown", () => {
+            scene.timer.setTimeToZero();
+            scene.game.scene.stop("ItemShop");
+            scene.game.inventory = scene.inventory;
+            socket.emit("finished", scene.inventory);
+            socket.on("startDung", (data) => {
+                scene.game.dungeon = data.dungeon;
+                scene.game.scene.start("DungeonRun");
+            })
+        })
+        scene.text = scene.add.text(-30, -20, scene.inventory.gold, config.style);
+        scene.timer = new Time(scene, -85, -3, 2, 0);
+        this.add(scene.add.image(0, 0, "UI", "buttonLong_beige_pressed.png")).setScale(1.5, 1);
+        scene.add.existing(this);
+        this.add(scene.text);
+        this.add(scene.timer);
+        this.add(scene.continuar);
+    }
+}
+class buttonPanel {
+    constructor(scene, x, y) {
+        scene.add.image(x, y, "UI", "panel_beigeLight.png").setOrigin(0, 0).setScale(3);
+        scene.add.image(scene.cameras.main.centerX, scene.cameras.main.centerY + 30, "UI", "panel_beige.png").setScale(2, 1);
+
+        this.weaponButton = new itemTypeButton(scene, x + 4, y + 4, "Armas", this);
+        this.objetsButton = new itemTypeButton(scene, x + 100, y + 4, "Objetos", this);
+        this.defenseButton = new itemTypeButton(scene, x + 200, y + 4, "Defensa", this);
+
+        this.itemButtons = new itemButtons(scene);
+
+        this.leftArrowButton = new arrowButton(scene, x + 90, 90, x + 90, 92, "arrowBeige_left.png",this).setOrigin(0.5, 0.5)
+        this.rightArrowButton = new arrowButton(scene, x + 222, 90, x + 220, 92, "arrowBeige_right.png",this).setOrigin(0.5, 0.5);
+    }
+    buttonClicked(itemType) 
+    {
+        this.itemButtons.set(itemType);
+    }
+    next()
+    {
+        this.itemButtons.next();
+    }
+    prev()
+    {
+        this.itemButtons.prev();
+    }
+}
+class arrowButton extends Phaser.GameObjects.Image {
+    constructor(scene, x, y, x1, y1, sprite,buttonPanel) {
+        super(scene, x, y, "UI", sprite)
+        this.button = scene.add.image(x1, y1, "UI", "buttonSquare_brown.png").setOrigin(0.5, 0.5);
+        this.buttonPressed = scene.add.image(x1, y1, "UI", "buttonSquare_brown_pressed.png").setOrigin(0.5, 0.5).setVisible(false);
+        scene.add.existing(this);
+        this.buttonPanel=buttonPanel;
+        this.button.setInteractive({cursor: 'url(assets/ui/cursorHand.png), pointer'});
+        this.buttonPressed.setInteractive({cursor: 'url(assets/ui/cursorHand.png), pointer'});
+        this.button.on("pointerdown", ()=>
+        {
+            this.button.setVisible(false);
+            this.buttonPressed.setVisible(true);
+        })
+        this.buttonPressed.on("pointerup", ()=>
+        {
+            this.button.setVisible(true);
+            this.buttonPressed.setVisible(false);
+            if(sprite.includes("left"))
+            {
+                this.buttonPanel.prev();
+            }
+            else
+            {
+                this.buttonPanel.next();
+            }
+        })
+        
+
+    }
+}
+class itemButtons {
+    constructor(scene) {
+        this.buttons = new Array();
+        for (let i = 1; i < 4; i++) { this.buttons.push(new itemButton(scene, 55 + 60 * i, 90)) } //Arriba
+        this.buttons[0].setVisible(false);
+        this.buttons[2].setVisible(false);
+
+        /*this.buttons[0].next = this.buttons[1];
+        this.buttons[1].next = this.buttons[2];
+        this.buttons[2].next = this.buttons[0];
+        this.buttons[2].prev = this.buttons[1];
+        this.buttons[1].prev = this.buttons[0];
+        this.buttons[0].prev = this.buttons[2];*/
+
+        this.actualIndex=0;
+        this.actualType =0;
+
+        this.weapons = ["Sword", "Bow", "Arrow1", "Arrow2"];
+        this.defense = ["Armor", "Shield", "Boots"];
+        this.objects = ["Potion", "Grenade", "Radar"];
+        this.types=[this.weapons,this.objects,this.defense];
+    }
+
+    setImage(item)
+    {
+        this.buttons[1].setTexture(scene.inventory[item].images.sprite);
+    }
+    next()
+    {
+        console.log(this.types[0].length);
+        this.actualIndex=(this.actualIndex+1)%(this.types[this.actualType].length);
+        console.log(this.actualIndex);
+        this.buttons[1].next(this.types[this.actualType][this.actualIndex])
+    }
+    prev()
+    {
+        this.actualIndex=(this.actualIndex+(this.types[this.actualType].length-1))%this.types[this.actualType].length;
+        this.buttons[1].prev(this.types[this.actualType][this.actualIndex])
+    }
 
 }
 
 class itemButton extends Phaser.GameObjects.Container {
-    constructor(scene, x, y,itemID) {
+    constructor(scene, x, y, itemID) {
         super(scene, x, y);
         scene.add.existing(this);
-        this.image = new itemSprite(scene,x,y,itemID,this);
-        //this.add(this.image);
-        let style = { fontFamily: "m5x7", fontSize: "16px", color: "#00" };
-        this.text = scene.add.text(this.image.width / 2 + 4, -this.image.height/2 + 4, "x" +scene.inventory[itemID].Price, style);
-        this.text.setOrigin(0, 0);
-        this.add(this.text);
-        this.itemID = itemID;
+        this.bgImage = scene.add.image(0, 0, "UI", "panel_blue.png").setScale(0.5);
+        this.itemImage = scene.add.image(0, 0, "Sword1");
+        this.add(this.bgImage);
+        this.add(this.itemImage);
     }
-}
-class itemSprite extends Phaser.GameObjects.Sprite
-{
-    constructor(scene,x,y,itemID,container)
+    next(string)
     {
-        let sp = scene.inventory[itemID].Images.Sprite;
-        super(scene,x,y,sp, container);
-        scene.add.existing(this);
-        this.container=this.container;
-        this.itemID=itemID;
-        this.setInteractive({pixelPerfect:true, alphaTolerance:0});
-        this.on("pointerdown", this.click);
-        this.on("pointerover", (cr)=>this.over(cr));
-        this.on("pointerout", this.out);
+        console.log(string)
     }
-    click()
+    prev(string)
     {
-        this.scene.buy(this.itemID,this.container,false);
+        console.log(string);
     }
-    over(cursor)
+    setTexture(sprite)
     {
-        this.scene.domElement.setVisible(true);
-        this.setTintFill(0xFFF00)
-    }
-    out()
-    {
-        this.clearTint();
-        this.scene.domElement.setVisible(false);
+        this.itemImage.destroy();
+        this.itemImage = scene.add.image(0, 0, sprite);
+        this.add(this.itemImage);
     }
 }
 
-class itemButton1lvl {
-    constructor(scene, x, y, background, border, itemID, price) {
-        let container = scene.add.container(x, y);
-        let bg = scene.add.image(0, 0, background);
-        bg.scale = 2;
-        container.add(bg)
-
-
-        this.expositor = scene.add.image(0, -3, scene.inventory[itemID].Images.Sprite);
-        container.add(this.expositor);
-
-        let style = { fontFamily: "m5x7", fontSize: "32px", color: "#00" };
-        this.text = scene.add.text(bg.width / 2 + 4, - bg.height / 2 + 4, "x" + price, style);
-        container.add(this.text);
-        this.itemID = itemID;
-
-        this.expositor.setInteractive();
-        this.expositor.on("pointerover", () => this.text.setTintFill("0x880088"));
-        this.expositor.on("pointerout", () => this.text.clearTint());
-        this.expositor.on("pointerdown", () => {
-            this.text.setTintFill("0xFF00FF");
-            scene.buy(this.itemID, this, false);
-        })
-        this.expositor.on("pointerup", () => this.text.clearTint());
-    }
-    changeText(newText) {
-        this.text.text = "x" + newText;
-    }
-}
-
-class itemButton2lvl {
-    constructor(scene, x, y, border, leftbackground, rightbackground, itemID, price) {
-        let container = scene.add.container(x, y);
-        let lbg = scene.add.image(0, 0, leftbackground);
-        container.add(lbg)
-        let rbg = scene.add.image(0, 0, rightbackground);
-        container.add(rbg);
-        container.add(scene.add.image(0, 0, border));
-
-        this.expositor = scene.add.image(-5, -3, scene.inventory[itemID + "1"].Images.Sprite);
-        this.expositor.angle = 60;
-        container.add(this.expositor);
-        this.expositor = scene.add.image(5, 1, scene.inventory[itemID + "2"].Images.Sprite);
-        this.expositor.angle = 60;
-        container.add(this.expositor);
-
-        let style = { fontFamily: "m5x7", fontSize: "32px", color: "#00" };
-        this.text = scene.add.text(rbg.width / 2 + 4, - rbg.height / 2 + 4, "x" + price, style);
-        container.add(this.text);
-        this.itemID = itemID;
-
-
-
-        lbg.setInteractive({ pixelPerfect: true, alphaTolerance: 1 });
-        lbg.on("pointerover", () => this.text.text = "x10");
-        lbg.on("pointerout", () => lbg.clearTint());
-        lbg.on("pointerdown", () => {
-            lbg.setTintFill("0x3f0d59");
-            scene.buy(this.itemID, this, false, 10, 1);
-        })
-
-        rbg.setInteractive({ pixelPerfect: true, alphaTolerance: 1 });
-        rbg.on("pointerover", () => this.text.text = "x9");
-        rbg.on("pointerout", () => rbg.clearTint());
-        rbg.on("pointerdown", () => {
-            rbg.setTintFill("0x3f0d59");
-            scene.buy(this.itemID, this, false, 3, 2);
-        })
-    }
-    changeText(newText) {
-        this.text.text = "x" + newText;
-    }
-}
-class itemButton3lvl {
-    constructor(scene, x, y, background, border, button, number, itemID, price) {
-        let container = scene.add.container(x, y);
-        this.bg = scene.add.image(x, y, background);
-        //this.bg.setScale(2);
-        //container.add(this.bg)
-        console.log(itemID)
-
-        if (itemID === "Sword") {
-            this.expositor = scene.add.image(x, y, itemAtlas[itemID + "1"].Images.Sprite);
-            this.expositor.angle = 90;
-        }
-        else
-            this.expositor = scene.add.image(x, y, scene.inventory[itemID].Images.Sprite);
-
-        //container.add(this.expositor);
-
-        let style = { fontFamily: "m5x7", fontSize: "32px", color: "#00" };
-
-        this.text = scene.add.text(this.bg.width / 2 + 4, - this.bg.height / 2 + 4, "x" + price, style);
-        container.add(this.text);
-        container.setSize(32, 32);
-        this.itemID = itemID;
-
-
-        this.bg.setInteractive();
-        this.bg.on("pointerover", (cursor) => { this.bg.setTintFill(0xFFF333); scene.domElement.visible = true; });
-        this.bg.on("pointerout", () => { scene.domElement.visible = false; this.bg.clearTint() });
-        this.bg.on("pointerdown", () => {
-            let buyResult = scene.buy(this.itemID, this, true);
-            let toBuyItemLvl = buyResult.lvl;
-            let buy = buyResult.buy;
-            if (toBuyItemLvl < 4) {
-                let name = itemID + toBuyItemLvl;
-                this.expositor.destroy();
-                this.expositor = scene.add.image(0, 4, itemAtlas[name].Images.Sprite);
-                if (itemID === "Sword") this.expositor.angle = 90;
-                container.add(this.expositor);
-            } else if (buy) this.expositor.destroy();
-        })
-    }
-    changeText(newText) {
-        this.text.text = "x" + newText;
-    }
-}
-
-
-
-
-class itemTypeButton extends Phaser.GameObjects.Container
-{
-    constructor(scene,x,y,itemType)
-    {
-        super(scene,x,y)
+class itemTypeButton extends Phaser.GameObjects.Container {
+    constructor(scene, x, y, itemType, manager) {
+        super(scene, x, y)
         scene.add.existing(this);
         let config =
         {
@@ -286,58 +236,32 @@ class itemTypeButton extends Phaser.GameObjects.Container
             clickedColor: "#FF00FF",
             cursorOverColor: "#00FF00",
             basicColor: "#00",
-            style: { fontFamily: "m5x7", fontSize: "32px", color: "#FFFFFF" },
+            style: { fontFamily: "m5x7", fontSize: "32px", color: "#555555" },
         }
-        this.buttonShape=scene.add.graphics();
-        this.buttonShape.setInteractive();
-        this.buttonShape.fillStyle("0xaa00aa");
-        this.itemType=itemType;
-        this.buttonShape.fillRect(0,0,this.itemType.length*16,34);
-        this.text = scene.add.text(8,2,this.itemType,config.style);
+        this.itemType = itemType;
+        this.text = scene.add.text(4, 2, this.itemType, config.style);
         this.text.setInteractive();
-        this.text.on("pointerdown",()=>this.click())
-        this.text.on("pointerover",()=>this.over())
-        this.text.on("pointerout",()=>this.out())
-        this.add(this.buttonShape);
+        this.text.on("pointerdown", () => this.click())
+        this.text.on("pointerover", () => this.over())
+        this.text.on("pointerout", () => this.out())
         this.add(this.text);
+        this.manager = manager;
     }
-    click()
-    {
-        if(this.state!=="clicked")
-        {
-            this.buttonShape.clear();
-            this.buttonShape.fillStyle("0x880088");
-            this.buttonShape.lineStyle(2,"0xFF00FF");
-            this.buttonShape.fillRect(0,0,this.itemType.length*16,34)
-            this.buttonShape.strokeRect(0,0,this.itemType.length*16,34)
-            this.text.style.color="#FF00FF";
+    click() {
+        if (this.state !== "clicked") {
+            this.manager.buttonClicked(this.itemType);
+            this.text.setColor("#FF00FF");
             this.setState("clicked");
         }
-        else
-        {
-            this.buttonShape.fillStyle("0xaa00aa");
-            this.buttonShape.fillRect(0,0,this.itemType.length*16,34);
-            this.setState("unclicked");
+    }
+    over() {
+        if (this.state !== "clicked") {
+            this.text.setColor("#00");
         }
     }
-    over()
-    {
-        if(this.state!=="clicked")
-        {
-            this.buttonShape.clear();
-            this.buttonShape.fillStyle("0x880088");
-            this.text.style.color="#00"
-            this.buttonShape.fillRect(0,0,this.itemType.length*16,34)
-        }
-    }
-    out()
-    {
-        if(this.state!=="clicked")
-        {
-            this.buttonShape.clear();
-            this.buttonShape.fillStyle("0xaa00aa");
-            this.text.style.color="#FFFFFF"
-            this.buttonShape.fillRect(0,0,this.itemType.length*16,34)
+    out() {
+        if (this.state !== "clicked") {
+            this.text.setColor("#555555");
         }
     }
 }

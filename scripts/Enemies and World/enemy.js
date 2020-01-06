@@ -217,30 +217,39 @@ export class wizard extends enemy {
         this.price = 15;
         this.ATTKPoints = 1;
         this.coolDown = 2750;
+        this.firballs=[];
     }
-
-    // el mago ataca de otra manera
-    /*specialAttack(player) {
-        if (!this.attacking) {
-            this.attacking = true;
-            player.damage(this.ATTKPoints);
-            this.scene.time.delayedCall(this.coolDown, () => { this.attacking = false; });
-        }
-    }*/
 
     spotPlayer(player) {
         this.zone.destroy();
         this.player = player;
         this.findDir();
-        this.attack();
+        this.on('animationrepeat-idleWizard', () =>
+        {
+            this.attacking=false;
+            if(!this.possesed)this.attack({x:-this.dir.x,y:-this.dir.y})
+        });
+        
+    }
+    possesion()
+    {
+        socket.on("possesedAttacked",(dir)=>{console.log("he llegado");this.attack(dir)});
+        super.possesion()
     }
 
     specialMove() {
         this.dir.x *= -1;
         this.dir.y *= -1;
     }
-    attack() {
-        this.on('animationrepeat-idleWizard', () => this.ball = new wizardProjectiles(this.scene, this.x, this.y, this.dir, this.projectileSpeed, "fireBall", this.ATTKPoints));
+    attack(dir) {
+        if(this.attacking===false)
+        {
+            this.attacking=true;
+            let ball = new wizardProjectiles(this.scene, this.x, this.y, dir, this.projectileSpeed, "fireBall", this.ATTKPoints)
+            let id = this.firballs.push(0);
+            ball.id=id;
+            ball.toServer();
+        }
     }
 }
 
@@ -421,6 +430,9 @@ export class wizardProjectiles extends Phaser.GameObjects.Sprite {
         super(scene, x, y, sprite);
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.sprite=sprite;
+        this.prefix="fireBallPrefix";
+        this.dir=dir;
         this.scene = scene;
         this.damage = damage;
         scene.physics.add.collider(this, scene.tileMap.Walls, () => this.die());
@@ -430,12 +442,31 @@ export class wizardProjectiles extends Phaser.GameObjects.Sprite {
         })
 
         //El mago siempre dispara en dirección contraria a la que se mueve, es decir, hacia el héroe
-        this.body.setVelocity((-dir.x) * speed, (-dir.y) * speed);
-        this.scene.time.delayedCall(7000, () => this.die());
+        this.body.setVelocity((dir.x) * speed, (dir.y) * speed);
+        this.scene.time.delayedCall(7000, () => {if(this.body!==undefined)this.die()});
     }
-
+    toServer()
+    {
+        let data = 
+        {
+            x:this.x/32,
+            y:this.y/32,
+            sprite:"fireBall",
+            angle:0,
+            id:this.id,
+            prefix:this.prefix,
+        }
+        socket.emit("newProyectile", data);
+    }
     die() {
+        console.log(this.id)
         this.setVisible(false);
+        socket.emit("proyectileDead",{id:this.id,eventNamePrefix:this.prefix});
         this.destroy();
+    }
+    preUpdate(time, delta)
+    {
+        socket.emit("proyectileMove",{x:this.x,y:this.y,id:this.id,eventNamePrefix:this.prefix});
+        super.preUpdate(time, delta);
     }
 }

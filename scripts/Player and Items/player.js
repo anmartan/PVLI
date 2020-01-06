@@ -7,7 +7,7 @@ export class livingEntity extends Phaser.GameObjects.Sprite {
         this.dir = { x: 0, y: 0 }                        //Movement direction (0,0) initial value
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.healthBar=new healthBar(scene,x-this.width/2,y-this.height/2,this.width, 3)
+        this.healthBar=new healthBar(scene,x-this.width/2,y-this.height/2,this.width)
         /* Sistema de vida */
         this.vulnerable = true;
         this.health = health.maxHealth;

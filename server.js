@@ -129,6 +129,7 @@ class match
         });
         heroToAntihero("proyectileMove");
         antiHero.on("enemyPossesed",id=>{hero.emit("enemyPossesed",id);});
+        antiHero.on("possesedAttacked",dir=>{console.log("ENEMYPOSSESEDATtACK");hero.emit("possesedAttacked",dir);});
         antiHero.on("possesedMoved",dir=>{hero.emit("possesedMoved",dir)});
 
         hero.on("finished",    (inventory)   =>{

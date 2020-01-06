@@ -148,7 +148,7 @@ class Projectile extends Phaser.GameObjects.Sprite {
             x:this.x,
             y:this.y,
             sprite:sprite,
-            angle:dir,
+            angle:0,
             id:id,
             prefix:prefix,
             anim:anim

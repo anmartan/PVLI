@@ -17,7 +17,7 @@ const scene =
     },
     create: function () {
         let music = this.sound.add("introAntiHero");
-        music.play({ volume: 0.1 });
+        music.play({ volume: 1 });
         let loop = this.sound.add("loopAntiHero")
         loop.setLoop(true);
         music.once("complete", () => { loop.play({ volume: 0.1 }) })
